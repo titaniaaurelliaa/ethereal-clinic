@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+<html lang="id" class="scroll-smooth"></html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,41 +12,32 @@
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
+
 <body class="bg-[#FFEFF3] min-h-screen"> 
-   <nav class="w-full px-6 py-5 md:px-16 flex items-center justify-between bg-white shadow-sm">
+    <nav class="sticky top-0 z-50 w-full px-6 py-4 md:px-16 flex items-center justify-between bg-white/80 backdrop-blur-md shadow-sm transition-all duration-300">
         
-        <div class="flex-shrink-0">
+        <div class="flex flex-1">
             <a href="/" class="text-xl md:text-2xl font-extrabold text-[#8A3033] tracking-tight">
                 The Ethereal Clinic
             </a>
         </div>
 
         <div class="hidden md:flex items-center space-x-10 text-sm font-medium">
-            <a href="#" class="text-gray-500 hover:text-[#8A3033] transition-colors">Beranda</a>
-            <a href="#" class="text-gray-500 hover:text-[#8A3033] transition-colors">Layanan</a>
-            <a href="#" class="text-gray-500 hover:text-[#8A3033] transition-colors">Tentang</a>
-            <a href="#" class="text-gray-500 hover:text-[#8A3033] transition-colors">Kontak</a>
+            <a href="#beranda" class="text-gray-500 hover:text-[#8A3033] transition-colors">Beranda</a>
+            <a href="#layanan" class="text-gray-500 hover:text-[#8A3033] transition-colors">Layanan</a>
+            <a href="#tentang" class="text-gray-500 hover:text-[#8A3033] transition-colors">Tentang</a>
+            <a href="#kontak" class="text-gray-500 hover:text-[#8A3033] transition-colors">Kontak</a>
         </div>
 
-        <div class="flex items-center space-x-5 text-[#68575E]">
-            <button class="hover:text-[#8A3033] transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-            </button>
-            <button class="hover:text-[#8A3033] transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-            </button>
-            <button class="w-8 h-8 rounded-full overflow-hidden border border-[#8A3033] hover:scale-105 transition-transform shadow-sm">
-                <img src="https://ui-avatars.com/api/?name=Ivan&background=8A3033&color=fff" alt="User Profile" class="w-full h-full object-cover">
-            </button>
+        <div class="flex flex-1 justify-end items-center">
+            <a href="/register" class="px-6 py-2.5 bg-gradient-to-r from-[#7B5556] to-[#EFBDBD] text-white font-bold text-sm rounded-full shadow-md shadow-[#7B5556]/20 hover:scale-105 hover:shadow-lg active:scale-95 transition-all duration-300">
+                Coba Gratis
+            </a>
         </div>
+
     </nav>
 
-    <main class="max-w-7xl mx-auto px-6 lg:px-16 py-10 lg:py-16">
+    <main id="beranda" class="max-w-7xl mx-auto px-6 lg:px-16 py-10 lg:py-16">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             
             <div class="max-w-xl z-10">
@@ -64,7 +56,7 @@
                 </p>
 
                 <div class="flex flex-wrap items-center gap-4">
-                    <a href="/konsultasi" class="px-8 py-3.5 rounded-full bg-[#68575E] text-white font-semibold hover:bg-[#52444a] transition-colors shadow-md">
+                    <a href="/login" class="px-8 py-3.5 rounded-full bg-[#68575E] text-white font-semibold hover:bg-[#52444a] transition-colors shadow-md">
                         Mulai Konsultasi
                     </a>
                     <a href="/login" class="px-10 py-3.5 rounded-full bg-transparent border-[1.5px] border-[#CAA59C] text-[#68575E] font-semibold hover:bg-[#FAE2EA] transition-colors">
@@ -99,7 +91,7 @@
 
         </div>
     </main>
-    <section class="w-full bg-[#FFEDE9] py-20 lg:py-28 px-6 lg:px-16">
+    <section id="layanan" class="w-full bg-[#FFEDE9] py-20 lg:py-28 px-6 lg:px-16">
         <div class="max-w-7xl mx-auto">
             
             <div class="text-center max-w-2xl mx-auto mb-16 md:mb-20">
@@ -153,7 +145,7 @@
             </div>
         </div>
     </section>
-    <section class="max-w-7xl mx-auto px-6 lg:px-16 py-20 lg:py-28">
+    <section id="tentang" class="max-w-7xl mx-auto px-6 lg:px-16 py-20 lg:py-28">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             
             <div class="relative w-full max-w-md mx-auto lg:mx-0 h-[380px] sm:h-[450px]">
@@ -169,7 +161,7 @@
                 >
             </div>
 
-<div>
+            <div>
                 <h2 class="text-3xl lg:text-4xl font-extrabold text-[#68575E] tracking-tight mb-10">
                     Mengapa Memilih Kami?
                 </h2>
@@ -231,14 +223,14 @@
                 <p class="text-[#E4E4CC] text-sm md:text-base leading-relaxed mb-10 max-w-lg mx-auto opacity-90">
                     Bergabunglah dengan ribuan pengguna yang telah menemukan rutinitas skincare yang tepat melalui sistem kami.
                 </p>
-                <a href="/konsultasi" class="inline-block px-10 py-4 rounded-full bg-[#FFEFF3] text-[#68575E] font-bold hover:bg-white hover:scale-105 transition-all shadow-lg">
+                <a href="/login" class="inline-block px-10 py-4 rounded-full bg-[#FFEFF3] text-[#68575E] font-bold hover:bg-white hover:scale-105 transition-all shadow-lg">
                     Mulai Konsultasi Gratis
                 </a>
             </div>
         </div>
     </section>
 
-<footer class="bg-white pt-20 pb-10 px-6 lg:px-16 border-t border-[#FFE2DB]">
+<footer id="kontak" class="bg-white pt-20 pb-10 px-6 lg:px-16 border-t border-[#FFE2DB]">
     <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             
