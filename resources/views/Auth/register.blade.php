@@ -28,8 +28,8 @@
                 <p class="text-[#72544E] mt-2 opacity-80">Langkah awal menuju kulit sehat impianmu.</p>
             </div>
 
-            <form action="#" method="POST" class="space-y-4">
-                @csrf
+            <form action="{{ route('register.post') }}" method="POST" class="space-y-4">
+            @csrf
                 <div class="group">
                     <label class="block text-sm font-bold text-[#68575E] mb-1.5 ml-1">Nama Lengkap</label>
                     <input type="text" name="name" placeholder="Ivan Rizal" required
@@ -42,7 +42,7 @@
                         class="w-full px-5 py-3.5 rounded-2xl bg-[#FFEFF3] border-2 border-transparent focus:border-[#CAA59C] focus:bg-white text-[#68575E] outline-none transition-all duration-300 shadow-sm">
                 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="group">
                         <label class="block text-sm font-bold text-[#68575E] mb-1.5 ml-1">Password</label>
                         <div class="relative">
@@ -87,6 +87,21 @@
                     transition-all duration-300 uppercase tracking-wider text-sm">
                     Daftar Sekarang
                 </button>
+                @if ($errors->any())
+                <div class="mb-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            @if (session('success'))
+                <div class="mb-4 p-4 rounded-xl bg-green-50 border border-green-200 text-green-600 text-sm font-medium">
+                    {{ session('success') }}
+                </div>
+            @endif
             </form>
 
             <p class="mt-8 text-center text-sm text-[#72544E] font-medium">

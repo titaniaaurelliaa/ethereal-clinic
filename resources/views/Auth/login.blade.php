@@ -37,11 +37,26 @@
                 <p class="text-[#72544E] mt-2 opacity-80">Silakan masuk untuk melanjutkan konsultasi kulit Anda.</p>
             </div>
 
-            <form action="#" method="POST" class="space-y-6">
+            @if ($errors->any())
+                <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            @if (session('success'))
+                <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-600 text-sm font-medium">
+                    {{ session('success') }}
+                </div>
+            @endif
+            <form action="{{ route('login.post') }}" method="POST" class="space-y-6">
                 @csrf
                 <div class="group">
                     <label class="block text-sm font-bold text-[#68575E] mb-2 ml-1">Email</label>
-                    <input type="email" name="email" placeholder="nama@email.com" required
+                    <input type="email" name="email" value="{{ old('email') }}" placeholder="nama@email.com" required
                         class="w-full px-5 py-4 rounded-2xl bg-[#FFEFF3] border-2 border-transparent focus:border-[#CAA59C] focus:bg-white text-[#68575E] outline-none transition-all duration-300 shadow-sm">
                 </div>
 
