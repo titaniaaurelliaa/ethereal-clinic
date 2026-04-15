@@ -9,18 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
-        });
-    }
+public function up(): void
+{
+    Schema::create('users', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('email')->unique();
+        $table->timestamp('email_verified_at')->nullable();
+        $table->string('password');
+        
+        // Tambahkan baris ini: Default role adalah 'pasien'
+        $table->enum('role', ['admin', 'pasien'])->default('pasien');
+        
+        $table->rememberToken();
+        $table->timestamps();
+    });
+
+    // ... sisanya biarkan default
+}
 
     /**
      * Reverse the migrations.

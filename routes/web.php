@@ -1,25 +1,25 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+// Route Tampilan
+Route::get('/', function () { return view('welcome'); });
+Route::get('/login', function () { return view('auth.login'); })->name('login');
+Route::get('/register', function () { return view('auth.register'); })->name('register');
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+// Route Proses Backend
+Route::post('/register', [AuthController::class, 'registerPost'])->name('register.post');
+// throttle:5,1 artinya: maksimal 5 kali percobaan dalam 1 menit
+Route::post('/login', [AuthController::class, 'loginPost'])->name('login.post')->middleware('throttle:5,1');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+// Route Dashboard Admin (Hanya bisa diakses oleh role:admin)
+Route::get('/admin/dashboard', function () {
+    return 'Selamat datang, Tuan Admin!';
+})->name('admin.dashboard')->middleware(['auth', 'role:admin']);
+
+// Route Dashboard Pasien (Hanya bisa diakses oleh role:pasien)
+Route::get('/pasien/dashboard', function () {
+    return 'Selamat datang, Pasien! Silakan mulai konsultasi.';
+})->name('pasien.dashboard')->middleware(['auth', 'role:pasien']);
