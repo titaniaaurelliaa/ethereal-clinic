@@ -18,5 +18,15 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password123'), // Password admin
             'role' => 'admin',
         ]);
+
+        // Panggil semua seeder sesuai urutan (tabel parent dulu)
+        $this->call([
+            SkinProblemsSeeder::class,
+            SymptomsSeeder::class,
+            ProblemSymptomSeeder::class,
+            ProductsSeeder::class,
+            TreatmentsSeeder::class,
+            ProblemTreatmentSeeder::class,
+        ]);
     }
 }
