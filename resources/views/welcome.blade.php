@@ -1,96 +1,66 @@
-<!DOCTYPE html>
-<html lang="id">
-<html lang="id" class="scroll-smooth"></html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Ethereal Clinic</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
-</head>
+@extends('layouts.public')
 
-<body class="bg-[#FFEFF3] min-h-screen"> 
-    <nav class="sticky top-0 z-50 w-full px-6 py-4 md:px-16 flex items-center justify-between bg-white/80 backdrop-blur-md shadow-sm transition-all duration-300">
-        
-        <div class="flex flex-1">
-            <a href="/" class="text-xl md:text-2xl font-extrabold text-[#8A3033] tracking-tight">
-                The Ethereal Clinic
-            </a>
-        </div>
+@section('title', 'Beranda - The Ethereal Clinic')
 
-        <div class="hidden md:flex items-center space-x-10 text-sm font-medium">
-            <a href="#beranda" class="text-gray-500 hover:text-[#8A3033] transition-colors">Beranda</a>
-            <a href="#layanan" class="text-gray-500 hover:text-[#8A3033] transition-colors">Layanan</a>
-            <a href="#tentang" class="text-gray-500 hover:text-[#8A3033] transition-colors">Tentang</a>
-            <a href="#kontak" class="text-gray-500 hover:text-[#8A3033] transition-colors">Kontak</a>
-        </div>
+@section('content')
 
-        <div class="flex flex-1 justify-end items-center">
-            <a href="/register" class="px-6 py-2.5 bg-gradient-to-r from-[#7B5556] to-[#EFBDBD] text-white font-bold text-sm rounded-full shadow-md shadow-[#7B5556]/20 hover:scale-105 hover:shadow-lg active:scale-95 transition-all duration-300">
-                Coba Gratis
-            </a>
-        </div>
-
-    </nav>
-
-    <main id="beranda" class="max-w-7xl mx-auto px-6 lg:px-16 py-10 lg:py-16">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            
-            <div class="max-w-xl z-10">
-                <div class="inline-flex items-center px-4 py-1.5 rounded-full bg-[#FAE2EA] text-[#68575E] text-xs font-bold tracking-wider mb-6">
-                    CERTAINTY FACTOR POWERED
-                </div>
-
-                <h1 class="text-5xl lg:text-[64px] font-extrabold text-[#72544E] leading-[1.1] tracking-tight mb-6">
-                    Pahami Kulitmu, <br>
-                    Temukan <br>
-                    Solusinya
-                </h1>
+    <div class="bg-[#FFEFF3] w-full">
+        <main id="beranda" class="max-w-7xl mx-auto px-6 lg:px-16 py-10 lg:py-16">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 
-                <p class="text-lg text-[#68575E] leading-relaxed mb-10 max-w-md">
-                    Sistem pakar kami menggunakan algoritma Certainty Factor untuk memberikan akurasi diagnosis kesehatan kulit yang terpercaya, layaknya berkonsultasi langsung dengan ahli dermatologi.
-                </p>
-
-                <div class="flex flex-wrap items-center gap-4">
-                    <a href="/login" class="px-8 py-3.5 rounded-full bg-[#68575E] text-white font-semibold hover:bg-[#52444a] transition-colors shadow-md">
-                        Mulai Konsultasi
-                    </a>
-                    <a href="/login" class="px-10 py-3.5 rounded-full bg-transparent border-[1.5px] border-[#CAA59C] text-[#68575E] font-semibold hover:bg-[#FAE2EA] transition-colors">
-                        Login
-                    </a>
-                </div>
-            </div>
-
-            <div class="relative w-full flex justify-end">
-                <div class="relative w-[90%] md:w-[85%] lg:w-[480px]">
-                    
-                    <img 
-                        src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                        alt="Skincare Products" 
-                        class="w-full h-auto object-cover rounded-[40px] shadow-2xl"
-                    >
-
-                    <div class="absolute -bottom-8 -left-8 md:-left-12 bg-white/95 backdrop-blur-sm px-6 py-4 rounded-3xl shadow-[0_20px_50px_rgba(114,84,78,0.15)] flex items-center gap-4 border border-white">
-                        <div class="w-10 h-10 rounded-full bg-[#e8eed2] flex items-center justify-center text-[#5B5D4A]">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-[#333333] font-bold text-lg leading-tight">Akurasi 98%</p>
-                            <p class="text-gray-500 text-xs font-medium">Hasil Validasi Pakar</p>
-                        </div>
+                <div class="max-w-xl z-10">
+                    <div class="inline-flex items-center px-4 py-1.5 rounded-full bg-[#FAE2EA] text-[#68575E] text-xs font-bold tracking-wider mb-6">
+                        CERTAINTY FACTOR POWERED
                     </div>
 
-                </div>
-            </div>
+                    <h1 class="text-5xl lg:text-[64px] font-extrabold text-[#72544E] leading-[1.1] tracking-tight mb-6">
+                        Pahami Kulitmu, <br>
+                        Temukan <br>
+                        Solusinya
+                    </h1>
+                    
+                    <p class="text-lg text-[#68575E] leading-relaxed mb-10 max-w-md">
+                        Sistem pakar kami menggunakan algoritma Certainty Factor untuk memberikan akurasi diagnosis kesehatan kulit yang terpercaya, layaknya berkonsultasi langsung dengan ahli dermatologi.
+                    </p>
 
-        </div>
-    </main>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <a href="/login" class="px-8 py-3.5 rounded-full bg-[#68575E] text-white font-semibold hover:bg-[#52444a] transition-colors shadow-md">
+                            Mulai Konsultasi
+                        </a>
+                        <a href="/login" class="px-10 py-3.5 rounded-full bg-transparent border-[1.5px] border-[#CAA59C] text-[#68575E] font-semibold hover:bg-[#FAE2EA] transition-colors">
+                            Login
+                        </a>
+                    </div>
+                </div>
+
+                <div class="relative w-full flex justify-end">
+                    <div class="relative w-[90%] md:w-[85%] lg:w-[480px]">
+                        
+                        <img 
+                            src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                            alt="Skincare Products" 
+                            class="w-full h-auto object-cover rounded-[40px] shadow-2xl"
+                        >
+
+                        <div class="absolute -bottom-8 -left-8 md:-left-12 bg-white/95 backdrop-blur-sm px-6 py-4 rounded-3xl shadow-[0_20px_50px_rgba(114,84,78,0.15)] flex items-center gap-4 border border-white">
+                            <div class="w-10 h-10 rounded-full bg-[#e8eed2] flex items-center justify-center text-[#5B5D4A]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[#333333] font-bold text-lg leading-tight">Akurasi 98%</p>
+                                <p class="text-gray-500 text-xs font-medium">Hasil Validasi Pakar</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
     <section id="layanan" class="w-full bg-[#FFEDE9] py-20 lg:py-28 px-6 lg:px-16">
         <div class="max-w-7xl mx-auto">
             
@@ -145,161 +115,90 @@
             </div>
         </div>
     </section>
-    <section id="tentang" class="max-w-7xl mx-auto px-6 lg:px-16 py-20 lg:py-28">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            
-            <div class="relative w-full max-w-md mx-auto lg:mx-0 h-[380px] sm:h-[450px]">
-                <img 
-                    src="https://images.unsplash.com/photo-1570194065650-d99fb4b8f7fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
-                    alt="Skincare Cream" 
-                    class="absolute top-0 right-0 w-[65%] h-[75%] object-cover rounded-[40px] shadow-lg"
-                >
-                <img 
-                    src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
-                    alt="Skincare Serum" 
-                    class="absolute bottom-0 left-0 w-[65%] h-[75%] object-cover rounded-[40px] shadow-2xl border-8 border-[#FFEFF3]"
-                >
-            </div>
 
-            <div>
-                <h2 class="text-3xl lg:text-4xl font-extrabold text-[#68575E] tracking-tight mb-10">
-                    Mengapa Memilih Kami?
-                </h2>
+    <div class="bg-[#FFEFF3] w-full pb-20">
+        <section id="tentang" class="max-w-7xl mx-auto px-6 lg:px-16 py-20 lg:py-28">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                
+                <div class="relative w-full max-w-md mx-auto lg:mx-0 h-[380px] sm:h-[450px]">
+                    <img 
+                        src="https://images.unsplash.com/photo-1570194065650-d99fb4b8f7fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                        alt="Skincare Cream" 
+                        class="absolute top-0 right-0 w-[65%] h-[75%] object-cover rounded-[40px] shadow-lg"
+                    >
+                    <img 
+                        src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                        alt="Skincare Serum" 
+                        class="absolute bottom-0 left-0 w-[65%] h-[75%] object-cover rounded-[40px] shadow-2xl border-8 border-[#FFEFF3]"
+                    >
+                </div>
 
-                <div class="space-y-8">
-                    <div class="flex gap-5">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#FFE2DB] flex items-center justify-center text-[#68575E]">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1120.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-bold text-[#68575E] mb-1.5">Akurasi Berstandar Medis</h4>
-                            <p class="text-[#72544E] text-sm leading-relaxed">
-                                Algoritma Certainty Factor kami meminimalisir ketidakpastian dalam diagnosa mandiri.
-                            </p>
-                        </div>
-                    </div>
+                <div>
+                    <h2 class="text-3xl lg:text-4xl font-extrabold text-[#68575E] tracking-tight mb-10">
+                        Mengapa Memilih Kami?
+                    </h2>
 
-                    <div class="flex gap-5">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#FFE2DB] flex items-center justify-center text-[#68575E]">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
+                    <div class="space-y-8">
+                        <div class="flex gap-5">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#FFE2DB] flex items-center justify-center text-[#68575E]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1120.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-[#68575E] mb-1.5">Akurasi Berstandar Medis</h4>
+                                <p class="text-[#72544E] text-sm leading-relaxed">
+                                    Algoritma Certainty Factor kami meminimalisir ketidakpastian dalam diagnosa mandiri.
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <h4 class="text-lg font-bold text-[#68575E] mb-1.5">Cepat & Real-time</h4>
-                            <p class="text-[#72544E] text-sm leading-relaxed">
-                                Dapatkan hasil diagnosa hanya dalam hitungan detik tanpa perlu mengantre di klinik.
-                            </p>
-                        </div>
-                    </div>
 
-                    <div class="flex gap-5">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#FFE2DB] flex items-center justify-center text-[#68575E]">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
+                        <div class="flex gap-5">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#FFE2DB] flex items-center justify-center text-[#68575E]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-[#68575E] mb-1.5">Cepat & Real-time</h4>
+                                <p class="text-[#72544E] text-sm leading-relaxed">
+                                    Dapatkan hasil diagnosa hanya dalam hitungan detik tanpa perlu mengantre di klinik.
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <h4 class="text-lg font-bold text-[#68575E] mb-1.5">Rekomendasi Terpercaya</h4>
-                            <p class="text-[#72544E] text-sm leading-relaxed">
-                                Saran produk yang netral dan berbasis pada kebutuhan molekuler kulit Anda.
-                            </p>
+
+                        <div class="flex gap-5">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#FFE2DB] flex items-center justify-center text-[#68575E]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-[#68575E] mb-1.5">Rekomendasi Terpercaya</h4>
+                                <p class="text-[#72544E] text-sm leading-relaxed">
+                                    Saran produk yang netral dan berbasis pada kebutuhan molekuler kulit Anda.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="mt-24 lg:mt-32 w-full bg-[#68575E] rounded-[40px] px-6 py-16 md:py-24 text-center shadow-2xl relative overflow-hidden">
-            
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-white/10 rounded-full blur-3xl -z-0"></div>
-
-            <div class="relative z-10 max-w-2xl mx-auto">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6 leading-tight">
-                    Siap Mengenal Kulitmu Lebih Dalam?
-                </h2>
-                <p class="text-[#E4E4CC] text-sm md:text-base leading-relaxed mb-10 max-w-lg mx-auto opacity-90">
-                    Bergabunglah dengan ribuan pengguna yang telah menemukan rutinitas skincare yang tepat melalui sistem kami.
-                </p>
-                <a href="/login" class="inline-block px-10 py-4 rounded-full bg-[#FFEFF3] text-[#68575E] font-bold hover:bg-white hover:scale-105 transition-all shadow-lg">
-                    Mulai Konsultasi Gratis
-                </a>
+            <div class="mt-24 lg:mt-32 w-full bg-[#68575E] rounded-[40px] px-6 py-16 md:py-24 text-center shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-white/10 rounded-full blur-3xl -z-0"></div>
+                <div class="relative z-10 max-w-2xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6 leading-tight">
+                        Siap Mengenal Kulitmu Lebih Dalam?
+                    </h2>
+                    <p class="text-[#E4E4CC] text-sm md:text-base leading-relaxed mb-10 max-w-lg mx-auto opacity-90">
+                        Bergabunglah dengan ribuan pengguna yang telah menemukan rutinitas skincare yang tepat melalui sistem kami.
+                    </p>
+                    <a href="/login" class="inline-block px-10 py-4 rounded-full bg-[#FFEFF3] text-[#68575E] font-bold hover:bg-white hover:scale-105 transition-all shadow-lg">
+                        Mulai Konsultasi Gratis
+                    </a>
+                </div>
             </div>
-        </div>
-    </section>
-
-<footer id="kontak" class="bg-white pt-20 pb-10 px-6 lg:px-16 border-t border-[#FFE2DB]">
-    <div class="max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-            
-            <div class="space-y-6">
-                <h2 class="text-2xl font-extrabold text-[#72544E] tracking-tight">
-                    The Ethereal Clinic
-                </h2>
-                <p class="text-[#68575E] text-sm leading-relaxed opacity-90">
-                    Membawa keahlian dermatologi ke genggaman tangan Anda melalui teknologi kecerdasan buatan terdepan.
-                </p>
-              <div class="flex space-x-4">
-             <a href="#" class="w-8 h-8 rounded-full bg-[#FFE2DB] flex items-center justify-center text-[#72544E] hover:opacity-80 transition-opacity">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-            </a>
-    
-            <a href="#" class="w-8 h-8 rounded-full bg-[#FFE2DB] flex items-center justify-center text-[#72544E] hover:opacity-80 transition-opacity">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
-            </a>
-         </div>
-            </div>
-
-            <div>
-                <h4 class="text-[#72544E] font-bold mb-6">Menu Utama</h4>
-                <ul class="space-y-4 text-sm text-[#68575E]">
-                    <li><a href="#" class="hover:text-[#72544E] transition-colors">Beranda</a></li>
-                    <li><a href="#" class="hover:text-[#72544E] transition-colors">Proses Diagnosa</a></li>
-                    <li><a href="#" class="hover:text-[#72544E] transition-colors">Keunggulan</a></li>
-                    <li><a href="#" class="hover:text-[#72544E] transition-colors">Testimoni</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="text-[#72544E] font-bold mb-6">Tentang Kami</h4>
-                <ul class="space-y-4 text-sm text-[#68575E]">
-                    <li><a href="#" class="hover:text-[#72544E] transition-colors">Visi & Misi</a></li>
-                    <li><a href="#" class="hover:text-[#72544E] transition-colors">Tim Ahli</a></li>
-                    <li><a href="#" class="hover:text-[#72544E] transition-colors">Kebijakan Privasi</a></li>
-                    <li><a href="#" class="hover:text-[#72544E] transition-colors">Syarat & Ketentuan</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="text-[#72544E] font-bold mb-6">Kontak</h4>
-                <ul class="space-y-4 text-sm text-[#68575E]">
-                    <li class="flex items-start gap-3">
-                        <span class="text-[#72544E]">📍</span>
-                        <span>Jl. Serenity No. 88, <br>Jakarta Selatan</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="text-[#72544E]">📞</span>
-                        <span>+62 21 555 1234</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="text-[#72544E]">✉️</span>
-                        <span>hello@etherealclinic.id</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="pt-8 border-t border-[#FFE2DB] flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#68575E]">
-            <p>© 2026 The Ethereal Clinic. All rights reserved.</p>
-            <div class="flex space-x-6">
-                <a href="#" class="hover:text-[#72544E] transition-colors">Cookie Policy</a>
-                <a href="#" class="hover:text-[#72544E] transition-colors">Legal Disclaimer</a>
-            </div>
-        </div>
+        </section>
     </div>
-</footer>
 
-</body>
-</html>
+@endsection
