@@ -3,23 +3,56 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
-// Route Tampilan
-Route::get('/', function () { return view('welcome'); });
-Route::get('/login', function () { return view('auth.login'); })->name('login');
-Route::get('/register', function () { return view('auth.register'); })->name('register');
+// ==========================================
+// 1. ROUTE LANDING PAGE
+// ==========================================
+Route::get('/', function () { 
+    return view('welcome'); 
+});
+// Rute Halaman Tentang Kami
+Route::get('/tentang-kami', function () {
+    return view('tentang-kami');
+})->name('tentang-kami');
+// Rute Kebijakan Privasi
+Route::get('/kebijakan-privasi', function () {
+    return view('kebijakan-privasi');
+})->name('kebijakan.privasi');
+// Rute Syarat & Ketentuan
+Route::get('/syarat-ketentuan', function () {
+    return view('syarat-ketentuan');
+})->name('syarat.ketentuan');
 
-// Route Proses Backend
+
+// ==========================================
+// 2. ROUTE OTENTIKASI (LOGIN & REGISTER)
+// ==========================================
+Route::get('/login', function () { 
+    return view('auth.login'); 
+})->name('login');
+
+Route::get('/register', function () { 
+    return view('auth.register'); 
+})->name('register');
+
+// Proses Backend Auth
 Route::post('/register', [AuthController::class, 'registerPost'])->name('register.post');
-// throttle:5,1 artinya: maksimal 5 kali percobaan dalam 1 menit
 Route::post('/login', [AuthController::class, 'loginPost'])->name('login.post')->middleware('throttle:5,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Route Dashboard Admin (Hanya bisa diakses oleh role:admin)
+
+// ==========================================
+// 3. ROUTE DASHBOARD PASIEN
+// ==========================================
+// Memanggil file resources/views/pasien/dashboard.blade.php
+Route::get('/pasien/dashboard', function () {
+    return view('pasien.dashboard');
+})->name('pasien.dashboard')->middleware(['auth', 'role:pasien']);
+
+
+// ==========================================
+// 4. ROUTE DASHBOARD ADMIN
+// ==========================================
+// Sementara masih return teks, nanti kita buatkan view-nya juga
 Route::get('/admin/dashboard', function () {
     return 'Selamat datang, Tuan Admin!';
 })->name('admin.dashboard')->middleware(['auth', 'role:admin']);
-
-// Route Dashboard Pasien (Hanya bisa diakses oleh role:pasien)
-Route::get('/pasien/dashboard', function () {
-    return 'Selamat datang, Pasien! Silakan mulai konsultasi.';
-})->name('pasien.dashboard')->middleware(['auth', 'role:pasien']);
