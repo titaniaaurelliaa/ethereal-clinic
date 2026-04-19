@@ -54,5 +54,5 @@ Route::get('/pasien/dashboard', function () {
 // ==========================================
 // Sementara masih return teks, nanti kita buatkan view-nya juga
 Route::get('/admin/dashboard', function () {
-    return 'Selamat datang, Tuan Admin!';
+    return view('admin.dashboard');
 })->name('admin.dashboard')->middleware(['auth', 'role:admin']);
