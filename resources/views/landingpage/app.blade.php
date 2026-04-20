@@ -10,13 +10,13 @@
 </head>
 <body class="bg-[#FAFAFA] text-[#68575E] antialiased">
 
-    @include('layouts.navbar')
+    @include('landingpage.navbar')
 
     <main>
         @yield('content')
     </main>
 
-    @include('layouts.footer')
+    @include('landingpage.footer')
 
 </body>
 </html>
