@@ -1,4 +1,4 @@
-@extends('layouts.public')
+@extends('landingpage.app')
 
 @section('title', 'Beranda - The Ethereal Clinic')
 

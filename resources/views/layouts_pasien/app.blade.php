@@ -18,14 +18,16 @@
 
     <div class="w-full min-h-screen flex flex-col md:flex-row">
 
-        @include('layouts.sidebar')
+        @include('layouts_pasien.sidebar')
 
         <div class="flex-1 flex flex-col">
             
-            @include('layouts.app-navbar')
+            @include('layouts_pasien.navbar')
 
-            <main class="flex-1 overflow-y-auto bg-white/50 p-6 md:p-8 lg:p-12 relative">
-                @yield('content')
+            <main class="flex-1 overflow-y-auto bg-white/50 relative flex justify-center">
+                <div class="w-full max-w-6xl p-4 md:p-6 lg:p-10">
+                    @yield('content')
+                </div>
             </main>
 
         </div>
@@ -34,4 +36,3 @@
 
 </body>
 </html>
-

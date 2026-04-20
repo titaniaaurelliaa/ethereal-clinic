@@ -1,4 +1,4 @@
-@extends('layouts.public')
+@extends('landingpage.app')
 
 @section('title', 'Kebijakan Privasi - The Ethereal Clinic')
 
