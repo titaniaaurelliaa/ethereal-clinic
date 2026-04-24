@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfilController;
 
 // ==========================================
 // 1. ROUTE LANDING PAGE
@@ -41,12 +42,20 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 // ==========================================
-// 3. ROUTE DASHBOARD PASIEN
+// 3. ROUTE  PASIEN
 // ==========================================
 // Memanggil file resources/views/pasien/dashboard.blade.php
 Route::get('/pasien/dashboard', function () {
     return view('pasien.dashboard');
 })->name('pasien.dashboard')->middleware(['auth', 'role:pasien']);
+// Memanggil file profil pasien
+Route::get('/pasien/profil', function () {
+    return view('pasien.profil'); // Sesuaikan dengan lokasi file blade profilmu
+})->name('profil.index')->middleware(['auth', 'role:pasien']);
+Route::put('/pasien/profil/update', [ProfilController::class, 'update'])->name('profil.update')->middleware(['auth', 'role:pasien']);
+// Rute untuk memproses penghapusan akun
+Route::delete('/pasien/profil/hapus', [ProfilController::class, 'destroy'])->name('profil.destroy')->middleware(['auth', 'role:pasien']);
+
 
 
 // ==========================================
