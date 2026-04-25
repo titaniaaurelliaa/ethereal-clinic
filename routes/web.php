@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfilController;
-use App\Http\Controllers\Admin\Profile_ADMController;
+use App\Http\Controllers\Profile_ADMController;
 
 // ==========================================
 // 1. ROUTE LANDING PAGE
