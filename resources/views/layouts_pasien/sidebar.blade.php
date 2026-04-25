@@ -17,8 +17,8 @@
 
     <div class="py-6 border-b border-[#E1E3DE]/30 overflow-hidden">
         <div class="flex items-center px-4">
-            <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-[#7B5556]/20 shrink-0 shadow-sm">
-                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'Pasien') }}&background=68575E&color=fff" alt="Profile" class="w-full h-full object-cover">
+            <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-[#7B5556]/20 shrink-0 shadow-sm bg-white">
+                <img src="{{ Auth::user()->avatar ? asset('storage/avatars/' . Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'Pasien') . '&background=68575E&color=fff' }}" alt="Profile" class="w-full h-full object-cover">
             </div>
             <div class="ml-3 sidebar-text whitespace-nowrap">
                 <p class="text-base font-bold text-[#5D605C]">{{ Auth::user() ? explode(' ', Auth::user()->name)[0] : 'Pasien' }}</p>
@@ -28,28 +28,28 @@
     </div>
 
     <nav class="flex-1 py-4 px-4 space-y-2 overflow-hidden">
-        <a href="{{ route('pasien.dashboard') ?? '#' }}" class="flex items-center px-3 py-3 bg-[#FFEFF3] text-[#7B5556] rounded-xl font-semibold transition-colors group" title="Dashboard">
+        <a href="{{ route('pasien.dashboard') }}" class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('pasien.dashboard') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}" title="Dashboard">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
             <span class="ml-3 whitespace-nowrap sidebar-text">Dashboard</span>
         </a>
 
-        <a href="#" class="flex items-center px-3 py-3 text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] rounded-xl font-medium transition-colors group" title="Konsultasi">
+        <a href="#" class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('analisis.*') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}" title="Konsultasi">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
             </svg>
             <span class="ml-3 whitespace-nowrap sidebar-text">Analisis</span>
         </a>
 
-        <a href="#" class="flex items-center px-3 py-3 text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] rounded-xl font-medium transition-colors group" title="Riwayat">
+        <a href="#" class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('riwayat.*') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}" title="Riwayat">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span class="ml-3 whitespace-nowrap sidebar-text">Riwayat</span>
         </a>
 
-        <a href="#" class="flex items-center px-3 py-3 text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] rounded-xl font-medium transition-colors group" title="Profil">
+        <a href="{{ route('profil.index') }}" class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('profil.index') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}" title="Profil">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
