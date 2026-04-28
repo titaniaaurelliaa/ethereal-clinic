@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Profile_ADMController;
 use App\Http\Controllers\Dashboard_ADMController;
+use App\Http\Controllers\SkinProblemController;
 
 // ==========================================
 // 1. ROUTE LANDING PAGE
@@ -70,4 +71,23 @@ Route::get('/admin/dashboard', [Dashboard_ADMController::class, 'index'])
 // Profile Admin (tetap dipertahankan)
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/profile', [Profile_ADMController::class, 'index'])->name('profile');
+});
+
+// ==========================================
+// DATA & CRUD MASALAH KULIT
+// ==========================================
+
+// Grouping admin agar rapi
+Route::prefix('admin')->group(function () {
+    
+    // Route Utama CRUD Skin Problems
+    Route::resource('skin-problems', SkinProblemController::class)->names([
+        'index'   => 'skin-problems.index',
+        'create'  => 'skin-problems.create',
+        'store'   => 'skin-problems.store',
+        'edit'    => 'skin-problems.edit',
+        'update'  => 'skin-problems.update',
+        'destroy' => 'skin-problems.destroy',
+    ]);
+
 });

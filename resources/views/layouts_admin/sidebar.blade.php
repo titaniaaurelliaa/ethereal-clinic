@@ -1,5 +1,5 @@
 <aside id="desktopSidebar" class="flex flex-col w-64 bg-white border-r border-[#E1E3DE]/60 min-h-screen transition-all duration-300 relative z-40 shrink-0">
-    
+
     <!-- Tombol Toggle dengan Icon Garis 3 -->
     <button id="toggleSidebar" class="absolute -right-3.5 top-8 w-7 h-7 bg-white border border-[#E1E3DE] rounded-full flex items-center justify-center text-[#68575E] hover:text-[#7B5556] shadow-md z-50 transition-all hover:scale-110 focus:outline-none">
         <svg id="toggleIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -60,7 +60,7 @@
         </a>
 
         <!-- Data Masalah Kulit -->
-        <a href="#" class="flex items-center px-3 py-3 rounded-xl transition-colors group text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium" title="Data Masalah Kulit">
+        <a href="{{ route('skin-problems.index') }}" class="flex items-center px-3 py-3 rounded-xl transition-colors group text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium" title="Data Masalah Kulit">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -108,7 +108,7 @@
             </svg>
             <span class="ml-3 whitespace-nowrap sidebar-text">Logout</span>
         </button>
-        
+
         <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="hidden">
             @csrf
         </form>
@@ -149,80 +149,80 @@
         z-index: 40;
         box-shadow: 2px 0 10px rgba(0,0,0,0.05);
     }
-    
+
     /* Main content - beri margin kiri sesuai lebar sidebar */
     main, .main-content, .content-wrapper {
         margin-left: 256px;
         transition: margin-left 0.3s ease-in-out;
     }
-    
+
     /* Sidebar Collapsed State */
     #desktopSidebar.w-20 {
         width: 80px !important;
     }
-    
+
     #desktopSidebar.w-20 .sidebar-text {
         display: none;
     }
-    
+
     #desktopSidebar.w-20 .px-4 {
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
     }
-    
+
     #desktopSidebar.w-20 .flex.items-center.px-4 {
         justify-content: center;
     }
-    
+
     #desktopSidebar.w-20 .ml-3 {
         margin-left: 0;
     }
-    
+
     #desktopSidebar.w-20 .py-6 .w-12 {
         margin: 0 auto;
     }
-    
+
     #desktopSidebar.w-20 nav a {
         justify-content: center;
         padding-left: 0;
         padding-right: 0;
     }
-    
+
     #desktopSidebar.w-20 nav a svg {
         margin-right: 0;
     }
-    
+
     #desktopSidebar.w-20 nav a .ml-3 {
         display: none;
     }
-    
+
     /* Main content saat sidebar collapsed */
     #desktopSidebar.w-20 ~ main,
     #desktopSidebar.w-20 ~ .main-content,
     #desktopSidebar.w-20 ~ .content-wrapper {
         margin-left: 80px !important;
     }
-    
+
     /* Tombol toggle selalu terlihat */
     #toggleSidebar {
         cursor: pointer;
     }
-    
+
     /* Scroll untuk menu jika terlalu panjang */
     nav {
         overflow-y: auto;
         scrollbar-width: thin;
     }
-    
+
     nav::-webkit-scrollbar {
         width: 4px;
     }
-    
+
     nav::-webkit-scrollbar-track {
         background: #f1f1f1;
         border-radius: 10px;
     }
-    
+
     nav::-webkit-scrollbar-thumb {
         background: #E1E3DE;
         border-radius: 10px;
@@ -238,10 +238,10 @@
         const sidebarTexts = document.querySelectorAll('.sidebar-text');
         const sidebarLogo = document.getElementById('sidebarLogo');
         const sidebarLogoMini = document.getElementById('sidebarLogoMini');
-        
+
         // Cek local storage untuk status sidebar
         const isSidebarCollapsed = localStorage.getItem('adminSidebarCollapsed') === 'true';
-        
+
         // Fungsi untuk update margin main content
         function updateMainContentMargin() {
             const mainContent = document.querySelector('main') || document.querySelector('.main-content') || document.querySelector('.content-wrapper');
@@ -253,7 +253,7 @@
                 }
             }
         }
-        
+
         // Set initial state berdasarkan local storage
         if (isSidebarCollapsed) {
             sidebar.classList.add('w-20');
@@ -272,7 +272,7 @@
         if (toggleBtn) {
             toggleBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                
+
                 if (sidebar.classList.contains('w-64')) {
                     // Collapse sidebar
                     sidebar.classList.remove('w-64');
@@ -308,10 +308,10 @@
         const cancelLogout = document.getElementById('cancelLogout');
         const confirmLogout = document.getElementById('confirmLogout');
         const logoutForm = document.getElementById('logoutForm');
-        
+
         if (logoutBtn && logoutModal) {
             const modalContent = logoutModal.querySelector('.bg-white');
-            
+
             function openModal() {
                 logoutModal.classList.remove('hidden');
                 setTimeout(() => {
@@ -321,7 +321,7 @@
                     }
                 }, 10);
             }
-            
+
             function closeModal() {
                 if (modalContent) {
                     modalContent.classList.remove('scale-100');
@@ -331,19 +331,19 @@
                     logoutModal.classList.add('hidden');
                 }, 200);
             }
-            
+
             logoutBtn.addEventListener('click', openModal);
-            
+
             if (cancelLogout) {
                 cancelLogout.addEventListener('click', closeModal);
             }
-            
+
             if (confirmLogout && logoutForm) {
                 confirmLogout.addEventListener('click', () => {
                     logoutForm.submit();
                 });
             }
-            
+
             logoutModal.addEventListener('click', (e) => {
                 if (e.target === logoutModal) {
                     closeModal();
