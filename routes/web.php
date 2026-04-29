@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Profile_ADMController;
 use App\Http\Controllers\Dashboard_ADMController;
 use App\Http\Controllers\SkinProblemController;
+use App\Http\Controllers\dataGejalaController;
 
 // ==========================================
 // 1. ROUTE LANDING PAGE
@@ -89,5 +90,21 @@ Route::prefix('admin')->group(function () {
         'update'  => 'skin-problems.update',
         'destroy' => 'skin-problems.destroy',
     ]);
-
 });
+
+// ==========================================
+// DATA & CRUD GEJALA / SYMPTOMS
+// ==========================================
+
+Route::prefix('admin')->group(function () {
+
+    Route::resource('symptoms', dataGejalaController::class)->names([
+        'index'   => 'symptoms.index',
+        'create'  => 'symptoms.create',
+        'store'   => 'symptoms.store',
+        'edit'    => 'symptoms.edit',
+        'update'  => 'symptoms.update',
+        'destroy' => 'symptoms.destroy',
+    ]);
+});
+

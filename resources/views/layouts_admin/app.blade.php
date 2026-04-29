@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,24 +9,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #E1E3DE; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #B0B3AE; }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #E1E3DE;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #B0B3AE;
+        }
     </style>
 </head>
+
 <body class="bg-[#FFF7F6] min-h-screen m-0 p-0 overflow-x-hidden">
 
     <div class="w-full min-h-screen flex flex-col md:flex-row">
 
         @include('layouts_admin.sidebar')
 
-        <div class="flex-1 flex flex-col">
-            
+        <div id="adminContent" class="flex-1 flex flex-col transition-all duration-300">
+
             @include('layouts_admin.app-navbar')
 
-            <main class="flex-1 overflow-y-auto bg-white/50 p-6 md:p-8 lg:p-12 relative">
+            <main class="flex-1 overflow-y-auto bg-white/50 px-4 py-6 md:px-6 md:py-8 relative">
                 @yield('content')
             </main>
 
@@ -34,4 +51,5 @@
     </div>
 
 </body>
+
 </html>
