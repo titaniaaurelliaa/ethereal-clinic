@@ -68,7 +68,7 @@
         </a>
 
         <!-- Data Produk -->
-        <a href="#"
+        <a href="{{ route('admin.dataproduk.index') }}"
             class="flex items-center px-3 py-3 rounded-xl transition-colors group text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium"
             title="Data Produk">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"

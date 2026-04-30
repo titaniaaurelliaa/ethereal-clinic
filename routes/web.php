@@ -8,6 +8,7 @@ use App\Http\Controllers\Dashboard_ADMController;
 use App\Http\Controllers\SkinProblemController;
 use App\Http\Controllers\dataGejalaController;
 use App\Http\Controllers\DataTreatment_ADMController;
+use App\Http\Controllers\DataProduct_ADMController;
 
 // ==========================================
 // 1. ROUTE LANDING PAGE
@@ -101,6 +102,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         'edit'    => 'treatment.edit',
         'update'  => 'treatment.update',
         'destroy' => 'treatment.destroy',
+    ]);
+
+    // CRUD Products
+    Route::resource('dataproduk', DataProduct_ADMController::class)->names([
+        'index'   => 'dataproduk.index',
+        'create'  => 'dataproduk.create',
+        'store'   => 'dataproduk.store',
+        'edit'    => 'dataproduk.edit',
+        'update'  => 'dataproduk.update',
+        'destroy' => 'dataproduk.destroy',
     ]);
     
 });
