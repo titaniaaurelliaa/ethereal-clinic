@@ -10,7 +10,7 @@
     </div>
         <!-- Card Tambah Masalah Kulit -->
         <div class="flex flex-col justify-end pb-1"> {{-- justify-end mendorong tombol ke bawah --}}
-            <a href="{{ route('skin-problems.create') }}"
+            <a href="{{ route('admin.skin-problems.create') }}"
                 class="btn d-inline-flex align-items-center justify-content-center gap-2"
                 style="background-color: #9B6B6C;
                         color: white;
@@ -108,7 +108,7 @@
                                 <div class="d-inline-flex align-items-center justify-content-center gap-2">
 
                                     {{-- Tombol Edit --}}
-                                    <a href="{{ route('skin-problems.edit', $item->id) }}"
+                                    <a href="{{ route('admin.skin-problems.edit', $item->id) }}"
                                     class="btn btn-sm btn-white shadow-sm border-0 d-flex align-items-center justify-content-center"
                                     style="width: 35px; height: 35px; border-radius: 8px; background-color: #ffffff;"
                                     title="Edit">
@@ -116,7 +116,7 @@
                                     </a>
 
                                     {{-- Form Hapus --}}
-                                    <form action="{{ route('skin-problems.destroy', $item->id) }}"
+                                    <form action="{{ route('admin.skin-problems.destroy', $item->id) }}"
                                         method="POST"
                                         class="d-contents"> {{-- d-contents menghilangkan pengaruh box form --}}
                                         @csrf

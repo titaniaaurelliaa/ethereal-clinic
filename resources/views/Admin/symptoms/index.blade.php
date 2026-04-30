@@ -88,7 +88,7 @@
             <div class="bg-white p-6 rounded-xl w-96 shadow-lg">
                 <h2 class="text-lg font-bold mb-4">Tambah Gejala</h2>
 
-                <form action="{{ route('symptoms.store') }}" method="POST" onsubmit="return validateAddForm()">
+                <form action="{{ route('admin.symptoms.store') }}" method="POST" onsubmit="return validateAddForm()">
                     @csrf
                     <input type="hidden" name="page" id="addPage" value="{{ request()->get('page', 1) }}">
 

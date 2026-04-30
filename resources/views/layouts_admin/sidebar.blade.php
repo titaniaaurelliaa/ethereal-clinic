@@ -56,7 +56,7 @@
         </a>
 
         <!-- Data Gejala -->
-        <a href="{{ route('symptoms.index') }}"
+        <a href="{{ route('admin.symptoms.index') }}"
             class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('symptoms.*') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}"
             title="Data Gejala">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
@@ -80,7 +80,7 @@
         </a>
 
         <!-- Data Masalah Kulit -->
-        <a href="{{ route('skin-problems.index') }}"
+        <a href="{{ route('admin.skin-problems.index') }}"
             class="flex items-center px-3 py-3 rounded-xl transition-colors group text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium"
             title="Data Masalah Kulit">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
@@ -92,7 +92,7 @@
         </a>
 
         <!-- Data Treatment -->
-        <a href="#"
+        <a href="{{ route('admin.treatment.index') }}"
             class="flex items-center px-3 py-3 rounded-xl transition-colors group text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium"
             title="Data Treatment">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"

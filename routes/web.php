@@ -7,6 +7,7 @@ use App\Http\Controllers\Profile_ADMController;
 use App\Http\Controllers\Dashboard_ADMController;
 use App\Http\Controllers\SkinProblemController;
 use App\Http\Controllers\dataGejalaController;
+use App\Http\Controllers\DataTreatment_ADMController;
 
 // ==========================================
 // 1. ROUTE LANDING PAGE
@@ -61,27 +62,18 @@ Route::delete('/pasien/profil/hapus', [ProfilController::class, 'destroy'])->nam
 
 
 // ==========================================
-// 4. ROUTE DASHBOARD ADMIN (FOKUS DI SINI)
+// 4. ROUTE ADMIN (GROUPING DENGAN MIDDLEWARE)
 // ==========================================
 
-// Dashboard Admin dengan data dari database
-Route::get('/admin/dashboard', [Dashboard_ADMController::class, 'index'])
-    ->name('admin.dashboard')
-    ->middleware(['auth', 'role:admin']);
-
-// Profile Admin (tetap dipertahankan)
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/profile', [Profile_ADMController::class, 'index'])->name('profile');
-});
-
-// ==========================================
-// DATA & CRUD MASALAH KULIT
-// ==========================================
-
-// Grouping admin agar rapi
-Route::prefix('admin')->group(function () {
     
-    // Route Utama CRUD Skin Problems
+    // Dashboard Admin
+    Route::get('/dashboard', [Dashboard_ADMController::class, 'index'])->name('dashboard');
+    
+    // Profile Admin
+    Route::get('/profile', [Profile_ADMController::class, 'index'])->name('profile');
+    
+    // CRUD Skin Problems (Masalah Kulit)
     Route::resource('skin-problems', SkinProblemController::class)->names([
         'index'   => 'skin-problems.index',
         'create'  => 'skin-problems.create',
@@ -90,14 +82,8 @@ Route::prefix('admin')->group(function () {
         'update'  => 'skin-problems.update',
         'destroy' => 'skin-problems.destroy',
     ]);
-});
-
-// ==========================================
-// DATA & CRUD GEJALA / SYMPTOMS
-// ==========================================
-
-Route::prefix('admin')->group(function () {
-
+    
+    // CRUD Gejala / Symptoms
     Route::resource('symptoms', dataGejalaController::class)->names([
         'index'   => 'symptoms.index',
         'create'  => 'symptoms.create',
@@ -106,5 +92,15 @@ Route::prefix('admin')->group(function () {
         'update'  => 'symptoms.update',
         'destroy' => 'symptoms.destroy',
     ]);
+    
+    // CRUD Treatment
+    Route::resource('treatment', DataTreatment_ADMController::class)->names([
+        'index'   => 'treatment.index',
+        'create'  => 'treatment.create',
+        'store'   => 'treatment.store',
+        'edit'    => 'treatment.edit',
+        'update'  => 'treatment.update',
+        'destroy' => 'treatment.destroy',
+    ]);
+    
 });
-

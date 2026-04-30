@@ -4,7 +4,7 @@
 <div class="container-fluid px-4 pb-5">
     {{-- Header Section --}}
     <div class="d-flex align-items-center gap-3 mb-5">
-        <a href="{{ route('skin-problems.index') }}" class="btn btn-white shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; color: #68575E;">
+        <a href="{{ route('admin.skin-problems.index') }}" class="btn btn-white shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; color: #68575E;">
             <i class="fas fa-arrow-left"></i>
         </a>
         <div>
@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="card-body p-5">
-                    <form action="{{ route('skin-problems.store') }}" method="POST">
+                    <form action="{{ route('admin.skin-problems.store') }}" method="POST">
                         @csrf
                         
                         <div class="row g-4">
@@ -62,7 +62,7 @@
 
                         {{-- Action Buttons --}}
                         <div class="d-flex gap-3 justify-content-end mt-5 pt-4 border-top">
-                            <a href="{{ route('skin-problems.index') }}" class="btn btn-link text-decoration-none text-secondary fw-bold px-4">Batal</a>
+                            <a href="{{ route('admin.skin-problems.index') }}" class="btn btn-link text-decoration-none text-secondary fw-bold px-4">Batal</a>
                             <button type="submit" class="btn btn-primary px-5 py-3 shadow-sm" 
                                     style="background-color: #68575E; border: none; border-radius: 12px; font-weight: 600;">
                                 <i class="fas fa-save me-2"></i> Simpan

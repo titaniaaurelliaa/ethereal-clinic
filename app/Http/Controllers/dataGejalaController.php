@@ -33,7 +33,7 @@ class dataGejalaController extends Controller
         // Ambil page dari request, default 1
         $page = $request->input('page', 1);
 
-        return redirect()->route('symptoms.index', ['page' => $page])
+        return redirect()->route('admin.symptoms.index', ['page' => $page])
             ->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -60,7 +60,7 @@ class dataGejalaController extends Controller
         // Ambil page dari request, default 1
         $page = $request->input('page', 1);
 
-        return redirect()->route('symptoms.index', ['page' => $page])
+        return redirect()->route('admin.symptoms.index', ['page' => $page])
             ->with('success', 'Data berhasil diupdate');
     }
 
@@ -72,7 +72,7 @@ class dataGejalaController extends Controller
         // Ambil page dari request, default 1
         $page = $request->input('page', 1);
 
-        return redirect()->route('symptoms.index', ['page' => $page])
+        return redirect()->route('admin.symptoms.index', ['page' => $page])
             ->with('success', 'Data berhasil dihapus');
     }
 }

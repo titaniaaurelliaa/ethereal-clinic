@@ -12,7 +12,6 @@ class TreatmentModel extends Model
         'name',
         'description',
         'category',
-        'icon',
         'priority'
     ];
     
