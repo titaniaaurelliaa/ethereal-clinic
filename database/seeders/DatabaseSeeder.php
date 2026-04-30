@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Administrator',
             'email' => 'admin@etherealclinic.id',
-            'password' => Hash::make('password123'), // Password admin
+            'password' => Hash::make('12345678'), // Password admin
             'role' => 'admin',
         ]);
 

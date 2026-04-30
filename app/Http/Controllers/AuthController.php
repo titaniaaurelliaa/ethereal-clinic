@@ -23,11 +23,7 @@ class AuthController extends Controller
                 'required',
                 'confirmed',
                 Password::min(8) // Minimal 8 karakter
-                    ->letters()  // Harus mengandung huruf
-                    ->mixedCase() // Harus ada huruf besar & kecil
-                    ->numbers()   // Harus mengandung angka
-                    ->symbols()   // Harus ada simbol (misal: @, #, !)
-                    ->uncompromised(), // Mencegah pemakaian password yang pernah bocor di internet (standar keamanan tinggi)
+
             ],
         ]);
 

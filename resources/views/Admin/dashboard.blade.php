@@ -1,274 +1,199 @@
+{{-- resources/views/admin/dashboard.blade.php --}}
 @extends('layouts_admin.app')
 
 @section('title', 'Dashboard Admin')
 
 @section('content')
-<header class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-12">
-    <div>
-        <h1 class="text-3xl md:text-4xl font-semibold text-[#5D605C] tracking-tight">Selamat datang, {{ explode(' ', Auth::user()->name)[0] }}!</h1>
-        <p class="text-[#797B78] mt-3 md:text-lg max-w-2xl leading-relaxed">
-            Perjalanan perawatan kulit personal Anda menunjukkan kemajuan yang positif. Ini adalah ringkasan mingguan Anda.
-        </p>
-    </div>
-</header>
-
-<!-- Stats Grid -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-    <!-- Total Gejala -->
-    <div class="bg-white rounded-[32px] p-6 shadow-sm border border-[#E1E3DE]/50 transition-all hover:shadow-md">
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-full bg-[#EBDBDD] flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#7B5556]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                </svg>
-            </div>
-            <span class="text-[#B0B3AE] text-xs font-medium">Total</span>
-        </div>
-        <h3 class="text-[#797B78] text-sm font-medium mb-1">Data Gejala</h3>
-        <p class="text-3xl font-bold text-[#5D605C]">{{ $totalGejala ?? 24 }}</p>
-        <p class="text-xs text-green-600 mt-2">+{{ $gejalaBaru ?? 3 }} bulan ini</p>
+<div class="p-6">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Dashboard Admin</h1>
+        <p class="text-gray-500 mt-2">Selamat datang di panel administrator The Ethereal Clinic</p>
     </div>
 
-    <!-- Total Konsultasi -->
-    <div class="bg-white rounded-[32px] p-6 shadow-sm border border-[#E1E3DE]/50 transition-all hover:shadow-md">
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-full bg-[#E1E3DE] flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#68575E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-            </div>
-            <span class="text-[#B0B3AE] text-xs font-medium">Total</span>
-        </div>
-        <h3 class="text-[#797B78] text-sm font-medium mb-1">Total Konsultasi</h3>
-        <p class="text-3xl font-bold text-[#5D605C]">{{ $totalKonsultasi ?? 482 }}</p>
-        <p class="text-xs text-green-600 mt-2">+{{ $konsultasiBulanIni ?? 48 }} bulan ini</p>
-    </div>
-
-    <!-- Masalah Kulit -->
-    <div class="bg-white rounded-[32px] p-6 shadow-sm border border-[#E1E3DE]/50 transition-all hover:shadow-md">
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-full bg-[#FFF0ED] flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#7B5556]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-            <span class="text-[#B0B3AE] text-xs font-medium">Total</span>
-        </div>
-        <h3 class="text-[#797B78] text-sm font-medium mb-1">Masalah Kulit</h3>
-        <p class="text-3xl font-bold text-[#5D605C]">{{ $totalMasalahKulit ?? 8 }}</p>
-        <p class="text-xs text-[#797B78] mt-2">Terdeteksi dalam sistem</p>
-    </div>
-
-    <!-- Data Produk -->
-    <div class="bg-white rounded-[32px] p-6 shadow-sm border border-[#E1E3DE]/50 transition-all hover:shadow-md">
-        <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-full bg-[#EBDBDD] flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#7B5556]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-            </div>
-            <span class="text-[#B0B3AE] text-xs font-medium">Total</span>
-        </div>
-        <h3 class="text-[#797B78] text-sm font-medium mb-1">Data Produk</h3>
-        <p class="text-3xl font-bold text-[#5D605C]">{{ $totalProduk ?? 156 }}</p>
-        <p class="text-xs text-green-600 mt-2">+{{ $produkBaru ?? 12 }} bulan ini</p>
-    </div>
-</div>
-
-<!-- Charts Section -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-    <!-- Grafik Gejala Paling Banyak -->
-    <div class="bg-white rounded-[32px] p-6 shadow-sm border border-[#E1E3DE]/50">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-semibold text-[#5D605C]">Gejala Paling Banyak Dikonsultasikan</h3>
-            <span class="text-xs text-[#B0B3AE]">Bulan ini</span>
-        </div>
-        <canvas id="gejalaChart" height="250"></canvas>
-    </div>
-
-    <!-- Grafik Statistik Masalah Kulit Bulanan -->
-    <div class="bg-white rounded-[32px] p-6 shadow-sm border border-[#E1E3DE]/50">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-semibold text-[#5D605C]">Tren Masalah Kulit Bulanan</h3>
-            <select class="text-xs border border-[#E1E3DE] rounded-lg px-2 py-1 text-[#797B78]">
-                <option>2024</option>
-                <option>2023</option>
-            </select>
-        </div>
-        <canvas id="trendChart" height="250"></canvas>
-    </div>
-</div>
-
-<!-- Tabel Konsultasi Bulanan -->
-<div class="bg-white rounded-[32px] p-6 shadow-sm border border-[#E1E3DE]/50 mb-10">
-    <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-semibold text-[#5D605C]">Statistik Konsultasi Per Bulan</h3>
-        <span class="text-xs text-[#B0B3AE]">Tahun 2024</span>
-    </div>
-    <div class="overflow-x-auto">
-        <table class="w-full">
-            <thead>
-                <tr class="border-b border-[#E1E3DE]">
-                    <th class="text-left py-3 text-[#797B78] font-medium">Bulan</th>
-                    <th class="text-left py-3 text-[#797B78] font-medium">Jumlah Konsultasi</th>
-                    <th class="text-left py-3 text-[#797B78] font-medium">Persentase</th>
-                    <th class="text-left py-3 text-[#797B78] font-medium">Trend</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="border-b border-[#F0F0EE]">
-                    <td class="py-3 font-medium text-[#5D605C]">Januari</td>
-                    <td class="py-3 text-[#5D605C]">342</td>
-                    <td class="py-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-24 bg-[#E1E3DE] rounded-full h-2">
-                                <div class="bg-[#7B5556] rounded-full h-2" style="width: 65%"></div>
-                            </div>
-                            <span class="text-xs text-[#797B78]">65%</span>
-                        </div>
-                    </td>
-                    <td class="py-3 text-green-600 text-sm">↑ 12%</td>
-                </tr>
-                <tr class="border-b border-[#F0F0EE]">
-                    <td class="py-3 font-medium text-[#5D605C]">Februari</td>
-                    <td class="py-3 text-[#5D605C]">398</td>
-                    <td class="py-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-24 bg-[#E1E3DE] rounded-full h-2">
-                                <div class="bg-[#7B5556] rounded-full h-2" style="width: 75%"></div>
-                            </div>
-                            <span class="text-xs text-[#797B78]">75%</span>
-                        </div>
-                    </td>
-                    <td class="py-3 text-green-600 text-sm">↑ 16%</td>
-                </tr>
-                <tr class="border-b border-[#F0F0EE]">
-                    <td class="py-3 font-medium text-[#5D605C]">Maret</td>
-                    <td class="py-3 text-[#5D605C]">456</td>
-                    <td class="py-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-24 bg-[#E1E3DE] rounded-full h-2">
-                                <div class="bg-[#7B5556] rounded-full h-2" style="width: 86%"></div>
-                            </div>
-                            <span class="text-xs text-[#797B78]">86%</span>
-                        </div>
-                    </td>
-                    <td class="py-3 text-green-600 text-sm">↑ 14%</td>
-                </tr>
-                <tr class="border-b border-[#F0F0EE]">
-                    <td class="py-3 font-medium text-[#5D605C]">April</td>
-                    <td class="py-3 text-[#5D605C]">482</td>
-                    <td class="py-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-24 bg-[#E1E3DE] rounded-full h-2">
-                                <div class="bg-[#7B5556] rounded-full h-2" style="width: 91%"></div>
-                            </div>
-                            <span class="text-xs text-[#797B78]">91%</span>
-                        </div>
-                    </td>
-                    <td class="py-3 text-green-600 text-sm">↑ 5%</td>
-                </tr>
-                <tr>
-                    <td class="py-3 font-medium text-[#5D605C]">Mei</td>
-                    <td class="py-3 text-[#5D605C]">520</td>
-                    <td class="py-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-24 bg-[#E1E3DE] rounded-full h-2">
-                                <div class="bg-[#7B5556] rounded-full h-2" style="width: 98%"></div>
-                            </div>
-                            <span class="text-xs text-[#797B78]">98%</span>
-                        </div>
-                    </td>
-                    <td class="py-3 text-green-600 text-sm">↑ 8%</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Trending Issues -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <!-- Trending Issues -->
-    <div class="bg-white rounded-[32px] p-8 shadow-sm border border-[#E1E3DE]/50">
-        <h3 class="text-xl font-semibold text-[#5D605C] mb-4">Masalah Kulit Trending</h3>
-        <p class="text-[#797B78] text-sm mb-6">Top 5 masalah kulit yang paling banyak dikonsultasikan bulan ini</p>
-        <div class="space-y-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-[#EBDBDD] flex items-center justify-center text-[#7B5556] font-bold">1</div>
-                    <span class="font-medium text-[#5D605C]">Jerawat</span>
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Card Total Gejala -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Total Gejala</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $totalSymptoms }}</p>
                 </div>
-                <div class="flex items-center gap-4">
-                    <div class="w-32 bg-[#E1E3DE] rounded-full h-2">
-                        <div class="bg-[#7B5556] rounded-full h-2" style="width: 95%"></div>
-                    </div>
-                    <span class="text-sm text-[#797B78]">95%</span>
-                </div>
-            </div>
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-[#E1E3DE] flex items-center justify-center text-[#68575E] font-bold">2</div>
-                    <span class="font-medium text-[#5D605C]">Kulit Kering</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="w-32 bg-[#E1E3DE] rounded-full h-2">
-                        <div class="bg-[#7B5556] rounded-full h-2" style="width: 78%"></div>
-                    </div>
-                    <span class="text-sm text-[#797B78]">78%</span>
-                </div>
-            </div>
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-[#E1E3DE] flex items-center justify-center text-[#68575E] font-bold">3</div>
-                    <span class="font-medium text-[#5D605C]">Komedo</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="w-32 bg-[#E1E3DE] rounded-full h-2">
-                        <div class="bg-[#7B5556] rounded-full h-2" style="width: 62%"></div>
-                    </div>
-                    <span class="text-sm text-[#797B78]">62%</span>
-                </div>
-            </div>
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-[#E1E3DE] flex items-center justify-center text-[#68575E] font-bold">4</div>
-                    <span class="font-medium text-[#5D605C]">Bekas Jerawat</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="w-32 bg-[#E1E3DE] rounded-full h-2">
-                        <div class="bg-[#7B5556] rounded-full h-2" style="width: 51%"></div>
-                    </div>
-                    <span class="text-sm text-[#797B78]">51%</span>
-                </div>
-            </div>
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-[#E1E3DE] flex items-center justify-center text-[#68575E] font-bold">5</div>
-                    <span class="font-medium text-[#5D605C]">Kulit Kusam</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="w-32 bg-[#E1E3DE] rounded-full h-2">
-                        <div class="bg-[#7B5556] rounded-full h-2" style="width: 43%"></div>
-                    </div>
-                    <span class="text-sm text-[#797B78]">43%</span>
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
                 </div>
             </div>
         </div>
+
+        <!-- Card Total Masalah Kulit -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Masalah Kulit</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $totalSkinProblems }}</p>
+                </div>
+                <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Total Produk -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Total Produk</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $totalProducts }}</p>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Total Treatment -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Total Treatment</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $totalTreatments }}</p>
+                </div>
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Card Total Analisis -->
+        <div class="bg-gradient-to-r from-[#7B5556] to-[#9B6B6C] rounded-xl shadow p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-white/80 text-sm">Total Analisis</p>
+                    <p class="text-4xl font-bold">{{ $totalAnalysis }}</p>
+                </div>
+                <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="mt-3">
+                <span class="text-sm {{ $trendPercentage >= 0 ? 'text-green-300' : 'text-red-300' }}">
+                    {{ $trendPercentage >= 0 ? '↑' : '↓' }} {{ number_format(abs($trendPercentage), 1) }}% dari bulan lalu
+                </span>
+                <p class="text-xs text-white/70 mt-1">Bulan ini: {{ $analysisThisMonth }} | Bulan lalu: {{ $analysisLastMonth }}</p>
+            </div>
+        </div>
+
+        <!-- Card Total Pasien -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Total Pasien</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $totalPatients }}</p>
+                </div>
+                <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Rata-rata CF Score -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Rata-rata Confidence Score</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ number_format($avgConfidenceScore, 2) }}</p>
+                </div>
+                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- Chart: Analisis Per Bulan -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Statistik Analisis Per Bulan ({{ date('Y') }})</h3>
+            <canvas id="monthlyChart" height="200"></canvas>
+        </div>
+
+        <!-- Chart: Trending Masalah Kulit -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Trending Masalah Kulit Bulan Ini</h3>
+            <canvas id="trendingChart" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Tabel Riwayat Analisis Terbaru -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Riwayat Analisis Terbaru</h3>
+            <span class="text-sm text-gray-500">5 data terakhir</span>
+        </div>
+        
+        @if(count($recentAnalysis) > 0)
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left py-3 text-gray-600 font-medium">Tanggal</th>
+                            <th class="text-left py-3 text-gray-600 font-medium">Pasien</th>
+                            <th class="text-left py-3 text-gray-600 font-medium">Hasil Diagnosa</th>
+                            <th class="text-left py-3 text-gray-600 font-medium">CF Score</th>
+                         </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($recentAnalysis as $analysis)
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="py-3 text-gray-700">{{ $analysis->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="py-3 text-gray-700">{{ $analysis->user->name ?? 'Tidak diketahui' }}</td>
+                            <td class="py-3 text-gray-700">{{ $analysis->skinProblem->name ?? 'Tidak diketahui' }}</td>
+                            <td class="py-3">
+                                <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
+                                    {{ number_format($analysis->confidence_score, 2) }}%
+                                </span>
+                            </td>
+                         </tr>
+                        @endforeach
+                    </tbody>
+                 </table>
+            </div>
+        @else
+            <p class="text-gray-500 text-center py-8">Belum ada riwayat analisis</p>
+        @endif
     </div>
 </div>
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Grafik Gejala Paling Banyak
-    const gejalaCtx = document.getElementById('gejalaChart').getContext('2d');
-    new Chart(gejalaCtx, {
+    // Chart 1: Analisis Per Bulan (Bar Chart)
+    new Chart(document.getElementById('monthlyChart'), {
         type: 'bar',
         data: {
-            labels: ['Jerawat', 'Kulit Kering', 'Komedo', 'Bekas Jerawat', 'Kulit Kusam', 'Minyak Berlebih'],
+            labels: {!! json_encode($bulanNama) !!},
             datasets: [{
-                label: 'Jumlah Konsultasi',
-                data: [245, 189, 156, 134, 98, 87],
+                label: 'Jumlah Analisis',
+                data: {!! json_encode($chartMonthlyData) !!},
                 backgroundColor: '#EBDBDD',
                 borderColor: '#7B5556',
                 borderWidth: 1,
@@ -278,76 +203,42 @@
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { font: { size: 12 } }
-                }
-            },
             scales: {
                 y: {
                     beginAtZero: true,
-                    grid: { color: '#E1E3DE' },
-                    title: { display: true, text: 'Jumlah Konsultasi', color: '#797B78' }
-                },
-                x: {
-                    ticks: { font: { size: 11 } }
+                    ticks: { stepSize: 1 }
                 }
             }
         }
     });
 
-    // Grafik Tren Masalah Kulit Bulanan
-    const trendCtx = document.getElementById('trendChart').getContext('2d');
-    new Chart(trendCtx, {
-        type: 'line',
+    // Chart 2: Trending Masalah Kulit (Bar Chart)
+    @if(count($trendingSkinProblems) > 0)
+    new Chart(document.getElementById('trendingChart'), {
+        type: 'bar',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-            datasets: [
-                {
-                    label: 'Jerawat',
-                    data: [120, 135, 150, 165, 180, 195, 210, 225, 240, 245, 250, 260],
-                    borderColor: '#7B5556',
-                    backgroundColor: 'rgba(123, 85, 86, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                },
-                {
-                    label: 'Kulit Kering',
-                    data: [80, 85, 90, 100, 110, 125, 140, 155, 170, 180, 185, 189],
-                    borderColor: '#9B6B6C',
-                    backgroundColor: 'rgba(155, 107, 108, 0.05)',
-                    tension: 0.4,
-                    fill: true
-                },
-                {
-                    label: 'Komedo',
-                    data: [65, 70, 78, 85, 95, 105, 115, 125, 135, 145, 150, 156],
-                    borderColor: '#B0B3AE',
-                    backgroundColor: 'rgba(176, 179, 174, 0.05)',
-                    tension: 0.4,
-                    fill: true
-                }
-            ]
+            labels: {!! json_encode($trendingSkinProblems->map(function($item) { return $item->skinProblem->name; })->toArray()) !!},
+            datasets: [{
+                label: 'Jumlah Diagnosa',
+                data: {!! json_encode($trendingSkinProblems->pluck('total')->toArray()) !!},
+                backgroundColor: '#FFB6C1',
+                borderColor: '#7B5556',
+                borderWidth: 1,
+                borderRadius: 8
+            }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { font: { size: 12 } }
-                }
-            },
             scales: {
                 y: {
                     beginAtZero: true,
-                    grid: { color: '#E1E3DE' },
-                    title: { display: true, text: 'Jumlah Konsultasi', color: '#797B78' }
+                    ticks: { stepSize: 1 }
                 }
             }
         }
     });
+    @endif
 </script>
 @endpush
 
