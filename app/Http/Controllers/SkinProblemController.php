@@ -1,69 +1,87 @@
 <?php
 
-// app/Http/Controllers/SkinProblemController.php
 namespace App\Http\Controllers;
 
-use App\Models\SkinProblemModel; // Gunakan model kamu
+use App\Models\SkinProblemModel;
 use Illuminate\Http\Request;
 
 class SkinProblemController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $problems = SkinProblemModel::all();
-        
-        // Menghitung statistik untuk card di UI
-        $totalPenyakit = $problems->count();
-        $risikoTinggi = $problems->where('severity_level', 'sedang')->count(); 
-        // Note: sesuaikan 'sedang' atau 'tinggi' sesuai kebutuhan tim
-        
-        $updateTerakhir = SkinProblemModel::latest('updated_at')->first()?->updated_at->format('d M Y');
+        $query = SkinProblemModel::query();
 
-        return view('admin.skin_problems.index', compact('problems', 'totalPenyakit', 'risikoTinggi', 'updateTerakhir'));
+        if ($request->has('search') && $request->search != '') {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Sesuaikan dengan name="severity" di form filter blade
+        if ($request->has('severity') && $request->severity != '') {
+            $query->where('severity_level', $request->severity);
+        }
+
+        // PERBAIKAN: Urutan dari ID terkecil (asc) agar P001 muncul duluan
+        $problems = $query->orderBy('id', 'asc')->paginate(10);
+        $problems->appends($request->query());
+
+        $totalPenyakit = SkinProblemModel::count();
+        $risikoTinggi = SkinProblemModel::where('severity_level', 'berat')->count();
+        $updateTerakhir = SkinProblemModel::latest('updated_at')->first()?->updated_at->format('d M Y') ?? '-';
+
+        return view('admin.skin_problems.index', compact(
+            'problems', 'totalPenyakit', 'risikoTinggi', 'updateTerakhir'
+        ));
     }
-
-    public function create()
-{
-    return view('admin.skin_problems.create');
-}
 
     public function store(Request $request)
     {
+        // Validasi ketat seperti Data Produk
         $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'severity_level' => 'required'
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'severity_level' => 'required|string|in:ringan,sedang,berat'
         ]);
 
-        \App\Models\SkinProblemModel::create($request->all());
-        return redirect()->route('skin-problems.index')->with('success', 'Masalah kulit berhasil ditambahkan!');
-    }
+        SkinProblemModel::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'severity_level' => $request->severity_level,
+        ]);
 
-    public function edit($id)
-    {
-        $problem = \App\Models\SkinProblemModel::findOrFail($id);
-        return view('admin.skin_problems.edit', compact('problem'));
+        // Redirect kembali ke halaman aktif saat ini
+        $page = $request->page ?? 1;
+        return redirect()->route('admin.skin-problems.index', ['page' => $page])
+                         ->with('success', 'Masalah kulit berhasil ditambahkan!');
     }
 
     public function update(Request $request, $id)
     {
-        $problem = \App\Models\SkinProblemModel::findOrFail($id);
-        $problem->update($request->all());
-        return redirect()->route('skin-problems.index')->with('info', 'Data berhasil diperbarui!');
-    }
-    
-    public function destroy($id)
-    {
-        // 1. Cari data berdasarkan ID
-        $problem = \App\Models\SkinProblemModel::findOrFail($id);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'severity_level' => 'required|string|in:ringan,sedang,berat'
+        ]);
 
-        // 2. Hapus data tersebut
+        $problem = SkinProblemModel::findOrFail($id);
+
+        $problem->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'severity_level' => $request->severity_level,
+        ]);
+
+        $page = $request->page ?? 1;
+        return redirect()->route('admin.skin-problems.index', ['page' => $page])
+                         ->with('success', 'Data berhasil diperbarui!');
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $problem = SkinProblemModel::findOrFail($id);
         $problem->delete();
 
-        // 3. Kembalikan ke halaman index dengan pesan sukses
-        return redirect()->route('skin-problems.index')->with('success', 'Data masalah kulit berhasil dihapus!');
+        $page = $request->page ?? 1;
+        return redirect()->route('admin.skin-problems.index', ['page' => $page])
+                         ->with('success', 'Data masalah kulit berhasil dihapus!');
     }
-    
-    // Method update dan destroy tetap sama seperti sebelumnya, 
-    // hanya ganti SkinProblem menjadi SkinProblemModel.
 }
