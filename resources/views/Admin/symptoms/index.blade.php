@@ -3,34 +3,15 @@
 @section('content')
     <div class="container">
 
-
         {{-- MAIN CONTENT --}}
 
         {{-- HEADER --}}
-        <div class="mb-8">
+        <div class="flex flex-wrap justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-gray-800">Data Gejala Kulit</h1>
-        </div>
-        <div class="flex justify-end mb-6">
-            <button onclick="openModal('addModal')" class="bg-pink-500 text-white px-4 py-2 rounded-lg shadow">
+            
+            <button onclick="openModal('addModal')" class="bg-pink-500 text-white px-4 py-2 rounded-lg shadow hover:bg-pink-600 transition">
                 + Tambah Gejala
             </button>
-        </div>
-
-
-        {{-- CARD STATS --}}
-        <div class="grid grid-cols-3 gap-4 mb-6">
-            <div class="bg-pink-100 p-4 rounded-xl">
-                <p class="text-sm text-gray-600">TOTAL GEJALA</p>
-                <h2 class="text-xl font-bold">{{ $symptoms->total() }}</h2>
-            </div>
-            <div class="bg-pink-100 p-4 rounded-xl">
-                <p class="text-sm text-gray-600">UPDATE TERAKHIR</p>
-                <h2 class="text-xl font-bold">Hari Ini</h2>
-            </div>
-            <div class="bg-pink-100 p-4 rounded-xl">
-                <p class="text-sm text-gray-600">STATUS</p>
-                <h2 class="text-xl font-bold">Aktif</h2>
-            </div>
         </div>
 
         {{-- TABLE --}}
@@ -79,17 +60,11 @@
                                         Edit
                                     </button>
 
-                                    <form action="{{ route('symptoms.destroy', $item->id) }}" method="POST"
-                                        onsubmit="return confirm('Yakin hapus data?')">
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button type="button"
-                                            onclick="openDeleteModal({{ $item->id }}, @js($item->name))"
-                                            class="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition">
-                                            Hapus
-                                        </button>
-                                    </form>
+                                    <button type="button"
+                                        onclick="openDeleteModal({{ $item->id }}, @js($item->name))"
+                                        class="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition">
+                                        Hapus
+                                    </button>
 
                                 </div>
                             </td>
@@ -115,6 +90,7 @@
 
                 <form action="{{ route('symptoms.store') }}" method="POST" onsubmit="return validateAddForm()">
                     @csrf
+                    <input type="hidden" name="page" id="addPage" value="{{ request()->get('page', 1) }}">
 
                     <div class="mb-3">
                         <label class="text-sm text-gray-600">Nama Gejala</label>
@@ -149,12 +125,13 @@
             <div class="bg-white rounded-2xl w-96 p-6 shadow-xl border border-pink-100">
 
                 <h2 class="text-lg font-bold text-gray-800 mb-4">
-                    ✏️ Edit Gejala
+                    Edit Gejala
                 </h2>
 
                 <form id="editForm" method="POST" onsubmit="return validateEditForm()">
                     @csrf
                     @method('PUT')
+                    <input type="hidden" name="page" id="editPage" value="{{ request()->get('page', 1) }}">
 
                     <div class="mb-3">
                         <label class="text-sm text-gray-600">Nama Gejala</label>
@@ -208,6 +185,7 @@
                 <form id="deleteForm" method="POST">
                     @csrf
                     @method('DELETE')
+                    <input type="hidden" name="page" id="deletePage" value="{{ request()->get('page', 1) }}">
 
                     <div class="flex justify-center gap-2">
                         <button type="button" onclick="closeModal('deleteModal')"
@@ -225,6 +203,12 @@
         </div>
 
         <script>
+            // Dapatkan page saat ini dari URL
+            function getCurrentPage() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('page') || 1;
+            }
+
             function openModal(id) {
                 const modal = document.getElementById(id);
 
@@ -233,14 +217,22 @@
                     return;
                 }
 
-                // Reset form dan warning ketika modal tambah dibuka
+                // Update page value untuk modal tambah
                 if (id === 'addModal') {
+                    const pageInput = document.getElementById('addPage');
+                    if (pageInput) pageInput.value = getCurrentPage();
                     resetAddForm();
                 }
 
-                // Reset warning ketika modal edit dibuka
                 if (id === 'editModal') {
+                    const pageInput = document.getElementById('editPage');
+                    if (pageInput) pageInput.value = getCurrentPage();
                     resetEditForm();
+                }
+
+                if (id === 'deleteModal') {
+                    const pageInput = document.getElementById('deletePage');
+                    if (pageInput) pageInput.value = getCurrentPage();
                 }
 
                 modal.classList.remove('hidden');
@@ -258,12 +250,10 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
 
-                // Reset warning ketika modal tambah ditutup
                 if (id === 'addModal') {
                     resetAddForm();
                 }
 
-                // Reset warning ketika modal edit ditutup
                 if (id === 'editModal') {
                     resetEditForm();
                 }
@@ -275,11 +265,13 @@
                 const error = document.getElementById('addError');
 
                 if (name) {
+                    name.value = '';
                     name.classList.remove('border-red-500');
                     name.classList.add('border');
                 }
 
                 if (description) {
+                    description.value = '';
                     description.classList.remove('border-red-500');
                     description.classList.add('border');
                 }
@@ -384,6 +376,7 @@
                 const editForm = document.getElementById('editForm');
                 const editName = document.getElementById('editName');
                 const editDescription = document.getElementById('editDescription');
+                const pageInput = document.getElementById('editPage');
 
                 if (!modal || !editForm || !editName || !editDescription) {
                     console.error('Element edit modal tidak lengkap');
@@ -394,6 +387,8 @@
 
                 editName.value = name;
                 editDescription.value = description;
+                
+                if (pageInput) pageInput.value = getCurrentPage();
 
                 editForm.action = "{{ url('/admin/symptoms') }}/" + id;
 
@@ -405,6 +400,7 @@
                 const modal = document.getElementById('deleteModal');
                 const deleteForm = document.getElementById('deleteForm');
                 const deleteName = document.getElementById('deleteName');
+                const pageInput = document.getElementById('deletePage');
 
                 if (!modal || !deleteForm || !deleteName) {
                     console.error('Element delete modal tidak lengkap');
@@ -413,6 +409,8 @@
 
                 deleteName.textContent = name;
                 deleteForm.action = "{{ url('/admin/symptoms') }}/" + id;
+                
+                if (pageInput) pageInput.value = getCurrentPage();
 
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
@@ -426,3 +424,12 @@
 
     </div>
 @endsection
+
+@push('scripts')
+@if(session('success'))
+<script>
+    // Notifikasi sederhana (alert bawaan)
+    alert('{{ session('success') }}');
+</script>
+@endif
+@endpush

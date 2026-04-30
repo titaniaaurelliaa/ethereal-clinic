@@ -30,7 +30,10 @@ class dataGejalaController extends Controller
             'description' => $request->description,
         ]);
 
-        return redirect()->route('symptoms.index')
+        // Ambil page dari request, default 1
+        $page = $request->input('page', 1);
+
+        return redirect()->route('symptoms.index', ['page' => $page])
             ->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -54,16 +57,22 @@ class dataGejalaController extends Controller
             'description' => $request->description,
         ]);
 
-        return redirect()->route('symptoms.index')
+        // Ambil page dari request, default 1
+        $page = $request->input('page', 1);
+
+        return redirect()->route('symptoms.index', ['page' => $page])
             ->with('success', 'Data berhasil diupdate');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $symptom = Symptom::findOrFail($id);
         $symptom->delete();
 
-        return redirect()->route('symptoms.index')
+        // Ambil page dari request, default 1
+        $page = $request->input('page', 1);
+
+        return redirect()->route('symptoms.index', ['page' => $page])
             ->with('success', 'Data berhasil dihapus');
     }
 }
