@@ -31,11 +31,11 @@
                         <input type="text" name="search" placeholder="Cari produk..." value="{{ request('search') }}"
                             class="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
                         <button type="submit" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
-                            Cari
+                            <i class="fas fa-search"></i> Cari
                         </button>
                         @if(request('search') || request('category'))
                             <a href="{{ route('admin.dataproduk.index') }}" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
-                                Reset
+                                <i class="fas fa-times"></i> Reset
                             </a>
                         @endif
                     </form>
@@ -117,13 +117,13 @@
                                         <button type="button"
                                             onclick="openEditModal({{ $item->id }}, @js($item->name), @js($item->brand), @js($item->description), @js($item->category), @js($item->image_path))"
                                             class="px-3 py-1 text-xs bg-pink-100 text-pink-600 rounded-lg hover:bg-pink-200 transition">
-                                            Edit
+                                            <i class="fas fa-edit"></i> Edit
                                         </button>
 
                                         <button type="button"
                                             onclick="openDeleteModal({{ $item->id }}, @js($item->name))"
                                             class="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition">
-                                            Hapus
+                                            <i class="fas fa-trash"></i> Hapus
                                         </button>
                                     </div>
                                 </td>
@@ -131,6 +131,7 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="p-6 text-center text-gray-400">
+                                    <i class="fas fa-inbox text-2xl mb-2 block"></i>
                                     Data produk belum tersedia
                                 </td>
                             </tr>
@@ -142,22 +143,10 @@
 
         {{-- PAGINATION --}}
         <div class="mt-4">
-            {{ $dataproduk->links() }}
+            {{ $dataproduk->appends(request()->query())->links() }}
         </div>
 
     </div>
-
-    {{-- TOAST NOTIFICATION (ALERT SUCCESS) --}}
-    @if(session('success'))
-    <div id="toastNotification" class="fixed bottom-4 right-4 z-50 animate-slide-in">
-        <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            <span>{{ session('success') }}</span>
-        </div>
-    </div>
-    @endif
 
     {{-- MODAL TAMBAH --}}
     <div id="addModal" class="fixed inset-0 hidden justify-center items-center z-50" style="background-color: rgba(0, 0, 0, 0.35);">
@@ -198,10 +187,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="text-sm text-gray-600">Gambar Produk</label>
-                        <input type="file" id="addImage" name="image" accept="image/*"
+                        <label class="text-sm text-gray-600">Prioritas</label>
+                        <input type="number" id="addPriority" name="priority" placeholder="Prioritas (1-10)" min="1" max="10"
                             class="w-full mt-1 border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none">
-                        <p class="text-xs text-gray-400 mt-1">Format: jpg, jpeg, png, gif (Max 2MB)</p>
                     </div>
                 </div>
 
@@ -209,6 +197,36 @@
                     <label class="text-sm text-gray-600">Deskripsi *</label>
                     <textarea id="addDescription" name="description" placeholder="Masukkan deskripsi produk"
                         class="w-full mt-1 border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none" rows="3"></textarea>
+                </div>
+
+                {{-- PERBAIKAN: Upload Gambar dengan Button yang Jelas --}}
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar Produk</label>
+                    
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-pink-400 transition-colors cursor-pointer" id="uploadAreaAdd">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="addImage" class="relative cursor-pointer bg-white rounded-md font-medium text-pink-600 hover:text-pink-500 focus-within:outline-none">
+                                    <span>Klik untuk upload</span>
+                                    <input id="addImage" name="image" type="file" class="sr-only" accept="image/*" onchange="previewImageAdd(event)">
+                                </label>
+                                <p class="pl-1">atau drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500">
+                                PNG, JPG, JPEG, GIF (Max 2MB)
+                            </p>
+                        </div>
+                    </div>
+                    
+                    {{-- Preview gambar sebelum upload --}}
+                    <div id="addImagePreview" class="hidden mt-3">
+                        <p class="text-xs text-gray-500 mb-1">Preview gambar:</p>
+                        <img id="addImagePreviewImg" src="#" alt="Preview" class="w-24 h-24 object-cover rounded-lg border">
+                        <button type="button" onclick="removeImageAdd()" class="text-xs text-red-500 mt-1 hover:text-red-700">Hapus gambar</button>
+                    </div>
                 </div>
 
                 <p id="addError" class="hidden text-sm text-red-500 mb-3"></p>
@@ -265,14 +283,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="text-sm text-gray-600">Gambar Produk</label>
-                        <div id="currentImageContainer" class="mb-2 hidden">
-                            <p class="text-xs text-gray-500 mb-1">Gambar saat ini:</p>
-                            <img id="currentImage" src="" alt="Current product image" class="w-20 h-20 object-cover rounded-lg">
-                        </div>
-                        <input type="file" id="editImage" name="image" accept="image/*"
+                        <label class="text-sm text-gray-600">Prioritas</label>
+                        <input type="number" id="editPriority" name="priority" placeholder="Prioritas (1-10)" min="1" max="10"
                             class="w-full mt-1 border border-gray-200 p-2 rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
-                        <p class="text-xs text-gray-400 mt-1">Kosongkan jika tidak ingin mengubah gambar</p>
                     </div>
                 </div>
 
@@ -280,6 +293,48 @@
                     <label class="text-sm text-gray-600">Deskripsi *</label>
                     <textarea id="editDescription" name="description"
                         class="w-full mt-1 border border-gray-200 p-2 rounded-lg focus:ring-2 focus:ring-pink-400 outline-none" rows="3"></textarea>
+                </div>
+
+                {{-- PERBAIKAN: Upload Gambar dengan Button yang Jelas --}}
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar Produk</label>
+                    
+                    {{-- Gambar saat ini --}}
+                    <div id="currentImageContainer" class="mb-3 hidden">
+                        <p class="text-xs text-gray-500 mb-1">Gambar saat ini:</p>
+                        <div class="relative inline-block">
+                            <img id="currentImage" src="#" alt="Current product image" class="w-24 h-24 object-cover rounded-lg border">
+                            <button type="button" onclick="removeCurrentImage()" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
+                                ×
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-pink-400 transition-colors cursor-pointer" id="uploadAreaEdit">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="editImage" class="relative cursor-pointer bg-white rounded-md font-medium text-pink-600 hover:text-pink-500 focus-within:outline-none">
+                                    <span>Klik untuk upload gambar baru</span>
+                                    <input id="editImage" name="image" type="file" class="sr-only" accept="image/*" onchange="previewImageEdit(event)">
+                                </label>
+                                <p class="pl-1">atau drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500">
+                                PNG, JPG, JPEG, GIF (Max 2MB)
+                            </p>
+                            <p class="text-xs text-gray-400">Kosongkan jika tidak ingin mengubah gambar</p>
+                        </div>
+                    </div>
+                    
+                    {{-- Preview gambar baru --}}
+                    <div id="editImagePreview" class="hidden mt-3">
+                        <p class="text-xs text-gray-500 mb-1">Preview gambar baru:</p>
+                        <img id="editImagePreviewImg" src="#" alt="Preview" class="w-24 h-24 object-cover rounded-lg border">
+                        <button type="button" onclick="removeImageEdit()" class="text-xs text-red-500 mt-1 hover:text-red-700">Batal</button>
+                    </div>
                 </div>
 
                 <p id="editError" class="hidden text-sm text-red-500 mt-2 mb-3"></p>
@@ -302,7 +357,7 @@
     <div id="deleteModal" class="fixed inset-0 bg-black/40 hidden justify-center items-center z-50">
         <div class="bg-white rounded-2xl w-96 p-6 shadow-xl border border-red-100">
             <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="text-red-600 text-2xl">!</span>
+                <span class="text-red-600 text-2xl font-bold">!</span>
             </div>
             <h2 class="text-lg font-bold text-gray-800 text-center mb-2">Hapus Produk?</h2>
             <p class="text-sm text-gray-500 text-center mb-6">
@@ -343,7 +398,7 @@
             }
             if (id === 'editModal') {
                 document.getElementById('editPage').value = getCurrentPage();
-                resetEditForm();
+                // HAPUS resetEditForm() dari sini!
             }
             if (id === 'deleteModal') {
                 document.getElementById('deletePage').value = getCurrentPage();
@@ -361,7 +416,17 @@
             modal.classList.remove('flex');
 
             if (id === 'addModal') resetAddForm();
-            if (id === 'editModal') resetEditForm();
+            if (id === 'editModal') {
+                // Kosongkan form hanya saat modal ditutup
+                document.getElementById('editName').value = '';
+                document.getElementById('editBrand').value = '';
+                document.getElementById('editCategory').value = '';
+                document.getElementById('editDescription').value = '';
+                document.getElementById('editImage').value = '';
+                document.getElementById('currentImageContainer').classList.add('hidden');
+                const error = document.getElementById('editError');
+                if (error) error.classList.add('hidden');
+            }
         }
 
         function resetAddForm() {
@@ -370,7 +435,8 @@
             document.getElementById('addDescription').value = '';
             document.getElementById('addCategory').value = '';
             document.getElementById('addImage').value = '';
-            document.getElementById('addError').classList.add('hidden');
+            const error = document.getElementById('addError');
+            if (error) error.classList.add('hidden');
         }
 
         function validateAddForm() {
@@ -409,16 +475,6 @@
                 return false;
             }
             return true;
-        }
-
-        function resetEditForm() {
-            document.getElementById('editName').value = '';
-            document.getElementById('editBrand').value = '';
-            document.getElementById('editDescription').value = '';
-            document.getElementById('editCategory').value = '';
-            document.getElementById('editImage').value = '';
-            document.getElementById('currentImageContainer').classList.add('hidden');
-            document.getElementById('editError').classList.add('hidden');
         }
 
         function validateEditForm() {
@@ -460,52 +516,40 @@
         }
 
         function openEditModal(id, name, brand, description, category, imagePath) {
-            const modal = document.getElementById('editModal');
             const editForm = document.getElementById('editForm');
 
-            resetEditForm();
+            // Langsung isi form tanpa reset terlebih dahulu
             document.getElementById('editName').value = name;
             document.getElementById('editBrand').value = brand;
             document.getElementById('editDescription').value = description;
             document.getElementById('editCategory').value = category;
             document.getElementById('editPage').value = getCurrentPage();
 
-            if (imagePath) {
-                const imageUrl = "/" + imagePath;
+            // Tampilkan gambar saat ini jika ada
+            if (imagePath && imagePath !== 'null') {
+                const imageUrl = imagePath.startsWith('/') ? imagePath : '/' + imagePath;
                 document.getElementById('currentImage').src = imageUrl;
                 document.getElementById('currentImageContainer').classList.remove('hidden');
+            } else {
+                document.getElementById('currentImageContainer').classList.add('hidden');
             }
 
+            // Reset field upload gambar
+            document.getElementById('editImage').value = '';
+
             editForm.action = "{{ url('/admin/dataproduk') }}/" + id;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            openModal('editModal');
         }
 
         function openDeleteModal(id, name) {
-            const modal = document.getElementById('deleteModal');
             const deleteForm = document.getElementById('deleteForm');
 
             document.getElementById('deleteName').textContent = name;
             document.getElementById('deletePage').value = getCurrentPage();
             deleteForm.action = "{{ url('/admin/dataproduk') }}/" + id;
 
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            openModal('deleteModal');
         }
-
-        // Auto hide toast notification after 3 seconds
-        @if(session('success'))
-        setTimeout(() => {
-            const toast = document.getElementById('toastNotification');
-            if (toast) {
-                toast.style.opacity = '0';
-                toast.style.transition = 'opacity 0.3s';
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
-            }
-        }, 3000);
-        @endif
     </script>
 
     @push('styles')

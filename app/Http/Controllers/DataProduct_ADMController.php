@@ -20,7 +20,7 @@ class DataProduct_ADMController extends Controller
             $query->where('category', $request->category);
         }
         
-        $dataproduk = $query->orderBy('id', 'desc')->paginate(10);
+        $dataproduk = $query->orderBy('id', 'asc')->paginate(10);
         $dataproduk->appends($request->query());
         
         return view('admin.dataproduk.index', compact('dataproduk'));
