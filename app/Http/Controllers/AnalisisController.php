@@ -305,9 +305,10 @@ class AnalisisController extends Controller
                 'jenis_objek_unik'       => count($temuanKlinis),
                 // NEW CODE: simpan breakdown CF untuk keperluan audit/debug
                 'cf_breakdown'           => [
-                    'visual'    => round($cfVisual, 4),
-                    'gejala'    => round($cfGejala, 4),
-                    'lifestyle' => round($cfLifestyle, 4),
+                    'cf_visual'    => round($cfVisual, 4),
+                    'cf_gejala'    => round($cfGejala, 4),
+                    'cf_interim'   => round($cfCombined, 4),
+                    'cf_lifestyle' => round($cfLifestyle, 4),
                 ],
                 // LANGKAH 1: Teruskan raw_predictions & dimensi gambar ke view & saveHistory
                 'raw_predictions'        => $scanData['raw_predictions'] ?? [],
@@ -351,6 +352,7 @@ class AnalisisController extends Controller
             return view('analisis.hasil', [
                 'hasil'      => $hasil,
                 'history_id' => $history?->id,
+                'history'    => $history,
             ]);
 
         } catch (\Throwable $e) {
@@ -451,6 +453,7 @@ class AnalisisController extends Controller
         return view('analisis.hasil', [
             'hasil'      => $hasil,
             'history_id' => $history->id,
+            'history'    => $history,
         ]);
     }
 
@@ -506,10 +509,9 @@ class AnalisisController extends Controller
         }
     }
 
-    /**
-     * Simpan hasil analisis ke tabel analysis_histories.
+   /**
+     * Simpan hasil analisis ke tabel analysis_histories beserta data rekomendasi.
      *
-     * // NEW CODE: FASE 4 — Menerima parameter tambahan untuk audit trail lengkap:
      * @param  array   $hasil            Array output CF dari processFinal
      * @param  array   $cfBreakdown      Breakdown: cf_visual, cf_gejala, cf_interim, cf_lifestyle
      * @param  array   $symptomAnswers   Jawaban slider anamnesis [id => nilai]
@@ -519,50 +521,88 @@ class AnalisisController extends Controller
      */
     private function saveHistory(
         array  $hasil,
-        array  $cfBreakdown      = [],   // NEW CODE: FASE 4
-        array  $symptomAnswers   = [],   // NEW CODE: FASE 4
-        array  $lifestyle        = [],   // NEW CODE: FASE 4
-        string $namaObjekDominan = '-',  // NEW CODE: FASE 4
+        array  $cfBreakdown      = [],   
+        array  $symptomAnswers   = [],   
+        array  $lifestyle        = [],   
+        string $namaObjekDominan = '-',  
     ): ?AnalysisHistoryModel {
         try {
-            $problemId = $this->resolveSkinProblemId($hasil);
+            // 1. Inisialisasi variabel untuk menampung resep obat & diagnosis
+            $resultProblemId = null;
+            $recommendedProducts = [];
+            $recommendedTreatments = [];
 
+            // 2. Ambil ID Knowledge Base (Penyakit) dari temuan visual yang dominan
+            // Karena $hasil['temuan_klinis'] sudah diurutkan dari yang terparah
+            if (!empty($hasil['temuan_klinis'])) {
+                $temuanDominan = $hasil['temuan_klinis'][0];
+                
+                // Cari relasi lengkap menggunakan Eager Loading
+                $kb = KnowledgeBase::with('skinProblem.products', 'skinProblem.treatments')
+                    ->where('nama_objek', $temuanDominan['nama_objek'])
+                    ->where('min_objek', '<=', $temuanDominan['jumlah'])
+                    ->where(function ($q) use ($temuanDominan) {
+                        $q->whereNull('max_objek')
+                          ->orWhere('max_objek', '>=', $temuanDominan['jumlah']);
+                    })
+                    ->first();
+
+                // 3. Format Data Obat dan Treatment jika Penyakit Ditemukan
+                if ($kb && $kb->skinProblem) {
+                    $resultProblemId = $kb->skinProblem->id;
+                    
+                    // Tarik resep obat
+                    $recommendedProducts = $kb->skinProblem->products->map(function($item) {
+                        return [
+                            'id' => $item->id,
+                            'nama_produk' => $item->name,
+                            'kandungan' => $item->description // Sesuaikan dengan kolom tabel products jika beda
+                        ];
+                    })->toArray();
+
+                    // Tarik resep tindakan klinik
+                    $recommendedTreatments = $kb->skinProblem->treatments->map(function($item) {
+                        return [
+                            'id' => $item->id,
+                            'nama_treatment' => $item->name,
+                            'estimasi_harga' => $item->price ?? null // Sesuaikan dengan kolom harga jika ada
+                        ];
+                    })->toArray();
+                }
+            }
+
+            // 4. Simpan ke database beserta Resep yang Ditemukan
             return AnalysisHistoryModel::create([
                 'user_id'          => Auth::id(),
 
-                // NEW CODE: FASE 4 — analysis_data sekarang menyimpan audit trail lengkap
                 'analysis_data' => [
-                    // Data klinis utama
                     'temuan_klinis'          => $hasil['temuan_klinis'],
                     'lifestyle_detail'       => $hasil['lifestyle_detail'],
                     'lifestyle_berisiko'     => $hasil['lifestyle_berisiko'],
                     'total_objek_terdeteksi' => $hasil['total_objek_terdeteksi'],
                     'jenis_objek_unik'       => $hasil['jenis_objek_unik'],
-
-                    // NEW CODE: FASE 4 — Audit trail CF Breakdown (3-tahap)
                     'breakdown_cf' => [
                         'cf_visual'    => $cfBreakdown['cf_visual']    ?? 0.0,
                         'cf_gejala'    => $cfBreakdown['cf_gejala']    ?? 0.0,
                         'cf_interim'   => $cfBreakdown['cf_interim']   ?? 0.0,
                         'cf_lifestyle' => $cfBreakdown['cf_lifestyle']  ?? 0.0,
                     ],
-
-                    // NEW CODE: FASE 4 — Simpan input mentah untuk keperluan audit
                     'jawaban_anamnesis' => $symptomAnswers,
                     'jawaban_lifestyle' => $lifestyle,
-                    // LANGKAH 1: Simpan raw_predictions ke JSON agar bounding box bisa digambar ulang
                     'raw_predictions'   => $hasil['raw_predictions'] ?? [],
                     'img_width'         => $hasil['img_width']       ?? null,
                     'img_height'        => $hasil['img_height']      ?? null,
                 ],
 
-                'result_problem_id'       => $problemId,
+                // 5. Masukkan ID Penyakit Asli & Data Resep
+                // result_problem_id adalah NOT NULL di DB, jadi perlu fallback
+                'result_problem_id'       => $resultProblemId ?? (SkinProblemModel::first()?->id ?? 1),
                 'confidence_score'        => round($hasil['cf_final'] * 100, 2),
-                'recommended_ingredients' => [],
-                'recommended_products'    => [],
-                'recommended_treatments'  => [],
+                'recommended_ingredients' => [], // bisa dibiarkan kosong
+                // Cukup kirim array mentah, biarkan Model casting yang mengubahnya menjadi JSON otomatis
+                'recommended_products'    => $recommendedProducts,
+                'recommended_treatments'  => $recommendedTreatments,
 
-                // NEW CODE: FASE 4 — Notes informatif dengan objek dominan
                 'notes' => sprintf(
                     'Analisis Hybrid CF — Objek Dominan: %s | Skor: %d/100 (%s) | CF: Visual=%.2f Gejala=%.2f Lifestyle=%.2f Final=%.2f',
                     $namaObjekDominan,
@@ -581,24 +621,6 @@ class AnalisisController extends Controller
         }
     }
 
-    /**
-     * Tentukan skin_problem_id dari tabel skin_problems berdasarkan skor kesehatan.
-     */
-    private function resolveSkinProblemId(array $hasil): int
-    {
-        $skor = $hasil['skor_kesehatan'];
-
-        $severityTarget = match (true) {
-            $skor >= 60 => 'ringan',
-            $skor >= 30 => 'sedang',
-            default     => 'berat',
-        };
-
-        $problem = SkinProblemModel::where('severity_level', $severityTarget)->first()
-                ?? SkinProblemModel::first();
-
-        return $problem?->id ?? 1;
-    }
 
     /**
      * Konversi skor kesehatan numerik (0–100) ke label teks kondisi.

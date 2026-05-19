@@ -54,4 +54,9 @@ class KnowledgeBase extends Model
     {
         return $this->hasMany(SymptomRule::class, 'knowledge_base_id');
     }
+    public function skinProblem()
+{
+    // Relasi: Satu Knowledge Base merujuk pada Satu Penyakit Kulit
+    return $this->belongsTo(SkinProblemModel::class, 'skin_problem_id');
+}
 }

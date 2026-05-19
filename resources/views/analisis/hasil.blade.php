@@ -25,19 +25,21 @@
     </div>
 </div>
 
-{{-- ═══ SKOR KESEHATAN CARD ════════════════════════════════════════════ --}}
+{{-- ═══ TINGKAT RISIKO CARD ════════════════════════════════════════════ --}}
 @php
     $skor     = $hasil['skor_kesehatan'];
     $label    = $hasil['kondisi_label'];
     $cfFinal  = $hasil['cf_final'];
+    $cfPct    = round($cfFinal * 100, 1);
     $histId   = $history_id ?? null;
 
+    // Gradient warna berdasarkan tingkat risiko (cfPct) — semakin tinggi semakin parah
     $skorGradient = match(true) {
-        $skor >= 80 => ['from-green-400','to-green-600','text-green-700','bg-green-50','border-green-200'],
-        $skor >= 60 => ['from-lime-400','to-lime-600','text-lime-700','bg-lime-50','border-lime-200'],
-        $skor >= 40 => ['from-amber-400','to-amber-600','text-amber-700','bg-amber-50','border-amber-200'],
-        $skor >= 20 => ['from-orange-400','to-orange-600','text-orange-700','bg-orange-50','border-orange-200'],
-        default     => ['from-red-400','to-red-600','text-red-700','bg-red-50','border-red-200'],
+        $cfPct >= 80 => ['from-red-400','to-red-600','text-red-700','bg-red-50','border-red-200'],
+        $cfPct >= 60 => ['from-orange-400','to-orange-600','text-orange-700','bg-orange-50','border-orange-200'],
+        $cfPct >= 40 => ['from-amber-400','to-amber-600','text-amber-700','bg-amber-50','border-amber-200'],
+        $cfPct >= 20 => ['from-lime-400','to-lime-600','text-lime-700','bg-lime-50','border-lime-200'],
+        default      => ['from-green-400','to-green-600','text-green-700','bg-green-50','border-green-200'],
     };
 @endphp
 
@@ -52,7 +54,7 @@
                     stroke="url(#scoreGrad)" stroke-width="10"
                     stroke-linecap="round"
                     stroke-dasharray="{{ round(2 * 3.14159 * 52) }}"
-                    stroke-dashoffset="{{ round(2 * 3.14159 * 52 * (1 - $skor / 100)) }}"
+                    stroke-dashoffset="{{ round(2 * 3.14159 * 52 * (1 - $cfPct / 100)) }}"
                     class="transition-all duration-1000"/>
                 <defs>
                     <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -62,8 +64,8 @@
                 </defs>
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <span class="text-3xl font-black text-gray-800">{{ $skor }}</span>
-                <span class="text-[10px] font-bold text-[#A8ABA7] tracking-widest uppercase">/ 100</span>
+                <span class="text-3xl font-black text-gray-800">{{ $cfPct }}%</span>
+                <span class="text-[10px] font-bold text-[#A8ABA7] tracking-widest uppercase">Risiko</span>
             </div>
         </div>
 
@@ -72,7 +74,7 @@
             <span class="inline-block {{ $skorGradient[2] }} {{ $skorGradient[3] }} border {{ $skorGradient[4] }} text-xs font-bold px-3 py-1 rounded-full mb-3">
                 {{ $label }}
             </span>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Skor Kesehatan Wajah</h1>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Tingkat Risiko Kulit Bermasalah</h1>
             <p class="text-[#797B78] text-sm mb-5 max-w-md">
                 Berdasarkan analisis AI visual dan kuesioner gaya hidup Anda. Nilai CF akhir:
                 <strong class="text-[#8B3A3A]">{{ round($cfFinal * 100, 1) }}%</strong> risiko kulit bermasalah.
@@ -81,11 +83,11 @@
             {{-- Progress Bar --}}
             <div class="w-full bg-[#F0EDEA] rounded-full h-3 overflow-hidden">
                 <div class="h-full bg-gradient-to-r {{ $skorGradient[0] }} {{ $skorGradient[1] }} rounded-full transition-all duration-1000 ease-out"
-                     style="width: {{ $skor }}%"></div>
+                     style="width: {{ $cfPct }}%"></div>
             </div>
             <div class="flex justify-between mt-1.5">
-                <span class="text-[10px] text-[#A8ABA7]">Sangat Parah</span>
-                <span class="text-[10px] text-[#A8ABA7]">Kulit Sehat</span>
+                <span class="text-[10px] text-[#A8ABA7]">Risiko Rendah</span>
+                <span class="text-[10px] text-[#A8ABA7]">Risiko Tinggi</span>
             </div>
         </div>
 
@@ -273,10 +275,10 @@
 {{-- ═══ NEW CODE: FASE 4 — CF BREAKDOWN AUDIT TRAIL ═══════════════════ --}}
 @php
     $breakdown = $hasil['cf_breakdown'] ?? [];
-    $cfVisualPct    = round(($breakdown['cf_visual']    ?? 0) * 100, 1);
-    $cfGejalaPct    = round(($breakdown['cf_gejala']    ?? 0) * 100, 1);
-    $cfInterimPct   = round(($breakdown['cf_interim']   ?? 0) * 100, 1);
-    $cfLifestylePct = round(($breakdown['cf_lifestyle'] ?? 0) * 100, 1);
+    $cfVisualPct    = round(($breakdown['cf_visual']    ?? $breakdown['visual']    ?? 0) * 100, 1);
+    $cfGejalaPct    = round(($breakdown['cf_gejala']    ?? $breakdown['gejala']    ?? 0) * 100, 1);
+    $cfInterimPct   = round(($breakdown['cf_interim']   ?? $breakdown['interim']   ?? 0) * 100, 1);
+    $cfLifestylePct = round(($breakdown['cf_lifestyle'] ?? $breakdown['lifestyle'] ?? 0) * 100, 1);
     $cfFinalPct     = round(($hasil['cf_final'] ?? 0) * 100, 1);
     $hasBreakdown   = ! empty($breakdown);
 @endphp
@@ -352,6 +354,133 @@
 @endif
 {{-- ═══ END NEW CODE: FASE 4 ═══════════════════════════════════════════ --}}
 
+{{-- ═══ REKOMENDASI SKINCARE & TINDAKAN KLINIK ═════════════════════════ --}}
+@php
+    // Decode recommended_products & recommended_treatments dari kolom JSON $history
+    // Model cast 'array' sudah aktif, tapi controller menyimpan via json_encode()
+    // sehingga data bisa berupa string JSON (double-encoded) atau sudah array.
+    $rawProducts   = ($history->recommended_products ?? null);
+    $rawTreatments = ($history->recommended_treatments ?? null);
+
+    // Graceful decode: jika sudah array, pakai langsung. Jika string, decode sekali lagi.
+    $recProducts   = is_array($rawProducts)   ? $rawProducts   : json_decode($rawProducts ?? '[]', true);
+    $recTreatments = is_array($rawTreatments) ? $rawTreatments : json_decode($rawTreatments ?? '[]', true);
+
+    // Pastikan selalu array
+    $recProducts   = is_array($recProducts)   ? $recProducts   : [];
+    $recTreatments = is_array($recTreatments) ? $recTreatments : [];
+@endphp
+
+@if(count($recProducts) > 0 || count($recTreatments) > 0)
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+
+    {{-- KIRI: Rekomendasi Skincare & Obat --}}
+    @if(count($recProducts) > 0)
+    <div class="bg-white rounded-[24px] border border-[#E1E3DE]/70 shadow-sm overflow-hidden">
+        <div class="px-6 pt-6 pb-4 border-b border-[#E1E3DE]/50 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-base font-bold text-gray-800">Rekomendasi Skincare & Obat</h2>
+                <p class="text-xs text-[#797B78] mt-0.5">Produk yang disarankan berdasarkan diagnosa AI.</p>
+            </div>
+            <span class="ml-auto text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                {{ count($recProducts) }} Produk
+            </span>
+        </div>
+        <div class="p-6">
+            <div class="space-y-3">
+                @foreach($recProducts as $idx => $product)
+                <div class="group relative bg-[#FAF9F6] hover:bg-emerald-50/50 border border-[#E1E3DE]/70 hover:border-emerald-200 rounded-2xl p-4 transition-all duration-200">
+                    <div class="flex items-start gap-3.5">
+                        {{-- Nomor urut --}}
+                        <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0 group-hover:bg-emerald-200 transition-colors">
+                            {{ $idx + 1 }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-sm font-bold text-gray-800 mb-1">{{ $product['nama_produk'] ?? '-' }}</h3>
+                            @if(!empty($product['kandungan']))
+                            <div class="flex items-start gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-[#A8ABA7] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                </svg>
+                                <p class="text-xs text-[#797B78] leading-relaxed">{{ $product['kandungan'] }}</p>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- KANAN: Rekomendasi Tindakan Klinik --}}
+    @if(count($recTreatments) > 0)
+    <div class="bg-white rounded-[24px] border border-[#E1E3DE]/70 shadow-sm overflow-hidden">
+        <div class="px-6 pt-6 pb-4 border-b border-[#E1E3DE]/50 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-[#EBDBDD] flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-[#8B3A3A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-base font-bold text-gray-800">Rekomendasi Tindakan Klinik</h2>
+                <p class="text-xs text-[#797B78] mt-0.5">Prosedur perawatan yang dapat dilakukan di klinik.</p>
+            </div>
+            <span class="ml-auto text-[10px] font-bold text-[#8B3A3A] bg-[#EBDBDD] border border-[#D5C5C5] px-2 py-0.5 rounded-full">
+                {{ count($recTreatments) }} Tindakan
+            </span>
+        </div>
+        <div class="p-6">
+            <div class="space-y-3">
+                @foreach($recTreatments as $idx => $treatment)
+                <div class="group relative bg-[#FAF9F6] hover:bg-[#EBDBDD]/30 border border-[#E1E3DE]/70 hover:border-[#D5C5C5] rounded-2xl p-4 transition-all duration-200">
+                    <div class="flex items-center gap-3.5">
+                        {{-- Nomor urut --}}
+                        <div class="w-8 h-8 rounded-xl bg-[#EBDBDD] text-[#8B3A3A] flex items-center justify-center text-xs font-bold shrink-0 group-hover:bg-[#D5C5C5] transition-colors">
+                            {{ $idx + 1 }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-sm font-bold text-gray-800">{{ $treatment['nama_treatment'] ?? '-' }}</h3>
+                        </div>
+                        {{-- Estimasi harga --}}
+                        <div class="shrink-0 text-right">
+                            @if(!empty($treatment['estimasi_harga']) && is_numeric($treatment['estimasi_harga']))
+                                <span class="text-sm font-bold text-[#8B3A3A]">Rp {{ number_format($treatment['estimasi_harga'], 0, ',', '.') }}</span>
+                                <p class="text-[10px] text-[#A8ABA7]">estimasi</p>
+                            @else
+                                <span class="text-xs font-medium text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                                    Konsultasikan dengan dokter
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            {{-- Catatan --}}
+            <div class="mt-4 pt-3 border-t border-[#E1E3DE]/50 flex items-start gap-2">
+                <svg class="w-3.5 h-3.5 text-[#A8ABA7] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-[10px] text-[#A8ABA7] leading-relaxed">
+                    Harga bersifat estimasi dan dapat berbeda tergantung kondisi serta kebijakan klinik.
+                </p>
+            </div>
+        </div>
+    </div>
+    @endif
+
+</div>
+@endif
+{{-- ═══ END REKOMENDASI ════════════════════════════════════════════════ --}}
+
 {{-- ═══ ACTION CARD ════════════════════════════════════════════════════ --}}
 <div class="bg-white rounded-[24px] border border-[#E1E3DE]/70 shadow-sm p-6">
 
@@ -380,7 +509,7 @@
             $waText = urlencode(
                 "Halo, saya baru saja melakukan skrining kulit AI di The Ethereal Clinic.\n\n" .
                 "Hasil saya:\n" .
-                "• Skor Kesehatan Wajah: {$skor}/100 ({$label})\n" .
+                "• Tingkat Risiko Kulit: {$cfPct}% ({$label})\n" .
                 "• Total objek terdeteksi: " . ($hasil['total_objek_terdeteksi'] ?? 0) . "\n\n" .
                 "Saya ingin berkonsultasi lebih lanjut dengan dokter. Terima kasih."
             );
@@ -492,10 +621,38 @@
         const scaleX = origW > 0 ? dispW / origW : 1;
         const scaleY = origH > 0 ? dispH / origH : scaleX; // fallback ke scaleX jika aspek tidak diketahui
 
+        // ── Mapping terjemahan label kelas ke Bahasa Indonesia ─────
+        const classTranslation = {
+            'pustules'    : 'Jerawat Pustula',
+            'pustule'     : 'Jerawat Pustula',
+            'papules'     : 'Jerawat Papula',
+            'papule'      : 'Jerawat Papula',
+            'pimple'      : 'Jerawat',
+            'pimples'     : 'Jerawat',
+            'acne'        : 'Jerawat',
+            'nodules'     : 'Kista/Nodul',
+            'nodule'      : 'Kista/Nodul',
+            'cysts'       : 'Kista',
+            'cyst'        : 'Kista',
+            'blackheads'  : 'Komedo Hitam',
+            'blackhead'   : 'Komedo Hitam',
+            'whiteheads'  : 'Komedo Putih',
+            'whitehead'   : 'Komedo Putih',
+            'comedone'    : 'Komedo',
+            'comedones'   : 'Komedo',
+            'dark_spot'   : 'Bekas Jerawat',
+            'dark_spots'  : 'Bekas Jerawat',
+            'scar'        : 'Bekas Luka',
+            'scars'       : 'Bekas Luka',
+        };
+
         rawPredictions.forEach(pred => {
             const classKey = (pred.class || '').toLowerCase();
             const color    = CLASS_COLORS[classKey] || DEFAULT_COLOR;
             const conf     = Math.round((pred.confidence ?? 0) * 100);
+
+            // Terjemahkan label kelas ke Bahasa Indonesia
+            const labelName = classTranslation[classKey] || pred.class || 'Unknown';
 
             // PENTING (Karakteristik Roboflow):
             // x, y adalah CENTER POINT — konversi ke top-left corner
@@ -517,9 +674,9 @@
                 `box-sizing: border-box`,
             ].join(';');
 
-            // ── Label nama kelas + confidence ────────────────────────
+            // ── Label nama kelas (Bahasa Indonesia) + confidence ─────
             const label = document.createElement('div');
-            const labelText = (pred.class || 'Unknown') + ' ' + conf + '%';
+            const labelText = labelName + ' ' + conf + '%';
             label.textContent = labelText;
             label.style.cssText = [
                 `position: absolute`,
