@@ -4,7 +4,7 @@
     </div>
 
     <div class="hidden md:flex items-center space-x-10 text-sm font-medium">
-        <a href="/" class="text-gray-500 hover:text-[#8A3033] transition-colors">Beranda</a>
+        <a href="/#beranda" class="text-gray-500 hover:text-[#8A3033] transition-colors">Beranda</a>
         <a href="/#layanan" class="text-gray-500 hover:text-[#8A3033] transition-colors">Layanan</a>
         
         <div class="relative group">

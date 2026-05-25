@@ -47,37 +47,64 @@
 
             <div class="flex flex-col gap-8 relative z-10">
                 
-                <div class="bg-gradient-to-br from-[#F7F5F4] to-white rounded-[32px] p-8 border border-white shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="p-2.5 bg-white rounded-2xl shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
-                            <svg class="w-5 h-5 text-[#134E4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                        </div>
-                        <h3 class="font-extrabold text-[#2A3435] text-lg tracking-wide">Data Kecantikan</h3>
-                    </div>
+               <div class="bg-gradient-to-br from-[#F7F5F4] to-white rounded-[32px] p-8 border border-white shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+    <div>
+        <div class="flex items-center gap-3 mb-8">
+            <div class="p-2.5 bg-white rounded-2xl shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-[#E1E3DE]/50">
+                <svg class="w-5 h-5 text-[#7B5556]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+            </div>
+            <h3 class="font-extrabold text-[#5D605C] text-lg tracking-wide">Ringkasan Medis</h3>
+        </div>
 
-                    <div class="bg-white/80 border border-[#E1E3DE]/40 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <div class="space-y-1">
-                            <label class="text-[11px] font-bold text-[#797B78] uppercase tracking-widest block">Tipe Kulit Anda</label>
-                            <p class="text-xs text-[#A9B4B5] font-medium">Berdasarkan hasil diagnosis terakhir</p>
-                        </div>
-                        
-                        @php
-                            $skinTypeMap = [
-                                'normal' => 'Normal',
-                                'dry' => 'Kering',
-                                'oily' => 'Berminyak',
-                                'combination' => 'Kombinasi',
-                                'sensitive' => 'Sensitif'
-                            ];
-                            $userSkin = Auth::user()->skin_type;
-                            $displaySkin = $userSkin ? ($skinTypeMap[$userSkin] ?? ucfirst($userSkin)) : 'Tidak Diketahui';
-                        @endphp
+        @php
+            // Mengambil data dari relasi analysisHistories yang sudah kita buat sebelumnya
+            $totalScan = Auth::user()->analysisHistories()->count();
+            $latestScan = Auth::user()->analysisHistories()->latest()->first();
+        @endphp
 
-                        <div class="bg-gradient-to-r from-[#F4F5F6] to-[#E1E3DE] px-5 py-2.5 rounded-full text-[#134E4A] font-extrabold text-sm shadow-inner whitespace-nowrap">
-                            {{ $displaySkin }}
-                        </div>
+        <div class="bg-white/80 border border-[#E1E3DE]/40 rounded-2xl p-5 shadow-sm flex justify-between items-center mb-4 hover:border-[#7B5556]/30 transition-colors">
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-[#797B78] uppercase tracking-widest block">Total Analisis Wajah</label>
+                <p class="text-xs text-[#5D605C] font-medium">Akumulasi pemindaian AI & Kuesioner</p>
+            </div>
+            <div class="bg-gray-50 px-4 py-2 rounded-xl text-[#7B5556] font-black text-lg border border-[#E1E3DE]">
+                {{ $totalScan }} 
+            </div>
+        </div>
+
+        <div class="bg-white/80 border border-[#E1E3DE]/40 rounded-2xl p-5 shadow-sm flex flex-col gap-2 hover:border-[#7B5556]/30 transition-colors">
+            <label class="text-[10px] font-bold text-[#797B78] uppercase tracking-widest block">Pemeriksaan Terakhir</label>
+            @if($latestScan)
+                <div class="flex justify-between items-center">
+                    <p class="text-sm font-bold text-[#5D605C] truncate pr-4">
+                        {{ $latestScan->skinProblem->name ?? 'Masalah Terdeteksi' }}
+                    </p>
+                    <div class="shrink-0 text-right">
+                        <span class="block text-xs font-bold text-[#7B5556]">
+                            {{ $latestScan->created_at->translatedFormat('d M Y') }}
+                        </span>
+                        <span class="text-[10px] text-gray-400 font-medium">
+                            Skor CF: {{ round($latestScan->confidence_score) }}%
+                        </span>
                     </div>
                 </div>
+            @else
+                <p class="text-xs text-gray-500 italic mt-1">Anda belum pernah melakukan pemindaian wajah.</p>
+            @endif
+        </div>
+    </div>
+    
+    <div class="mt-6 pt-5 border-t border-[#E1E3DE]/50">
+        <a href="{{ route('pasien.history') }}" class="w-full flex items-center justify-center gap-2 py-3 bg-[#F7F5F4] hover:bg-[#E1E3DE]/40 border border-[#E1E3DE] rounded-xl text-xs font-bold text-[#5D605C] transition-colors group">
+            Lihat Riwayat Lengkap
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+        </a>
+    </div>
+</div>
 
                 <div class="bg-gradient-to-br from-[#F7F5F4] to-white rounded-[32px] p-8 flex-1 flex flex-col justify-center border border-white shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
                     <div class="flex items-center gap-3 mb-8 justify-center">
@@ -131,6 +158,22 @@
                 @csrf
                 @method('PUT')
 
+            @if($errors->has('current_password'))
+                <div class="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3 transition-all duration-300">
+                <div class="w-8 h-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                </div>
+                    <div class="flex-1 min-w-0">
+                    <h5 class="text-xs font-bold text-red-800 uppercase tracking-wider">Verifikasi Keamanan Gagal</h5>
+                    <p class="text-[11px] text-red-600 font-medium mt-0.5 leading-relaxed">
+                    {{ $errors->first('current_password') }}
+                    </p>
+                    </div>
+                </div>
+            @endif
+
                 <div class="flex flex-col items-center mb-10">
                     <div class="relative group cursor-pointer" onclick="document.getElementById('fileUpload').click()">
                         <div class="absolute inset-0 bg-gradient-to-tr from-[#0A6879]/20 to-[#68575E]/20 rounded-full blur-lg transform scale-110 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -152,6 +195,20 @@
                         <label class="block text-[11px] font-bold text-[#797B78] uppercase tracking-widest mb-2 px-2">Nama Panjang</label>
                         <input type="text" name="name" value="{{ Auth::user()->name }}" class="w-full bg-[#F7F5F4] border border-transparent text-[#2A3435] font-semibold rounded-2xl px-5 py-4 outline-none focus:bg-white focus:border-[#0A6879]/30 focus:ring-4 focus:ring-[#0A6879]/10 transition-all shadow-inner">
                     </div>
+
+                <div>
+                   <label class="block text-[11px] font-bold text-[#797B78] uppercase tracking-widest mb-2 px-2">Kata Sandi Saat Ini</label>
+                    <div class="relative">
+                    <input type="password" id="currentPasswordInput" name="current_password" placeholder="Wajib diisi jika ingin mengubah sandi baru" class="w-full bg-[#F7F5F4] border @error('current_password') border-red-300 @else border-transparent @enderror text-[#2A3435] font-semibold rounded-2xl pl-5 pr-12 py-4 outline-none focus:bg-white focus:border-[#7B5556]/30 transition-all shadow-inner placeholder-[#A9B4B5]">
+            
+             <button type="button" onclick="toggleCurrentPassword()" class="absolute inset-y-0 right-0 px-4 flex items-center text-[#A9B4B5] hover:text-[#7B5556] focus:outline-none transition-colors">
+                <svg id="currentEyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+            </button>
+        </div>
+    </div>
                     
                     <div>
                         <label class="block text-[11px] font-bold text-[#797B78] uppercase tracking-widest mb-2 px-2">Kata Sandi Baru (Opsional)</label>
@@ -240,6 +297,25 @@
         }
     }
 
+    // TOGGLE MATA UNTUK SANDI LAMA (CURRENT_PASSWORD)
+    function toggleCurrentPassword() {
+        const currentPwdInput = document.getElementById('currentPasswordInput');
+        const currentEyeIcon = document.getElementById('currentEyeIcon');
+
+        if (currentPwdInput.type === 'password') {
+            currentPwdInput.type = 'text';
+            currentEyeIcon.innerHTML = `
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+            `;
+        } else {
+            currentPwdInput.type = 'password';
+            currentEyeIcon.innerHTML = `
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            `;
+        }
+    }
+
     // Toggle Tampilkan/Sembunyikan Password
     function togglePassword() {
         const pwdInput = document.getElementById('passwordInput');
@@ -281,5 +357,11 @@
             deleteModal.classList.add('hidden');
         }, 300);
     }
+    // Cek jika ada error validasi dari Laravel, maka otomatis buka modal profil
+    @if($errors->has('name') || $errors->has('current_password') || $errors->has('password') || $errors->has('avatar'))
+        document.addEventListener('DOMContentLoaded', function() {
+            openModal();
+        });
+    @endif
 </script>
 @endpush

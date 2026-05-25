@@ -55,16 +55,16 @@
             <span class="ml-3 whitespace-nowrap sidebar-text">Dashboard</span>
         </a>
 
-        <!-- Data Gejala -->
-        <a href="{{ route('admin.symptoms.index') }}"
-            class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('symptoms.*') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}"
-            title="Data Gejala">
+        {{-- Basis Pengetahuan Pakar (Knowledge Base) --}}
+        <a href="{{ route('admin.knowledge-base.index') }}"
+            class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('admin.knowledge-base*') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}"
+            title="Basis Pengetahuan Pakar">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
             </svg>
-            <span class="ml-3 whitespace-nowrap sidebar-text">Data Gejala</span>
+            <span class="ml-3 whitespace-nowrap sidebar-text">Basis Pengetahuan</span>
         </a>
 
         <!-- Data Produk -->

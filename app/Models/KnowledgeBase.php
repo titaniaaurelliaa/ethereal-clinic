@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class KnowledgeBase extends Model
 {
@@ -13,6 +14,7 @@ class KnowledgeBase extends Model
     protected $table = 'knowledge_bases';
 
     protected $fillable = [
+        'skin_problem_id',
         'nama_objek',
         'tingkat_keparahan',
         'min_objek',
@@ -21,9 +23,10 @@ class KnowledgeBase extends Model
     ];
 
     protected $casts = [
-        'min_objek'  => 'integer',
-        'max_objek'  => 'integer',
-        'cf_pakar'   => 'float',
+        'skin_problem_id' => 'integer',
+        'min_objek'       => 'integer',
+        'max_objek'       => 'integer',
+        'cf_pakar'        => 'float',
     ];
 
     /**
@@ -41,22 +44,23 @@ class KnowledgeBase extends Model
             ->first();
     }
 
-    // ──────────────────────────────────────────────────
-    // Relasi
-    // ──────────────────────────────────────────────────
+    // ──────────────────────────────────────────────────────────────────────
+    // Relations
+    // ──────────────────────────────────────────────────────────────────────
 
     /**
-     * Satu KnowledgeBase (objek + tingkat keparahan) dapat memiliki banyak
-     * pertanyaan anamnesis (SymptomRule) yang akan diajukan ke pengguna
-     * secara kontekstual setelah AI mendeteksi kondisi tersebut.
+     * Satu KnowledgeBase merujuk pada Satu Penyakit Kulit.
+     */
+    public function skinProblem(): BelongsTo
+    {
+        return $this->belongsTo(SkinProblemModel::class, 'skin_problem_id');
+    }
+
+    /**
+     * Satu KnowledgeBase dapat memiliki banyak pertanyaan anamnesis (SymptomRule).
      */
     public function symptomRules(): HasMany
     {
         return $this->hasMany(SymptomRule::class, 'knowledge_base_id');
     }
-    public function skinProblem()
-{
-    // Relasi: Satu Knowledge Base merujuk pada Satu Penyakit Kulit
-    return $this->belongsTo(SkinProblemModel::class, 'skin_problem_id');
-}
 }

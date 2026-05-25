@@ -215,6 +215,11 @@
                     Hapus Foto
                 </button>
 
+                <button type="button" id="btn-batal-kamera"
+                        class="hidden absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border border-[#E1E3DE] text-[#5D605C] text-xs font-bold px-4 py-1.5 rounded-full hover:bg-gray-100 hover:text-gray-800 transition-all shadow-sm">
+                    Batalkan
+                </button>
+
                 {{-- Canvas tersembunyi untuk capture frame --}}
                 <canvas id="capture-canvas" class="hidden"></canvas>
             </div>
@@ -268,6 +273,7 @@
     const btnKamera         = document.getElementById('btn-kamera');
     const btnUpload         = document.getElementById('btn-upload');
     const btnHapus          = document.getElementById('btn-hapus');
+    const btnBatalKamera    = document.getElementById('btn-batal-kamera');
     const btnSubmit         = document.getElementById('btn-submit');
     const previewImg        = document.getElementById('preview-img');
     const previewPlaceholder= document.getElementById('preview-placeholder');
@@ -317,11 +323,17 @@
             });
 
             videoEl.srcObject = stream;
-            // Tampilkan video, sembunyikan placeholder & preview
+            // Bersihkan sisa elemen UI foto sebelumnya (jika ada)
             previewPlaceholder.classList.add('hidden');
             previewImg.classList.add('hidden');
+            previewBadge.classList.add('hidden');
+            btnHapus.classList.add('hidden');
+            fileNameDisplay.classList.add('hidden');
+
+            // Tampilkan video stream, badge LIVE, dan tombol BATAL
             videoEl.classList.remove('hidden');
             liveBadge.classList.remove('hidden');
+            btnBatalKamera.classList.remove('hidden');
 
             // Ganti label tombol → Jepret
             iconKamera.classList.add('hidden');
@@ -395,6 +407,7 @@
         videoEl.srcObject = null;
         videoEl.classList.add('hidden');
         liveBadge.classList.add('hidden');
+        btnBatalKamera.classList.add('hidden');
 
         // Kembalikan tombol ke state awal
         iconJepret.classList.add('hidden');
@@ -407,6 +420,26 @@
         btnUpload.classList.remove('opacity-40', 'cursor-not-allowed');
 
         liveMode = false;
+    }
+    // Event listener untuk tombol batal kamera
+    btnBatalKamera.addEventListener('click', cancelCamera);
+
+    /* ── Batalkan aksi kamera (kembali ke state sebelumnya) ──── */
+    function cancelCamera() {
+        stopCamera(); // Mematikan lampu webcam sepenuhnya
+        
+        // Cek secara cerdas: apakah sebelumnya sudah ada foto yang diunggah?
+        if (inputFile.files && inputFile.files.length > 0) {
+            // Jika ada, kembalikan tampilan foto sebelumnya
+            previewImg.classList.remove('hidden');
+            previewBadge.classList.remove('hidden');
+            btnHapus.classList.remove('hidden');
+            fileNameDisplay.classList.remove('hidden');
+            btnSubmit.disabled = false;
+        } else {
+            // Jika kosong, kembalikan ke tampilan placeholder awal
+            previewPlaceholder.classList.remove('hidden');
+        }
     }
 
     /* ── Stop kamera jika user meninggalkan halaman ──────────── */

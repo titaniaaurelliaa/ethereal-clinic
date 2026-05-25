@@ -382,7 +382,8 @@ class AnalisisController extends Controller
         $history = AnalysisHistoryModel::with(['skinProblem', 'user'])
             ->where('id', $id)
             ->where('user_id', Auth::id())
-            ->firstOrFail();
+            ->latest()
+            ->first();
 
         $skor  = (int) round(100 - $history->confidence_score);
         $data  = [
@@ -408,7 +409,8 @@ class AnalisisController extends Controller
                 'dpi'                  => 96,
             ]);
 
-        $filename = 'Rekam_Medis_AI_' . str_replace(' ', '_', $history->user->name) . '_' . $history->created_at->format('Ymd') . '.pdf';
+            
+        $filename = 'Rekam_Medis_AI_' . str_replace(' ', '_', $history->user->name) . '_' . $history->created_at->format('Ymd') . '_' . $history->id . '.pdf';
 
         return $pdf->download($filename);
     }

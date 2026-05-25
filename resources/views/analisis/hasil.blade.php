@@ -205,67 +205,96 @@
         </div>
     </div>
 
-    {{-- KANAN: Faktor Gaya Hidup --}}
-    <div class="bg-white rounded-[24px] border border-[#E1E3DE]/70 shadow-sm">
-        <div class="px-6 pt-6 pb-4 border-b border-[#E1E3DE]/50 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-xl bg-[#E1E3DE] flex items-center justify-center">
-                <svg class="w-4 h-4 text-[#5D605C]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                </svg>
-            </div>
-            <h2 class="text-base font-bold text-gray-800">Faktor Gaya Hidup</h2>
+{{-- KANAN: Faktor Gaya Hidup --}}
+    <div class="bg-white rounded-[24px] border border-[#E1E3DE] shadow-sm overflow-hidden">
+        <div class="px-6 pt-6 pb-4 border-b border-[#E1E3DE] flex items-center gap-3 bg-gray-50/50">
+        <div class="w-10 h-10 rounded-xl bg-white border border-[#E1E3DE] flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-[#5D605C]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
         </div>
-        <div class="p-6">
-            @php
-                $lifestyleDetail  = $hasil['lifestyle_detail']   ?? [];
-                $lifestyleBerisiko = $hasil['lifestyle_berisiko'] ?? [];
-                $lifestyleEmoji   = ['Tidur'=>'😴','Stres'=>'😰','Air'=>'💧','Diet'=>'🥗','Sinar Matahari'=>'☀️'];
-            @endphp
+        <h2 class="text-base font-bold text-[#5D605C] tracking-tight">Faktor Gaya Hidup</h2>
+    </div>
 
-            @if(count($lifestyleBerisiko) > 0)
-                <p class="text-xs text-[#797B78] mb-4">Faktor berikut berkontribusi terhadap risiko kulit bermasalah:</p>
-                <div class="space-y-3 mb-5">
-                    @foreach($lifestyleBerisiko as $item)
-                        @php $cf = round($item['cf_pakar'] * 100); @endphp
-                        <div class="flex items-center gap-3 bg-[#FAF9F6] border border-[#E1E3DE]/70 rounded-2xl p-3.5">
-                            <span class="text-xl shrink-0">{{ $lifestyleEmoji[$item['kategori']] ?? '📋' }}</span>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-semibold text-gray-800">{{ $item['kategori'] }}</p>
-                                <p class="text-xs text-[#797B78] truncate">{{ $item['label'] }}</p>
-                            </div>
-                            <div class="shrink-0 text-right">
-                                <span class="text-xs font-bold text-[#8B3A3A]">+{{ $cf }}%</span>
-                                <p class="text-[10px] text-[#A8ABA7]">risiko</p>
-                            </div>
+    <div class="p-6">
+        @php
+            $lifestyleDetail   = $hasil['lifestyle_detail']   ?? [];
+            $lifestyleBerisiko = $hasil['lifestyle_berisiko'] ?? [];
+            
+            // Fungsi helper untuk merender SVG statis klinis pengganti emoticon
+            $getIcon = function($kategori) {
+                $icons = [
+                    'Tidur' => '<path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />',
+                    'Stres' => '<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />',
+                    'Air' => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 15a9 9 0 0018 0 c0-5-9-11-9-11s-9 6-9 11z" />',
+                    'Diet' => '<path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />',
+                    'Sinar Matahari' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />',
+                ];
+                $path = $icons[$kategori] ?? '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />';
+                
+                return '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">' . $path . '</svg>';
+            };
+        @endphp
+
+        @if(count($lifestyleBerisiko) > 0)
+            <p class="text-xs text-[#797B78] mb-4 leading-relaxed">Faktor berikut berkontribusi terhadap risiko kulit bermasalah:</p>
+            <div class="space-y-3 mb-8">
+                @foreach($lifestyleBerisiko as $item)
+                    @php $cf = round($item['cf_pakar'] * 100); @endphp
+                    <div class="flex items-center gap-4 bg-white border border-[#E1E3DE] rounded-2xl p-4 hover:border-[#7B5556]/40 transition-colors">
+                        <div class="w-10 h-10 rounded-xl bg-[#7B5556]/10 text-[#7B5556] flex items-center justify-center shrink-0">
+                            {!! $getIcon($item['kategori']) !!}
                         </div>
-                    @endforeach
-                </div>
-            @endif
-
-            {{-- Semua kategori --}}
-            <p class="text-xs font-semibold text-[#797B78] mb-3 uppercase tracking-wide">Semua Kategori</p>
-            <div class="space-y-2">
-                @foreach($lifestyleDetail as $item)
-                    @php
-                        $cf = $item['cf_pakar'] * 100;
-                        $isOk = $cf == 0;
-                    @endphp
-                    <div class="flex items-center gap-3">
-                        <span class="text-base shrink-0">{{ $lifestyleEmoji[$item['kategori']] ?? '📋' }}</span>
-                        <div class="flex-1">
-                            <div class="flex items-center justify-between mb-1">
-                                <span class="text-xs font-semibold text-gray-700">{{ $item['kategori'] }}</span>
-                                <span class="text-[10px] font-bold {{ $isOk ? 'text-green-600' : 'text-[#8B3A3A]' }}">
-                                    {{ $isOk ? '✓ Baik' : '+'.round($cf).'%' }}
-                                </span>
-                            </div>
-                            <div class="h-1.5 bg-[#F0EDEA] rounded-full overflow-hidden">
-                                <div class="h-full rounded-full {{ $isOk ? 'bg-green-400' : 'bg-[#8B3A3A]' }}"
-                                     style="width: {{ min(100, $cf ?: 5) }}%"></div>
-                            </div>
+                        
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-bold text-[#5D605C]">{{ $item['kategori'] }}</p>
+                            <p class="text-[11px] text-[#797B78] truncate mt-0.5">{{ $item['label'] }}</p>
+                        </div>
+                        
+                        <div class="shrink-0 text-right bg-gray-50 px-3 py-1.5 rounded-lg border border-[#E1E3DE]">
+                            <span class="text-sm font-black text-[#7B5556]">+{{ $cf }}%</span>
+                            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Risiko</p>
                         </div>
                     </div>
                 @endforeach
+            </div>
+        @endif
+
+        <div class="flex items-center gap-2 mb-4">
+            <div class="h-px bg-[#E1E3DE] flex-1"></div>
+            <p class="text-[10px] font-bold text-[#797B78] uppercase tracking-widest">Semua Kategori</p>
+            <div class="h-px bg-[#E1E3DE] flex-1"></div>
+        </div>
+        
+        <div class="space-y-4">
+            @foreach($lifestyleDetail as $item)
+                @php
+                    $cf = $item['cf_pakar'] * 100;
+                    $isOk = $cf == 0;
+                    // Logika warna tersentralisasi
+                    $textColor = $isOk ? 'text-[#3A5F43]' : 'text-[#7B5556]';
+                    $bgColor = $isOk ? 'bg-[#3A5F43]' : 'bg-[#7B5556]';
+                    $iconColor = $isOk ? 'text-[#3A5F43] bg-[#3A5F43]/10' : 'text-[#7B5556] bg-[#7B5556]/10';
+                @endphp
+                <div class="flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 {{ $iconColor }}">
+                        {!! $getIcon($item['kategori']) !!}
+                    </div>
+                    
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-bold text-[#5D605C]">{{ $item['kategori'] }}</span>
+                            <span class="text-[10px] font-black {{ $textColor }} uppercase tracking-wider">
+                                {{ $isOk ? '✓ Ideal' : '+'.round($cf).'%' }}
+                            </span>
+                        </div>
+                        <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden border border-gray-200/50">
+                            <div class="h-full rounded-full {{ $bgColor }} transition-all duration-500"
+                                 style="width: {{ min(100, $cf ?: 100) }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
             </div>
         </div>
     </div>
@@ -500,7 +529,7 @@
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
             </svg>
-            Unduh Rekam Medis (PDF)
+            Unduh Resume Medis (PDF)
         </a>
         @endif
 
@@ -514,7 +543,7 @@
                 "Saya ingin berkonsultasi lebih lanjut dengan dokter. Terima kasih."
             );
         @endphp
-        <a href="https://wa.me/6281234567890?text={{ $waText }}"
+        <a href="https://wa.me/6282331512952?text={{ $waText }}"
            target="_blank" rel="noopener"
            class="flex items-center justify-center gap-2.5
                   bg-[#25D366] text-white

@@ -6,11 +6,12 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Profile_ADMController;
 use App\Http\Controllers\Dashboard_ADMController;
 use App\Http\Controllers\SkinProblemController;
-use App\Http\Controllers\dataGejalaController;
+use App\Http\Controllers\dataGejalaController as KnowledgeBaseController;
 use App\Http\Controllers\DataTreatment_ADMController;
 use App\Http\Controllers\DataProduct_ADMController;
 use App\Http\Controllers\AnalisisController;
 use App\Http\Controllers\SymptomRuleController;
+use App\Http\Controllers\Dashboard_PSNController;
 
 // ==========================================
 // 1. ROUTE LANDING PAGE
@@ -51,13 +52,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ==========================================
 // 3. ROUTE PASIEN
 // ==========================================
-Route::get('/pasien/dashboard', function () {
-    return view('pasien.dashboard');
-})->name('pasien.dashboard')->middleware(['auth', 'role:pasien']);
+Route::get('/pasien/dashboard', [Dashboard_PSNController::class, 'index'])->name('pasien.dashboard')->middleware(['auth', 'role:pasien']);
+Route::get('/pasien/history', [Dashboard_PSNController::class, 'history'])->name('pasien.history')->middleware(['auth', 'role:pasien']);
 
-Route::get('/pasien/profil', function () {
-    return view('pasien.profil');
-})->name('profil.index')->middleware(['auth', 'role:pasien']);
+Route::get('/pasien/profil', [ProfilController::class, 'index'])->name('profil.index')->middleware(['auth', 'role:pasien']);
 
 Route::put('/pasien/profil/update', [ProfilController::class, 'update'])->name('profil.update')->middleware(['auth', 'role:pasien']);
 
@@ -101,14 +99,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         'destroy' => 'skin-problems.destroy',
     ]);
     
-    // CRUD Gejala / Symptoms
-    Route::resource('symptoms', dataGejalaController::class)->names([
-        'index'   => 'symptoms.index',
-        'create'  => 'symptoms.create',
-        'store'   => 'symptoms.store',
-        'edit'    => 'symptoms.edit',
-        'update'  => 'symptoms.update',
-        'destroy' => 'symptoms.destroy',
+    // CRUD Basis Pengetahuan Pakar (knowledge_bases)
+    Route::resource('knowledge-base', KnowledgeBaseController::class)->names([
+        'index'   => 'knowledge-base.index',
+        'create'  => 'knowledge-base.create',
+        'store'   => 'knowledge-base.store',
+        'edit'    => 'knowledge-base.edit',
+        'update'  => 'knowledge-base.update',
+        'destroy' => 'knowledge-base.destroy',
     ]);
     
     // CRUD Treatment
