@@ -6,16 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('problem_treatment', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('problem_id')->constrained('skin_problems')->onDelete('cascade');
-            $table->foreignId('treatment_id')->constrained('treatments')->onDelete('cascade');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('problem_id')->index('problem_treatment_problem_id_foreign');
+            $table->unsignedBigInteger('treatment_id')->index('problem_treatment_treatment_id_foreign');
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('problem_treatment');
