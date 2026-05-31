@@ -44,4 +44,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    /**
+     * Relasi One-to-Many ke tabel analysis_histories
+     * Satu user (pasien) bisa memiliki banyak riwayat analisis
+     */
+    public function analysisHistories()
+    {
+        // Hubungkan ke AnalysisHistoryModel
+        return $this->hasMany(AnalysisHistoryModel::class, 'user_id', 'id');
+    }
 }

@@ -31,4 +31,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Roboflow — Computer Vision AI
+    |--------------------------------------------------------------------------
+    */
+    'roboflow' => [
+        'api_key'  => env('ROBOFLOW_API_KEY'),
+        'model_id' => env('ROBOFLOW_MODEL_ID'),
+    ],
+
 ];

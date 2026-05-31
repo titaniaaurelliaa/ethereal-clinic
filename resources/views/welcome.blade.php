@@ -23,14 +23,6 @@
                         Sistem pakar kami menggunakan algoritma Certainty Factor untuk memberikan akurasi diagnosis kesehatan kulit yang terpercaya, layaknya berkonsultasi langsung dengan ahli dermatologi.
                     </p>
 
-                    <div class="flex flex-wrap items-center gap-4">
-                        <a href="/login" class="px-8 py-3.5 rounded-full bg-[#68575E] text-white font-semibold hover:bg-[#52444a] transition-colors shadow-md">
-                            Mulai Konsultasi
-                        </a>
-                        <a href="/login" class="px-10 py-3.5 rounded-full bg-transparent border-[1.5px] border-[#CAA59C] text-[#68575E] font-semibold hover:bg-[#FAE2EA] transition-colors">
-                            Login
-                        </a>
-                    </div>
                 </div>
 
                 <div class="relative w-full flex justify-end">

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\SymptomModel;
+use App\Models\SymptomRule;          // replaces the dropped symptoms table
 use App\Models\SkinProblemModel;
 use App\Models\ProductModel;
 use App\Models\TreatmentModel;
@@ -16,8 +16,7 @@ class Dashboard_ADMController extends Controller
 {
     public function index()
     {
-        // Total gejala
-        $totalSymptoms = SymptomModel::count();
+        
         
         // Total masalah kulit
         $totalSkinProblems = SkinProblemModel::count();
@@ -42,9 +41,10 @@ class Dashboard_ADMController extends Controller
             ->whereYear('created_at', now()->year)
             ->count();
         
-        // Analisis bulan lalu
-        $analysisLastMonth = AnalysisHistoryModel::whereMonth('created_at', now()->subMonth()->month)
-            ->whereYear('created_at', now()->subMonth()->year)
+        // Analisis bulan lalu — clone now() to avoid mutating the same Carbon instance
+        $lastMonth = now()->subMonth();
+        $analysisLastMonth = AnalysisHistoryModel::whereMonth('created_at', $lastMonth->month)
+            ->whereYear('created_at', $lastMonth->year)
             ->count();
         
         // Trend persentase
@@ -96,9 +96,9 @@ class Dashboard_ADMController extends Controller
                 ->get();
         }
         
-        //Gejala yang paling sering muncul di analysis_data (5 teratas)
-        $gejalaTerbanyak = $this->getGejalaTerbanyakFromAnalysis();
-        
+        // Total pertanyaan anamnesis (SymptomRule — pengganti tabel symptoms yang sudah dihapus)
+        $totalSymptoms = SymptomRule::count();
+
         // Data untuk chart tren masalah kulit per bulan (3 teratas)
         // Ambil 3 masalah kulit dengan jumlah analisis terbanyak
         $top3SkinProblems = SkinProblemModel::withCount('analysisHistories')
@@ -156,58 +156,9 @@ class Dashboard_ADMController extends Controller
             'chartMonthlyData',
             'bulanNama',
             'trendingSkinProblems',
-            'gejalaTerbanyak',
             'trendLineData',
             'recentAnalysis'
         ));
     }
     
-    /**
-     * Ambil data gejala terbanyak dari analysis_data JSON
-     */
-    private function getGejalaTerbanyakFromAnalysis()
-    {
-        // Ambil semua analysis_data
-        $analyses = AnalysisHistoryModel::select('analysis_data')->get();
-        
-        $gejalaCount = [];
-        
-        foreach ($analyses as $analysis) {
-            $analysisData = $analysis->analysis_data;
-            
-            if (is_array($analysisData)) {
-                foreach ($analysisData as $gejala) {
-                    // Cek berbagai kemungkinan struktur data
-                    $gejalaId = $gejala['gejala_id'] ?? $gejala['symptom_id'] ?? $gejala['id'] ?? null;
-                    
-                    if ($gejalaId) {
-                        if (!isset($gejalaCount[$gejalaId])) {
-                            $gejalaCount[$gejalaId] = 0;
-                        }
-                        $gejalaCount[$gejalaId]++;
-                    }
-                }
-            }
-        }
-        
-        // Ambil data gejala dari database
-        $result = [];
-        foreach ($gejalaCount as $gejalaId => $count) {
-            $symptom = SymptomModel::find($gejalaId);
-            if ($symptom) {
-                $result[] = (object)[
-                    'symptom_id' => $gejalaId,
-                    'total' => $count,
-                    'symptom' => $symptom
-                ];
-            }
-        }
-        
-        // Urutkan berdasarkan total terbanyak
-        usort($result, function($a, $b) {
-            return $b->total <=> $a->total;
-        });
-        
-        return array_slice($result, 0, 5);
-    }
 }

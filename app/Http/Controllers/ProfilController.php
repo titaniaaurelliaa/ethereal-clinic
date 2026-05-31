@@ -22,49 +22,45 @@ class ProfilController extends Controller
      */
     public function update(Request $request)
     {
-/** @var \App\Models\User $user */
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // 1. Validasi Input
+        // 1. Validasi Input dengan Proteksi Sandi Lama
         $request->validate([
             'name' => 'required|string|max:255',
+            // required_with:password berarti sandi lama WAJIB diisi JIKA sandi baru diisi
+            'current_password' => 'nullable|required_with:password|current_password', 
             'password' => 'nullable|min:8',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Maksimal 2MB
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
+        ], [
+            // Kustomisasi pesan eror agar ramah pengguna
+            'current_password.required_with' => 'Sandi saat ini wajib diisi untuk keamanan sebelum mengubah sandi baru.',
+            'current_password.current_password' => 'Sandi saat ini yang Anda masukkan salah.',
+            'password.min' => 'Sandi baru minimal harus 8 karakter.'
         ]);
 
         // 2. Update Nama
         $user->name = $request->name;
         
-        // 3. Update Password (Hanya jika input form tidak kosong)
+        // 3. Update Password
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
 
         // 4. Handle Upload File Fisik Avatar
         if ($request->hasFile('avatar')) {
-            
-            // Hapus file avatar lama dari server jika sebelumnya sudah ada
             if ($user->avatar && Storage::exists('public/avatars/' . $user->avatar)) {
                 Storage::delete('public/avatars/' . $user->avatar);
             }
-
-            // Ambil file yang diupload
             $file = $request->file('avatar');
-            // Buat nama unik agar tidak bentrok (contoh: 1712345678_foto.jpg)
             $filename = time() . '_' . $file->getClientOriginalName();
-            
-            // Simpan foto baru ke dalam folder storage/app/public/avatars
             $file->storeAs('public/avatars', $filename);
-            
-            // Simpan HANYA nama filenya ke database MySQL
             $user->avatar = $filename;
         }
 
-        // Simpan semua perubahan ke database
         $user->save();
 
-        // Kembali ke halaman profil dengan pesan sukses
-        return back()->with('success', 'Profil berhasil diperbarui!');
+        return back()->with('success', 'Profil dan keamanan akun berhasil diperbarui!');
     }
     /**
      * Menghapus akun pasien secara permanen

@@ -6,9 +6,12 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Profile_ADMController;
 use App\Http\Controllers\Dashboard_ADMController;
 use App\Http\Controllers\SkinProblemController;
-use App\Http\Controllers\dataGejalaController;
+use App\Http\Controllers\dataGejalaController as KnowledgeBaseController;
 use App\Http\Controllers\DataTreatment_ADMController;
 use App\Http\Controllers\DataProduct_ADMController;
+use App\Http\Controllers\AnalisisController;
+use App\Http\Controllers\SymptomRuleController;
+use App\Http\Controllers\Dashboard_PSNController;
 
 // ==========================================
 // 1. ROUTE LANDING PAGE
@@ -49,17 +52,29 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ==========================================
 // 3. ROUTE PASIEN
 // ==========================================
-Route::get('/pasien/dashboard', function () {
-    return view('pasien.dashboard');
-})->name('pasien.dashboard')->middleware(['auth', 'role:pasien']);
+Route::get('/pasien/dashboard', [Dashboard_PSNController::class, 'index'])->name('pasien.dashboard')->middleware(['auth', 'role:pasien']);
+Route::get('/pasien/history', [Dashboard_PSNController::class, 'history'])->name('pasien.history')->middleware(['auth', 'role:pasien']);
 
-Route::get('/pasien/profil', function () {
-    return view('pasien.profil');
-})->name('profil.index')->middleware(['auth', 'role:pasien']);
+Route::get('/pasien/profil', [ProfilController::class, 'index'])->name('profil.index')->middleware(['auth', 'role:pasien']);
 
 Route::put('/pasien/profil/update', [ProfilController::class, 'update'])->name('profil.update')->middleware(['auth', 'role:pasien']);
 
 Route::delete('/pasien/profil/hapus', [ProfilController::class, 'destroy'])->name('profil.destroy')->middleware(['auth', 'role:pasien']);
+
+// ══════════════════════════════════════════════════════════════════
+// Analisis Kulit Hybrid — 3-Step Flow
+//   Step 1: GET  /pasien/analisis          → index()        Upload foto
+//   Step 2: POST /pasien/analisis/scan     → scan()         Deteksi AI + kuesioner
+//   Step 3: POST /pasien/analisis/final    → processFinal() Hitung CF + simpan
+//   History: GET /pasien/analisis/{id}     → show()         Riwayat
+// ══════════════════════════════════════════════════════════════════
+Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->name('analisis.')->group(function () {
+    Route::get( '/analisis',              [AnalisisController::class, 'index']       )->name('index');
+    Route::post('/analisis/scan',         [AnalisisController::class, 'scan']        )->name('scan');
+    Route::post('/analisis/final',        [AnalisisController::class, 'processFinal'])->name('final');
+    Route::get( '/analisis/{id}',         [AnalisisController::class, 'show']        )->name('show');
+    Route::get( '/analisis/{id}/pdf',     [AnalisisController::class, 'exportPdf']   )->name('pdf');
+});
 
 
 // ==========================================
@@ -84,14 +99,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         'destroy' => 'skin-problems.destroy',
     ]);
     
-    // CRUD Gejala / Symptoms
-    Route::resource('symptoms', dataGejalaController::class)->names([
-        'index'   => 'symptoms.index',
-        'create'  => 'symptoms.create',
-        'store'   => 'symptoms.store',
-        'edit'    => 'symptoms.edit',
-        'update'  => 'symptoms.update',
-        'destroy' => 'symptoms.destroy',
+    // CRUD Basis Pengetahuan Pakar (knowledge_bases)
+    Route::resource('knowledge-base', KnowledgeBaseController::class)->names([
+        'index'   => 'knowledge-base.index',
+        'create'  => 'knowledge-base.create',
+        'store'   => 'knowledge-base.store',
+        'edit'    => 'knowledge-base.edit',
+        'update'  => 'knowledge-base.update',
+        'destroy' => 'knowledge-base.destroy',
     ]);
     
     // CRUD Treatment
@@ -112,6 +127,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         'edit'    => 'dataproduk.edit',
         'update'  => 'dataproduk.update',
         'destroy' => 'dataproduk.destroy',
+    ]);
+
+    // ── Contextual Anamnesis — Pertanyaan Gejala Dinamis (Fase 2) ──
+    Route::resource('symptom-rules', SymptomRuleController::class)->names([
+        'index'   => 'symptom-rules.index',
+        'create'  => 'symptom-rules.create',
+        'store'   => 'symptom-rules.store',
+        'edit'    => 'symptom-rules.edit',
+        'update'  => 'symptom-rules.update',
+        'destroy' => 'symptom-rules.destroy',
     ]);
     
 });
