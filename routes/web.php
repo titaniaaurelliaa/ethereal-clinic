@@ -63,10 +63,6 @@ Route::delete('/pasien/profil/hapus', [ProfilController::class, 'destroy'])->nam
 
 // ══════════════════════════════════════════════════════════════════
 // Analisis Kulit Hybrid — 3-Step Flow
-//   Step 1: GET  /pasien/analisis          → index()        Upload foto
-//   Step 2: POST /pasien/analisis/scan     → scan()         Deteksi AI + kuesioner
-//   Step 3: POST /pasien/analisis/final    → processFinal() Hitung CF + simpan
-//   History: GET /pasien/analisis/{id}     → show()         Riwayat
 // ══════════════════════════════════════════════════════════════════
 Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->name('analisis.')->group(function () {
     Route::get( '/analisis',              [AnalisisController::class, 'index']       )->name('index');
@@ -86,8 +82,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Dashboard Admin
     Route::get('/dashboard', [Dashboard_ADMController::class, 'index'])->name('dashboard');
     
-    // Profile Admin
+    // Profile Admin (gunakan Profile_ADMController langsung)
     Route::get('/profile', [Profile_ADMController::class, 'index'])->name('profile');
+    Route::put('/profile/update', [Profile_ADMController::class, 'update'])->name('profile.update');
+    Route::put('/profile/update-password', [Profile_ADMController::class, 'updatePassword'])->name('profile.update-password');
+    Route::put('/profile/update-avatar', [Profile_ADMController::class, 'updateAvatar'])->name('profile.update-avatar');
     
     // CRUD Skin Problems (Masalah Kulit)
     Route::resource('skin-problems', SkinProblemController::class)->names([
@@ -129,7 +128,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         'destroy' => 'dataproduk.destroy',
     ]);
 
-    // ── Contextual Anamnesis — Pertanyaan Gejala Dinamis (Fase 2) ──
+    // Contextual Anamnesis — Pertanyaan Gejala Dinamis (Fase 2)
     Route::resource('symptom-rules', SymptomRuleController::class)->names([
         'index'   => 'symptom-rules.index',
         'create'  => 'symptom-rules.create',
