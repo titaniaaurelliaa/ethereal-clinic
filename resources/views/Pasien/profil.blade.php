@@ -214,7 +214,7 @@
                         <label class="block text-[11px] font-bold text-[#797B78] uppercase tracking-widest mb-2 px-2">Kata Sandi Baru (Opsional)</label>
                         <div class="relative">
                             <input type="password" id="passwordInput" name="password" placeholder="Biarkan kosong jika tidak diubah" class="w-full bg-[#F7F5F4] border border-transparent text-[#2A3435] font-semibold rounded-2xl pl-5 pr-12 py-4 outline-none focus:bg-white focus:border-[#0A6879]/30 focus:ring-4 focus:ring-[#0A6879]/10 transition-all shadow-inner placeholder-[#A9B4B5]">
-                            
+                            <p class="text-gray-400 text-xs mt-1">Minimal 8 karakter</p>
                             <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 px-4 flex items-center text-[#A9B4B5] hover:text-[#0A6879] focus:outline-none transition-colors">
                                 <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

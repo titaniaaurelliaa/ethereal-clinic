@@ -23,12 +23,13 @@
                 <form method="GET" action="{{ route('admin.dataproduk.index') }}" class="flex gap-2">
                     <select name="category" class="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
                         <option value="">Semua Kategori</option>
-                        <option value="skincare" {{ request('category') == 'skincare' ? 'selected' : '' }}>Skincare</option>
-                        <option value="makeup" {{ request('category') == 'makeup' ? 'selected' : '' }}>Makeup</option>
-                        <option value="obat" {{ request('category') == 'obat' ? 'selected' : '' }}>Obat</option>
-                        <option value="krim" {{ request('category') == 'krim' ? 'selected' : '' }}>Krim</option>
-                        <option value="sabun" {{ request('category') == 'sabun' ? 'selected' : '' }}>Sabun</option>
-                        <option value="lainnya" {{ request('category') == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
+                        <option value="cleanser" {{ request('category') == 'cleanser' ? 'selected' : '' }}>Cleanser (Pembersih)</option>
+                        <option value="exfoliator" {{ request('category') == 'exfoliator' ? 'selected' : '' }}>Exfoliator (Eksfoliator)</option>
+                        <option value="toner" {{ request('category') == 'toner' ? 'selected' : '' }}>Toner</option>
+                        <option value="essence_serum" {{ request('category') == 'essence_serum' ? 'selected' : '' }}>Essence/Serum</option>
+                        <option value="moisturizer" {{ request('category') == 'moisturizer' ? 'selected' : '' }}>Moisturizer (Pelembab)</option>
+                        <option value="sunscreen" {{ request('category') == 'sunscreen' ? 'selected' : '' }}>Sunscreen (Tabir Surya)</option>
+                        <option value="masker" {{ request('category') == 'masker' ? 'selected' : '' }}>Masker (Wajah)</option>
                     </select>
                     <input type="text" name="search" placeholder="Cari produk..." value="{{ request('search') }}"
                         class="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
@@ -60,8 +61,25 @@
 
                 <tbody class="divide-y">
                     @forelse ($dataproduk as $item)
-                        @php                            $categoryLabels = ['skincare'=>'Skincare','makeup'=>'Makeup','obat'=>'Obat','krim'=>'Krim','sabun'=>'Sabun','lainnya'=>'Lainnya'];
-                            $categoryColor = ['skincare'=>'bg-green-100 text-green-600','makeup'=>'bg-purple-100 text-purple-600','obat'=>'bg-red-100 text-red-600','krim'=>'bg-blue-100 text-blue-600','sabun'=>'bg-yellow-100 text-yellow-600','lainnya'=>'bg-gray-100 text-gray-600'];
+                        @php
+                            $categoryLabels = [
+                                'cleanser' => 'Cleanser (Pembersih)',
+                                'exfoliator' => 'Exfoliator (Eksfoliator)',
+                                'toner' => 'Toner',
+                                'essence_serum' => 'Essence/Serum',
+                                'moisturizer' => 'Moisturizer (Pelembab)',
+                                'sunscreen' => 'Sunscreen (Tabir Surya)',
+                                'masker' => 'Masker (Wajah)'
+                            ];
+                            $categoryColor = [
+                                'cleanser' => 'bg-blue-100 text-blue-600',
+                                'exfoliator' => 'bg-purple-100 text-purple-600',
+                                'toner' => 'bg-green-100 text-green-600',
+                                'essence_serum' => 'bg-pink-100 text-pink-600',
+                                'moisturizer' => 'bg-yellow-100 text-yellow-600',
+                                'sunscreen' => 'bg-orange-100 text-orange-600',
+                                'masker' => 'bg-indigo-100 text-indigo-600'
+                            ];
                         @endphp
                         <tr class="hover:bg-pink-50 transition">
                             <td class="p-4">
@@ -166,12 +184,13 @@
                     <select id="addCategory" name="category"
                         class="w-full mt-1 border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none">
                         <option value="">Pilih Kategori</option>
-                        <option value="skincare">Skincare</option>
-                        <option value="makeup">Makeup</option>
-                        <option value="obat">Obat</option>
-                        <option value="krim">Krim</option>
-                        <option value="sabun">Sabun</option>
-                        <option value="lainnya">Lainnya</option>
+                        <option value="cleanser">Cleanser (Pembersih)</option>
+                        <option value="exfoliator">Exfoliator (Eksfoliator)</option>
+                        <option value="toner">Toner</option>
+                        <option value="essence_serum">Essence/Serum</option>
+                        <option value="moisturizer">Moisturizer (Pelembab)</option>
+                        <option value="sunscreen">Sunscreen (Tabir Surya)</option>
+                        <option value="masker">Masker (Wajah)</option>
                     </select>
                 </div>
 
@@ -232,12 +251,13 @@
                     <label class="text-sm text-gray-600">Kategori</label>
                     <select id="editCategory" name="category"
                         class="w-full mt-1 border border-gray-200 p-2 rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
-                            <option value="skincare">Skincare</option>
-                            <option value="makeup">Makeup</option>
-                            <option value="obat">Obat</option>
-                            <option value="krim">Krim</option>
-                            <option value="sabun">Sabun</option>
-                            <option value="lainnya">Lainnya</option>
+                        <option value="cleanser">Cleanser (Pembersih)</option>
+                        <option value="exfoliator">Exfoliator (Eksfoliator)</option>
+                        <option value="toner">Toner</option>
+                        <option value="essence_serum">Essence/Serum</option>
+                        <option value="moisturizer">Moisturizer (Pelembab)</option>
+                        <option value="sunscreen">Sunscreen (Tabir Surya)</option>
+                        <option value="masker">Masker (Wajah)</option>
                     </select>
                 </div>
 

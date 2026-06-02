@@ -43,10 +43,6 @@
         .diagnosis-result { font-size: 16px; font-weight: bold; color: #7B5556; }
         .cf-score { font-size: 12px; font-weight: bold; color: #333; background: #fff; padding: 2px 6px; border-radius: 4px; display: inline-block; border: 1px solid #7B5556; margin-left: 10px;}
 
-        /* Signature Block */
-        .signature-table { width: 100%; margin-top: 40px; }
-        .signature-cell { width: 40%; text-align: center; font-size: 11px; }
-
         /* Footer */
         .footer { position: fixed; bottom: -10px; left: 30px; right: 30px; font-size: 8px; color: #888; border-top: 1px solid #ddd; padding-top: 5px; text-align: justify; }
     </style>
@@ -127,33 +123,7 @@
         </tbody>
     </table>
 
-    <div class="section-title">III. Subjective (Anamnesis Kuesioner Pasien)</div>
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th width="5%">No</th>
-                <th width="35%">Indikator Evaluasi</th>
-                <th width="40%">Keluhan / Jawaban Pasien</th>
-                <th width="20%">Bobot Risiko (CF)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($lifestyle_detail as $i => $item)
-            <tr>
-                <td style="text-align: center;">{{ $i + 1 }}</td>
-                <td>{{ $item['kategori'] }}</td>
-                <td>{{ $item['label'] }}</td>
-                <td style="text-align: center; color: {{ ($item['cf_pakar']*100) >= 50 ? '#8B3A3A' : '#333' }}; font-weight: bold;">
-                    {{ round($item['cf_pakar'] * 100, 1) }}%
-                </td>
-            </tr>
-            @empty
-            <tr><td colspan="4" style="text-align: center; font-style: italic;">Tidak ada data anamnesis kuesioner tambahan.</td></tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <div class="section-title">IV. Plan (Rekomendasi Penatalaksanaan Klinis)</div>
+    <div class="section-title">III. Plan (Rekomendasi Penatalaksanaan Klinis)</div>
     <table class="data-table" style="margin-bottom: 5px;">
         <tr>
             <td style="background-color: #F0F0F0; font-weight: bold; width: 25%;">Bahan Aktif Disarankan</td>
@@ -165,19 +135,6 @@
         </tr>
     </table>
     <div style="font-size: 9px; color: #8B3A3A; font-style: italic; margin-bottom: 20px;">*Rekomendasi di atas dihasilkan oleh basis pengetahuan pakar (Knowledge Base) sistem dan wajib divalidasi ulang oleh dokter jaga.</div>
-
-    <table class="signature-table">
-        <tr>
-            <td style="width: 60%;"></td>
-            <td class="signature-cell">
-                Malang, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>
-                Dokter Pemeriksa / Penanggung Jawab,<br>
-                <br><br><br><br>
-                <strong>( ....................................................... )</strong><br>
-                SIP. ....................................................
-            </td>
-        </tr>
-    </table>
 
     <div class="footer">
         <strong>MEDICAL DISCLAIMER:</strong> Dokumen ini merupakan ringkasan awal yang dihasilkan oleh Clinical Decision Support System (CDSS) The Ethereal Clinic berbasis algoritma AI dan Certainty Factor. Dokumen ini bukan merupakan resep obat mutlak dan tidak menggantikan keputusan medis klinis secara langsung. Harap bawa dokumen ini ke meja registrasi untuk verifikasi oleh Dokter Spesialis Kulit dan Kelamin (Sp.KK) kami. 
