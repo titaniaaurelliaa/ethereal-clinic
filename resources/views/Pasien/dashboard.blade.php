@@ -24,7 +24,7 @@
             <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shimmer_1.5s_infinite]"></div>
             
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2-2H5a2 2 0 01-2-2V9z" />
             </svg>
             Mulai Analisis Wajah
         </a>
@@ -48,7 +48,6 @@
             
             @if($latestHistory)
                 @php
-                    // Murni dibulatkan (misal: 85%)
                     $percentage = round($latestHistory->confidence_score);
                 @endphp
                 <div class="flex flex-col md:flex-row justify-between items-stretch p-1 gap-6">
@@ -158,46 +157,119 @@
             </div>
             Artikel Kesehatan Terkini
         </h3>
-
     </div>
     
     <div class="flex overflow-x-auto snap-x snap-mandatory gap-5 pb-6 hide-scrollbar px-1">
-        @foreach($berita as $item)
+        @forelse($beritaList as $item)
+            @php
+                $excerpt = \Illuminate\Support\Str::limit(strip_tags($item->content), 120);
+            @endphp
             <div class="group relative snap-start shrink-0 w-[280px] md:w-[320px] bg-white border border-[#E1E3DE] rounded-[24px] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full cursor-pointer">
-                
-                <div class="relative w-full h-44 bg-gray-100 overflow-hidden">
-                    <img src="{{ $item['image'] }}" alt="{{ $item['judul'] }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" loading="lazy">
+
+                <div class="relative w-full h-44 bg-[#EBDBDD]/30 overflow-hidden">
+                    @if($item->image_path)
+                        <img src="{{ asset($item->image_path) }}" alt="{{ $item->title }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" loading="lazy">
+                    @else
+                        <div class="w-full h-full bg-gradient-to-br from-[#EBDBDD]/60 to-[#7B5556]/10 flex items-center justify-center">
+                            <svg class="w-10 h-10 text-[#7B5556]/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6m-6 4h3"/>
+                            </svg>
+                        </div>
+                    @endif
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                
+
                 <div class="p-5 flex-1 flex flex-col justify-between bg-white z-10">
                     <div>
+                        <div class="flex items-center gap-2 mb-2.5">
+                            <div class="w-5 h-5 rounded-full bg-[#EBDBDD] flex items-center justify-center shrink-0">
+                                <span class="text-[8px] font-bold text-[#7B5556] uppercase">
+                                    {{ substr($item->user->name ?? 'A', 0, 1) }}
+                                </span>
+                            </div>
+                            <span class="text-[10px] text-gray-400">
+                                {{ $item->user->name ?? 'Admin' }} &middot; {{ $item->created_at->format('d M Y') }}
+                            </span>
+                        </div>
+
                         <h4 class="font-bold text-[#5D605C] text-base line-clamp-2 leading-snug group-hover:text-[#7B5556] transition-colors">
-                            {{ $item['judul'] }}
+                            {{ $item->title }}
                         </h4>
                         <p class="text-xs text-gray-500 mt-2.5 line-clamp-2 leading-relaxed">
-                            {{ $item['deskripsi'] }}
+                            {{ $excerpt }}
                         </p>
                     </div>
-                    
+
                     <div class="mt-5 pt-4 border-t border-gray-100">
-                        <a href="{{ $item['link'] }}" target="_blank" rel="noopener noreferrer" class="flex justify-between items-center text-sm font-bold text-[#7B5556] hover:text-[#5D605C] transition-colors">
+                        <button type="button" onclick="openNewsModal(@js($item->title), @js($item->content), @js($item->image_path ? asset($item->image_path) : null), @js($item->user->name ?? 'Admin'), @js($item->created_at->format('d M Y')))" class="flex justify-between items-center w-full text-sm font-bold text-[#7B5556] hover:text-[#5D605C] transition-colors">
                             Baca Selengkapnya
                             <div class="w-8 h-8 rounded-full bg-[#7B5556]/10 flex items-center justify-center group-hover:bg-[#7B5556] group-hover:text-white transition-all">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-hover:rotate-45 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                                 </svg>
                             </div>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
-        @endforeach
+        @empty
+            <div class="w-full py-10 text-center text-gray-400">
+                <svg class="w-10 h-10 text-[#E1E3DE] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6m-6 4h3"/>
+                </svg>
+                <p class="text-sm font-medium text-gray-400">Belum ada artikel berita yang dipublikasikan.</p>
+            </div>
+        @endforelse
+    </div>
+</div>
+
+{{-- ── NEWS READER MODAL (REFACTORED FOR PERFECT SCROLLING) ────────────────────────────────────────────────── --}}
+<div id="newsModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-[28px] shadow-2xl w-full max-w-2xl h-[85vh] flex flex-col overflow-hidden relative transition-all duration-300">
+        
+        {{-- Modal Header (Terkuci secara permanen di bagian atas) --}}
+        <div class="bg-white border-b border-[#E1E3DE]/60 px-6 py-4 flex items-center justify-between z-10 shrink-0">
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-[#7B5556]/10 flex items-center justify-center">
+                    <svg class="w-3.5 h-3.5 text-[#7B5556]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6m-6 4h3"/>
+                    </svg>
+                </div>
+                <span class="text-xs font-bold text-[#7B5556] uppercase tracking-wider">Artikel Kesehatan</span>
+            </div>
+            <button onclick="closeNewsModal()" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        {{-- Wadah Khusus Konten Berita (Hanya area ini yang dapat discroll ke bawah) --}}
+        <div class="overflow-y-auto flex-1 bg-white rounded-b-[28px]">
+            {{-- Cover Image --}}
+            <div id="modalCoverWrap" class="hidden w-full h-56 bg-gray-100 overflow-hidden">
+                <img id="modalCover" src="#" alt="Cover" class="w-full h-full object-cover">
+            </div>
+
+            {{-- Isi/Text Body Berita --}}
+            <div class="px-7 py-6">
+                <h2 id="modalTitle" class="text-2xl font-extrabold text-[#5D605C] leading-snug mb-3"></h2>
+                
+                <div class="flex items-center gap-2 mb-5 border-b border-gray-100 pb-3">
+                    <span id="modalAuthor" class="text-xs font-medium text-[#7B5556]"></span>
+                    <span class="text-gray-300">&middot;</span>
+                    <span id="modalDate" class="text-xs text-gray-400"></span>
+                </div>
+                
+                {{-- Konten Utama Artikel --}}
+                <div id="modalContent" class="text-sm text-[#5D605C] leading-relaxed whitespace-pre-line space-y-4"></div>
+            </div>
+        </div>
+
     </div>
 </div>
 
 <style>
-    /* Menyembunyikan Scrollbar Slider */
     .hide-scrollbar::-webkit-scrollbar {
         display: none;
     }
@@ -205,21 +277,49 @@
         -ms-overflow-style: none;
         scrollbar-width: none;
     }
-    
-    /* Animasi Shimmer Tombol */
     @keyframes shimmer {
         100% { transform: translateX(100%); }
     }
-    
-    /* Animasi Progress Circle SVG */
     @keyframes dash {
         to { stroke-dashoffset: 0; }
     }
-    
-    /* Animasi Panah Geser */
     @keyframes bounce-horizontal {
         0%, 100% { transform: translateX(0); }
         50% { transform: translateX(25%); }
     }
 </style>
+
+<script>
+function openNewsModal(title, content, imageUrl, author, date) {
+    document.getElementById('modalTitle').textContent   = title;
+    document.getElementById('modalContent').textContent = content;
+    document.getElementById('modalAuthor').textContent  = author;
+    document.getElementById('modalDate').textContent    = date;
+
+    const coverWrap = document.getElementById('modalCoverWrap');
+    const coverImg  = document.getElementById('modalCover');
+    if (imageUrl) {
+        coverImg.src = imageUrl;
+        coverWrap.classList.remove('hidden');
+    } else {
+        coverWrap.classList.add('hidden');
+    }
+
+    const modal = document.getElementById('newsModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeNewsModal() {
+    const modal = document.getElementById('newsModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('newsModal').addEventListener('click', function(e) {
+    if (e.target === this) closeNewsModal();
+});
+</script>
 @endsection

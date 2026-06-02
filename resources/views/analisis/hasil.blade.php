@@ -98,8 +98,8 @@
                 <p class="text-[10px] text-[#A8ABA7] mt-1 font-medium uppercase tracking-wide">Objek<br>Terdeteksi</p>
             </div>
             <div class="bg-[#FAF9F6] rounded-2xl p-4 text-center border border-[#E1E3DE]/50">
-                <span class="text-2xl font-black text-[#8B3A3A]">{{ count($hasil['lifestyle_berisiko'] ?? []) }}</span>
-                <p class="text-[10px] text-[#A8ABA7] mt-1 font-medium uppercase tracking-wide">Faktor<br>Risiko</p>
+                <span class="text-2xl font-black text-[#8B3A3A]">{{ $hasil['jenis_objek_unik'] ?? count($hasil['temuan_klinis'] ?? []) }}</span>
+                <p class="text-[10px] text-[#A8ABA7] mt-1 font-medium uppercase tracking-wide">Jenis<br>Kondisi</p>
             </div>
         </div>
     </div>
@@ -205,111 +205,52 @@
         </div>
     </div>
 
-{{-- KANAN: Faktor Gaya Hidup --}}
+{{-- KANAN: Panel Anamnesis / Gejala (hanya tampil jika ada data) --}}
+    @php
+        $jawaban = $history->analysis_data['jawaban_anamnesis'] ?? [];
+    @endphp
+    @if(!empty($jawaban))
     <div class="bg-white rounded-[24px] border border-[#E1E3DE] shadow-sm overflow-hidden">
         <div class="px-6 pt-6 pb-4 border-b border-[#E1E3DE] flex items-center gap-3 bg-gray-50/50">
-        <div class="w-10 h-10 rounded-xl bg-white border border-[#E1E3DE] flex items-center justify-center shrink-0">
-            <svg class="w-5 h-5 text-[#5D605C]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-            </svg>
+            <div class="w-10 h-10 rounded-xl bg-white border border-[#E1E3DE] flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5 text-[#5D605C]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <h2 class="text-base font-bold text-[#5D605C] tracking-tight">Data Anamnesis Klinis</h2>
         </div>
-        <h2 class="text-base font-bold text-[#5D605C] tracking-tight">Faktor Gaya Hidup</h2>
-    </div>
-
-    <div class="p-6">
-        @php
-            $lifestyleDetail   = $hasil['lifestyle_detail']   ?? [];
-            $lifestyleBerisiko = $hasil['lifestyle_berisiko'] ?? [];
-            
-            // Fungsi helper untuk merender SVG statis klinis pengganti emoticon
-            $getIcon = function($kategori) {
-                $icons = [
-                    'Tidur' => '<path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />',
-                    'Stres' => '<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />',
-                    'Air' => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 15a9 9 0 0018 0 c0-5-9-11-9-11s-9 6-9 11z" />',
-                    'Diet' => '<path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />',
-                    'Sinar Matahari' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />',
-                ];
-                $path = $icons[$kategori] ?? '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />';
-                
-                return '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">' . $path . '</svg>';
-            };
-        @endphp
-
-        @if(count($lifestyleBerisiko) > 0)
-            <p class="text-xs text-[#797B78] mb-4 leading-relaxed">Faktor berikut berkontribusi terhadap risiko kulit bermasalah:</p>
-            <div class="space-y-3 mb-8">
-                @foreach($lifestyleBerisiko as $item)
-                    @php $cf = round($item['cf_pakar'] * 100); @endphp
-                    <div class="flex items-center gap-4 bg-white border border-[#E1E3DE] rounded-2xl p-4 hover:border-[#7B5556]/40 transition-colors">
-                        <div class="w-10 h-10 rounded-xl bg-[#7B5556]/10 text-[#7B5556] flex items-center justify-center shrink-0">
-                            {!! $getIcon($item['kategori']) !!}
-                        </div>
-                        
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-bold text-[#5D605C]">{{ $item['kategori'] }}</p>
-                            <p class="text-[11px] text-[#797B78] truncate mt-0.5">{{ $item['label'] }}</p>
-                        </div>
-                        
-                        <div class="shrink-0 text-right bg-gray-50 px-3 py-1.5 rounded-lg border border-[#E1E3DE]">
-                            <span class="text-sm font-black text-[#7B5556]">+{{ $cf }}%</span>
-                            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Risiko</p>
-                        </div>
+        <div class="p-6">
+            <p class="text-xs text-[#797B78] mb-3 leading-relaxed">Jawaban pertanyaan kuesioner gejala klinis yang dikumpulkan saat analisis.</p>
+            <div class="space-y-2">
+                @foreach($jawaban as $ruleId => $nilai)
+                @php
+                    $nilaiFmt = number_format((float)$nilai * 100, 0);
+                    $barW     = min(100, (float)$nilai * 100);
+                    $barColor = $barW >= 75 ? 'bg-red-400' : ($barW >= 50 ? 'bg-amber-400' : 'bg-green-400');
+                @endphp
+                <div class="flex items-center gap-3">
+                    <span class="text-[10px] text-gray-400 w-16 shrink-0">ID {{ $ruleId }}</span>
+                    <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full {{ $barColor }}" style="width: {{ $barW }}%"></div>
                     </div>
+                    <span class="text-xs font-bold text-[#5D605C] w-10 text-right">{{ $nilaiFmt }}%</span>
+                </div>
                 @endforeach
             </div>
-        @endif
-
-        <div class="flex items-center gap-2 mb-4">
-            <div class="h-px bg-[#E1E3DE] flex-1"></div>
-            <p class="text-[10px] font-bold text-[#797B78] uppercase tracking-widest">Semua Kategori</p>
-            <div class="h-px bg-[#E1E3DE] flex-1"></div>
-        </div>
-        
-        <div class="space-y-4">
-            @foreach($lifestyleDetail as $item)
-                @php
-                    $cf = $item['cf_pakar'] * 100;
-                    $isOk = $cf == 0;
-                    // Logika warna tersentralisasi
-                    $textColor = $isOk ? 'text-[#3A5F43]' : 'text-[#7B5556]';
-                    $bgColor = $isOk ? 'bg-[#3A5F43]' : 'bg-[#7B5556]';
-                    $iconColor = $isOk ? 'text-[#3A5F43] bg-[#3A5F43]/10' : 'text-[#7B5556] bg-[#7B5556]/10';
-                @endphp
-                <div class="flex items-center gap-4">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 {{ $iconColor }}">
-                        {!! $getIcon($item['kategori']) !!}
-                    </div>
-                    
-                    <div class="flex-1">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="text-xs font-bold text-[#5D605C]">{{ $item['kategori'] }}</span>
-                            <span class="text-[10px] font-black {{ $textColor }} uppercase tracking-wider">
-                                {{ $isOk ? '✓ Ideal' : '+'.round($cf).'%' }}
-                            </span>
-                        </div>
-                        <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden border border-gray-200/50">
-                            <div class="h-full rounded-full {{ $bgColor }} transition-all duration-500"
-                                 style="width: {{ min(100, $cf ?: 100) }}%"></div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-            </div>
         </div>
     </div>
+    @endif
+
 
 </div>
 
 {{-- ═══ NEW CODE: FASE 4 — CF BREAKDOWN AUDIT TRAIL ═══════════════════ --}}
 @php
     $breakdown = $hasil['cf_breakdown'] ?? [];
-    $cfVisualPct    = round(($breakdown['cf_visual']    ?? $breakdown['visual']    ?? 0) * 100, 1);
-    $cfGejalaPct    = round(($breakdown['cf_gejala']    ?? $breakdown['gejala']    ?? 0) * 100, 1);
-    $cfInterimPct   = round(($breakdown['cf_interim']   ?? $breakdown['interim']   ?? 0) * 100, 1);
-    $cfLifestylePct = round(($breakdown['cf_lifestyle'] ?? $breakdown['lifestyle'] ?? 0) * 100, 1);
-    $cfFinalPct     = round(($hasil['cf_final'] ?? 0) * 100, 1);
-    $hasBreakdown   = ! empty($breakdown);
+    $cfVisualPct  = round(($breakdown['cf_visual']  ?? $breakdown['visual']  ?? 0) * 100, 1);
+    $cfGejalaPct  = round(($breakdown['cf_gejala']  ?? $breakdown['gejala']  ?? 0) * 100, 1);
+    $cfFinalPct   = round(($hasil['cf_final'] ?? 0) * 100, 1);
+    $hasBreakdown = ! empty($breakdown);
 @endphp
 
 @if($hasBreakdown)
@@ -334,10 +275,8 @@
         {{-- Diagram batang per komponen --}}
         @php
             $stages = [
-                ['label' => 'Tahap 1 — Deteksi Visual (AI)', 'key' => 'cf_visual',    'pct' => $cfVisualPct,    'color' => 'bg-blue-400',   'textColor' => 'text-blue-700',   'desc' => 'Hasil analisis foto oleh Roboflow'],
-                ['label' => 'Tahap 2 — Anamnesis Kontekstual','key' => 'cf_gejala',   'pct' => $cfGejalaPct,   'color' => 'bg-violet-400', 'textColor' => 'text-violet-700', 'desc' => 'Jawaban pertanyaan gejala spesifik Anda'],
-                ['label' => 'Interim (Tahap 1 + 2)',          'key' => 'cf_interim',  'pct' => $cfInterimPct,  'color' => 'bg-purple-400', 'textColor' => 'text-purple-700', 'desc' => 'Kombinasi paralel visual + anamnesis'],
-                ['label' => 'Tahap 3 — Faktor Gaya Hidup',   'key' => 'cf_lifestyle','pct' => $cfLifestylePct,'color' => 'bg-amber-400',  'textColor' => 'text-amber-700',  'desc' => 'Kontribusi kebiasaan harian Anda'],
+                ['label' => 'Pilar 1 — Deteksi Visual (AI)', 'key' => 'cf_visual',  'pct' => $cfVisualPct,  'color' => 'bg-blue-400',   'textColor' => 'text-blue-700',   'desc' => 'Hasil analisis foto oleh Roboflow'],
+                ['label' => 'Pilar 2 — Anamnesis Klinis',   'key' => 'cf_gejala',  'pct' => $cfGejalaPct,  'color' => 'bg-violet-400', 'textColor' => 'text-violet-700', 'desc' => 'Jawaban pertanyaan gejala spesifik Anda'],
             ];
         @endphp
 
@@ -365,8 +304,8 @@
         <div class="mt-5 pt-5 border-t border-[#E1E3DE]/60">
             <div class="flex items-center justify-between mb-2">
                 <div>
-                    <span class="text-sm font-bold text-gray-800">CF Final (Kombinasi Semua Tahap)</span>
-                    <p class="text-[10px] text-[#A8ABA7]">Interim + Lifestyle → CF gabungan akhir sistem</p>
+                    <span class="text-sm font-bold text-gray-800">CF Final (Kombinasi 2-Pilar)</span>
+                    <p class="text-[10px] text-[#A8ABA7]">Visual + Anamnesis → CF Hybrid akhir sistem</p>
                 </div>
                 <span class="text-lg font-black text-[#8B3A3A]">{{ $cfFinalPct }}%</span>
             </div>

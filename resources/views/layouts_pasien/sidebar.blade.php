@@ -1,4 +1,4 @@
-<aside id="desktopSidebar" class="hidden md:flex flex-col w-64 bg-white border-r border-[#E1E3DE]/60 min-h-screen transition-all duration-300 relative z-40 shrink-0">
+<aside id="desktopSidebar" class="hidden md:flex flex-col w-64 bg-white border-r border-[#E1E3DE]/60 h-screen sticky top-0 transition-all duration-300 relative z-40 shrink-0">
     
     <button id="toggleSidebar" class="absolute -right-3.5 top-8 w-7 h-7 bg-white border border-[#E1E3DE] rounded-full flex items-center justify-center text-[#68575E] hover:text-[#7B5556] shadow-sm z-50 transition-all hover:scale-110 focus:outline-none">
         <svg id="toggleIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -6,7 +6,7 @@
         </svg>
     </button>
 
-    <div class="h-20 flex items-center justify-center border-b border-[#E1E3DE]/40 px-4 overflow-hidden">
+    <div class="h-20 flex items-center justify-center border-b border-[#E1E3DE]/40 px-4 overflow-hidden shrink-0">
         <a href="{{ route('pasien.dashboard') ?? '#' }}" class="text-xl font-extrabold text-[#7B5556] tracking-tight whitespace-nowrap" id="sidebarLogo">
             The Ethereal
         </a>
@@ -15,7 +15,7 @@
         </a>
     </div>
 
-    <div class="py-6 border-b border-[#E1E3DE]/30 overflow-hidden">
+    <div class="py-6 border-b border-[#E1E3DE]/30 overflow-hidden shrink-0">
         <div class="flex items-center px-4">
             <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-[#7B5556]/20 shrink-0 shadow-sm bg-white">
                 <img src="{{ Auth::user()->avatar ? asset('storage/avatars/' . Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'Pasien') . '&background=68575E&color=fff' }}" alt="Profile" class="w-full h-full object-cover">
@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    <nav class="flex-1 py-4 px-4 space-y-2 overflow-hidden">
+    <nav class="flex-1 py-4 px-4 space-y-2 overflow-y-auto hide-scrollbar">
         <a href="{{ route('pasien.dashboard') }}" class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('pasien.dashboard') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}" title="Dashboard">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -57,7 +57,7 @@
         </a>
     </nav>
 
-    <div class="p-4 border-t border-[#E1E3DE]/40 overflow-hidden">
+    <div class="p-4 border-t border-[#E1E3DE]/40 overflow-hidden shrink-0">
         <button type="button" id="logoutBtn" class="flex items-center w-full px-3 py-2.5 text-[#8A3033] hover:bg-[#FFF7F6] rounded-xl font-medium transition-colors" title="Logout">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -92,6 +92,17 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* Styling untuk menyembunyikan scrollbar bawaan yang jelek, tapi fungsi geser tetap jalan */
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

@@ -137,5 +137,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         'update'  => 'symptom-rules.update',
         'destroy' => 'symptom-rules.destroy',
     ]);
+
+        // ── Manajemen Berita & Artikel Kesehatan ──────────────────────
+    Route::resource('news', \App\Http\Controllers\AdminNewsController::class)->names([
+        'index'   => 'news.index',
+        'create'  => 'news.create',
+        'store'   => 'news.store',
+        'edit'    => 'news.edit',
+        'update'  => 'news.update',
+        'destroy' => 'news.destroy',
+    ]);
     
 });

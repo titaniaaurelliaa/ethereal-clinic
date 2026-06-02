@@ -2,59 +2,6 @@
 @section('title', 'Analisis Kulit — Kuesioner Gaya Hidup')
 
 @php
-$lifestyleOptions = [
-    'Tidur' => [
-        'icon' => '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>',
-        'label' => 'Durasi Tidur Malam',
-        'hint'  => 'Berapa lama Anda tidur rata-rata setiap malam?',
-        'choices' => [
-            'Low'      => 'Kurang dari 6 jam',
-            'Moderate' => '6 – 8 jam (cukup)',
-            'High'     => 'Lebih dari 8 jam',
-        ],
-    ],
-    'Stres' => [
-        'icon' => '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>',
-        'label' => 'Tingkat Stres Harian',
-        'hint'  => 'Seberapa sering Anda merasa tertekan atau cemas?',
-        'choices' => [
-            'Low'      => 'Jarang stres',
-            'Moderate' => 'Kadang-kadang stres',
-            'High'     => 'Sering merasa tertekan',
-        ],
-    ],
-    'Air' => [
-        'icon' => '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2.25c0 0-6.75 8.25-6.75 12.75a6.75 6.75 0 0013.5 0C18.75 10.5 12 2.25 12 2.25z"/></svg>',
-        'label' => 'Konsumsi Air Putih',
-        'hint'  => 'Berapa gelas air putih yang Anda minum per hari?',
-        'choices' => [
-            'Low'      => 'Kurang dari 4 gelas',
-            'Moderate' => '4 – 7 gelas',
-            'High'     => '8 gelas atau lebih',
-        ],
-    ],
-    'Diet' => [
-        'icon' => '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 9.75l-3-3m0 0l-3 3m3-3v11.25m0 0H6m6 0h6"/></svg>',
-        'label' => 'Pola Makan',
-        'hint'  => 'Seberapa sering Anda mengonsumsi makanan pemicu (gorengan, susu, gula)?',
-        'choices' => [
-            'Low'      => 'Jarang (makanan sehat)',
-            'Moderate' => 'Kadang-kadang',
-            'High'     => 'Sering (gorengan/manis/susu)',
-        ],
-    ],
-    'Sinar Matahari' => [
-        'icon' => '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>',
-        'label' => 'Paparan Sinar UV',
-        'hint'  => 'Seberapa sering Anda terpapar matahari tanpa perlindungan tabir surya?',
-        'choices' => [
-            'Low'      => 'Selalu pakai sunscreen',
-            'Moderate' => 'Sesekali tanpa pelindung',
-            'High'     => 'Sering terpapar langsung',
-        ],
-    ],
-];
-
 $keparahanColor = [
     'Ringan' => ['bg' => 'bg-green-50',  'text' => 'text-green-700',  'border' => 'border-green-200',  'dot' => 'bg-green-500'],
     'Sedang' => ['bg' => 'bg-amber-50',  'text' => 'text-amber-700',  'border' => 'border-amber-200',  'dot' => 'bg-amber-500'],
@@ -233,7 +180,7 @@ $keparahanColor = [
 </div>
 
 {{-- ═══ FORM ══════════════════════════════════════════════════════════ --}}
-<form action="{{ route('analisis.final') }}" method="POST" id="lifestyle-form">
+<form action="{{ route('analisis.final') }}" method="POST" id="analisis-form">
     @csrf
 
     @if($errors->any())
@@ -324,89 +271,6 @@ $keparahanColor = [
     </div>
     @endif
 
-    {{-- ═══ SECTION 2: POLA GAYA HIDUP (Lifestyle) ════════════════════ --}}
-    <div class="mb-10">
-        {{-- Section Container --}}
-        <div class="border border-[#E1E3DE] rounded-2xl overflow-hidden">
-            {{-- Flat Section Header --}}
-            <div class="bg-[#FAF9F6] px-6 py-4 border-b border-[#E1E3DE] flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-[#E1E3DE]/70 flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-[#5D605C]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-base font-bold text-[#5D605C]">Pola Gaya Hidup</h2>
-                        <p class="text-xs text-[#797B78] mt-0.5">Jawab seluruh pertanyaan untuk hasil analisis yang lebih akurat.</p>
-                    </div>
-                </div>
-                <span id="answered-count" class="text-xs font-bold text-[#7B5556] bg-[#EBDBDD] px-2.5 py-1 rounded-md">0 / {{ count($lifestyleOptions) }}</span>
-            </div>
-
-            {{-- Progress bar --}}
-            <div class="h-1 w-full bg-[#E1E3DE] overflow-hidden">
-                <div id="progress-bar" class="h-full bg-[#7B5556] transition-all duration-500" style="width: 0%"></div>
-            </div>
-
-            {{-- Lifestyle Question Cards --}}
-            <div class="p-5 space-y-4 bg-white">
-                @foreach($lifestyleOptions as $kategori => $opt)
-                <div class="bg-white rounded-2xl border border-[#E1E3DE] p-5 hover:border-[#7B5556]/40 transition-colors duration-200 lifestyle-card" data-kategori="{{ $kategori }}">
-                    {{-- Card Top: Question + Status Pill --}}
-                    <div class="flex items-start justify-between gap-3 mb-4">
-                        <div class="flex items-start gap-3 flex-1 min-w-0">
-                            <div class="w-9 h-9 rounded-xl bg-[#FAF9F6] border border-[#E1E3DE] flex items-center justify-center text-[#7B5556] shrink-0">
-                                {!! $opt['icon'] !!}
-                            </div>
-                            <div>
-                                <h3 class="text-sm font-bold text-[#5D605C]">{{ $opt['label'] }}</h3>
-                                <p class="text-xs text-[#797B78] mt-0.5">{{ $opt['hint'] }}</p>
-                            </div>
-                        </div>
-                        {{-- Status Pill --}}
-                        <span class="lifestyle-status shrink-0 text-xs font-bold px-2.5 py-1 rounded-md bg-gray-100 text-[#A8ABA7]" data-kategori="{{ $kategori }}">
-                            Belum Diisi
-                        </span>
-                    </div>
-
-                    {{-- Segmented Chips --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pl-12">
-                        @foreach($opt['choices'] as $value => $choiceLabel)
-                        @php
-                            $levelText = ['Low' => 'Rendah', 'Moderate' => 'Sedang', 'High' => 'Tinggi'][$value] ?? $value;
-                        @endphp
-                        <label class="cursor-pointer">
-                            <input type="radio"
-                                   name="lifestyle[{{ $kategori }}]"
-                                   value="{{ $value }}"
-                                   class="peer sr-only lifestyle-radio"
-                                   data-kategori="{{ $kategori }}"
-                                   required>
-                            <div class="flex flex-col gap-1.5 p-4 rounded-xl border border-[#E1E3DE] bg-gray-50
-                                        peer-checked:bg-[#7B5556] peer-checked:border-[#7B5556] peer-checked:text-white
-                                        hover:border-[#7B5556]/40 transition-colors duration-150 group">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[10px] font-bold tracking-wider uppercase text-[#A8ABA7] peer-checked:group-[]:text-white/70">{{ $levelText }}</span>
-                                    {{-- Check icon --}}
-                                    <div class="w-4 h-4 rounded-full border-2 border-[#E1E3DE] flex items-center justify-center
-                                                peer-checked:group-[]:border-white peer-checked:group-[]:bg-white transition-all check-circle">
-                                        <svg class="w-2.5 h-2.5 text-[#7B5556] hidden check-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <p class="text-xs font-medium text-[#5D605C] leading-relaxed peer-checked:group-[]:text-white">{{ $choiceLabel }}</p>
-                            </div>
-                        </label>
-                        @endforeach
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
     {{-- ═══ SUBMIT BAR ════════════════════════════════════════════════ --}}
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-2 pb-4">
         <a href="{{ route('analisis.index') }}"
@@ -438,87 +302,12 @@ $keparahanColor = [
 @push('scripts')
 <script>
 (function () {
-    const total       = {{ count($lifestyleOptions) }};
-    const radios      = document.querySelectorAll('.lifestyle-radio');
-    const countBadge  = document.getElementById('answered-count');
-    const progressBar = document.getElementById('progress-bar');
-    const form        = document.getElementById('lifestyle-form');
-    const spinner     = document.getElementById('final-spinner');
-    const btnText     = document.getElementById('final-text');
-    const arrow       = document.getElementById('final-arrow');
+    const form    = document.getElementById('analisis-form');
+    const spinner = document.getElementById('final-spinner');
+    const btnText = document.getElementById('final-text');
+    const arrow   = document.getElementById('final-arrow');
 
-    // ── Lifestyle progress tracking ─────────────────────────────────
-    function updateProgress() {
-        const answered = new Set(
-            [...radios].filter(r => r.checked).map(r => r.dataset.kategori)
-        ).size;
-        const pct = Math.round((answered / total) * 100);
-        countBadge.textContent  = `${answered} / ${total}`;
-        progressBar.style.width = `${pct}%`;
-    }
-
-    // ── Lifestyle radio change handler ──────────────────────────────
-    radios.forEach(radio => {
-        radio.addEventListener('change', function () {
-            const kat = this.dataset.kategori;
-
-            // Reset all check icons in this category
-            document.querySelectorAll(`.lifestyle-radio[data-kategori="${kat}"]`).forEach(r => {
-                const label = r.closest('label');
-                const checkIcon = label.querySelector('.check-icon');
-                const checkCircle = label.querySelector('.check-circle');
-                const levelSpan = label.querySelector('.text-\\[10px\\]');
-                const descP = label.querySelector('p');
-
-                if (checkIcon) checkIcon.classList.add('hidden');
-                if (checkCircle) {
-                    checkCircle.classList.remove('border-white', 'bg-white');
-                    checkCircle.classList.add('border-[#E1E3DE]');
-                }
-                if (levelSpan) {
-                    levelSpan.classList.remove('text-white/70');
-                    levelSpan.classList.add('text-[#A8ABA7]');
-                }
-                if (descP) {
-                    descP.classList.remove('text-white');
-                    descP.classList.add('text-[#5D605C]');
-                }
-            });
-
-            // Activate selected
-            const selectedLabel = this.closest('label');
-            const checkIcon = selectedLabel.querySelector('.check-icon');
-            const checkCircle = selectedLabel.querySelector('.check-circle');
-            const levelSpan = selectedLabel.querySelector('.text-\\[10px\\]');
-            const descP = selectedLabel.querySelector('p');
-
-            if (checkIcon) checkIcon.classList.remove('hidden');
-            if (checkCircle) {
-                checkCircle.classList.add('border-white', 'bg-white');
-                checkCircle.classList.remove('border-[#E1E3DE]');
-            }
-            if (levelSpan) {
-                levelSpan.classList.add('text-white/70');
-                levelSpan.classList.remove('text-[#A8ABA7]');
-            }
-            if (descP) {
-                descP.classList.add('text-white');
-                descP.classList.remove('text-[#5D605C]');
-            }
-
-            // Update status pill for this category
-            const statusPill = document.querySelector(`.lifestyle-status[data-kategori="${kat}"]`);
-            if (statusPill) {
-                statusPill.textContent = 'Selesai';
-                statusPill.classList.remove('bg-gray-100', 'text-[#A8ABA7]');
-                statusPill.classList.add('bg-[#3A5F43]', 'text-white');
-            }
-
-            updateProgress();
-        });
-    });
-
-    // ── Symptom radio change handler ────────────────────────────────
+    // ── Symptom radio change handler ────────────────────────
     const symptomRadios = document.querySelectorAll('.symptom-radio');
     symptomRadios.forEach(radio => {
         radio.addEventListener('change', function () {
@@ -538,14 +327,12 @@ $keparahanColor = [
         });
     });
 
-    // ── Submit handler ───────────────────────────────────────────────
+    // ── Submit handler ──────────────────────────────────────
     form.addEventListener('submit', function () {
         spinner.classList.remove('hidden');
         arrow.classList.add('hidden');
         btnText.textContent = 'Memproses...';
     });
-
-    updateProgress();
 })();
 </script>
 @endpush

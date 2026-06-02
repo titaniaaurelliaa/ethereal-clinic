@@ -90,9 +90,20 @@
                             </td>
                             <td class="p-4 text-center">
                                 <div class="flex flex-col items-center gap-1">
-                                    <span class="font-bold text-pink-600 text-sm">{{ $cfPct }}%</span>
+                                    @php
+                                        // Mengubah persen (misal 60) menjadi desimal (0.60)
+                                        $cfDecimal = $cfPct / 100;
+                                    @endphp
+                                    
+                                    <!-- Tampilan teks desimal dengan format 2 angka di belakang koma (contoh: 0.60) -->
+                                    <span class="font-bold text-pink-600 text-sm">
+                                        {{ number_format($cfDecimal, 2) }}
+                                    </span>
+                                    
+                                   
                                     <div class="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="h-full bg-pink-500 rounded-full" style="width:{{ $cfPct }}%"></div>
+                                        <div class="h-full rounded-full {{ $cfPct >= 80 ? 'bg-red-500' : ($cfPct >= 60 ? 'bg-yellow-500' : 'bg-green-500') }}" 
+                                            style="width:{{ $cfPct }}%"></div>
                                     </div>
                                 </div>
                             </td>

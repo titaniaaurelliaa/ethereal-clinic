@@ -16,7 +16,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 /**
  * AnalisisController
  *
- * Alur 3-Tahap Analisis Kulit Hybrid (Contextual Anamnesis — Fase 3):
+ * Alur 3-Tahap Analisis Kulit Hybrid (2-Pilar CF):
  *
  *   STEP 1 ─ GET  /pasien/analisis          → index()        → view analisis.step1
  *             Form upload foto wajah.
@@ -24,11 +24,11 @@ use Barryvdh\DomPDF\Facade\Pdf;
  *   STEP 2 ─ POST /pasien/analisis/scan     → scan()         → view analisis.step2
  *             Terima foto → kirim ke Roboflow → simpan temuan di Session
  *             → resolve SymptomRule kontekstual berdasarkan temuan dominan
- *             → tampilkan form anamnesis dinamis + kuesioner gaya hidup.
+ *             → tampilkan form anamnesis dinamis.
  *
  *   STEP 3 ─ POST /pasien/analisis/final    → processFinal() → view analisis.hasil
- *             Terima jawaban anamnesis + gaya hidup
- *             → hitung CF berlapis (Visual → Gejala Dinamis → Lifestyle)
+ *             Terima jawaban anamnesis → hitung CF Hybrid 2-Pilar:
+ *             CF_Final = CF_Visual + CF_Anamnesis × (1 − CF_Visual)
  *             → simpan history → tampilkan hasil.
  *
  *   HISTORY ─ GET /pasien/analisis/{id}     → show()         → view analisis.hasil
@@ -63,7 +63,7 @@ class AnalisisController extends Controller
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // STEP 2 ─ Kirim foto ke Roboflow → simpan session → kuesioner gaya hidup
+    // STEP 2 ─ Kirim foto ke Roboflow → simpan session → anamnesis klinis
     // ═══════════════════════════════════════════════════════════════════
 
     /**
@@ -184,27 +184,23 @@ class AnalisisController extends Controller
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // STEP 3 ─ Terima gaya hidup → gabungkan CF → simpan → tampilkan hasil
+    // STEP 3 ─ Terima anamnesis → CF Hybrid 2-Pilar → simpan → tampilkan
     // ═══════════════════════════════════════════════════════════════════
 
     /**
-     * Terima pilihan gaya hidup dari Step 2, ambil data visual dari Session,
-     * gabungkan keduanya menggunakan CF Engine, simpan ke riwayat, tampilkan hasil.
+     * Terima jawaban anamnesis dari Step 2, ambil data visual dari Session,
+     * gabungkan menggunakan CF Hybrid 2-Pilar, simpan ke riwayat, tampilkan hasil.
+     *
+     * Formula: CF_Final = CF_Visual + CF_Anamnesis × (1 − CF_Visual)
      *
      * Form fields:
-     *   - lifestyle[Tidur]          : 'Low'|'Moderate'|'High'
-     *   - lifestyle[Stres]          : 'Low'|'Moderate'|'High'
-     *   - lifestyle[Air]            : 'Low'|'Moderate'|'High'
-     *   - lifestyle[Diet]           : 'Low'|'Moderate'|'High'
-     *   - lifestyle[Sinar Matahari] : 'Low'|'Moderate'|'High'
+     *   - symptom_answers : array [symptom_rule_id => nilai (0.0–1.0)]
      *
      * View: resources/views/analisis/hasil.blade.php
      */
     public function processFinal(Request $request)
     {
         // ── Guard: pastikan data scan tersedia di Session ────────────
-        // NEW CODE: Jika user me-refresh halaman Step 2 langsung, session hilang
-        // dan kita redirect aman ke Step 1 agar tidak ada error.
         $scanData = $request->session()->get(self::SESSION_SCAN_KEY);
 
         if (! $scanData) {
@@ -213,84 +209,42 @@ class AnalisisController extends Controller
                 ->withErrors(['system' => 'Sesi analisis tidak ditemukan. Silakan mulai ulang dari Step 1.']);
         }
 
-        // ── Validasi input gaya hidup ────────────────────────────────
+        // ── Validasi input anamnesis ─────────────────────────────────
         $request->validate([
-            'lifestyle'                   => 'required|array|min:5',
-            'lifestyle.Tidur'             => 'required|string|in:Low,Moderate,High',
-            'lifestyle.Stres'             => 'required|string|in:Low,Moderate,High',
-            'lifestyle.Air'               => 'required|string|in:Low,Moderate,High',
-            'lifestyle.Diet'              => 'required|string|in:Low,Moderate,High',
-            'lifestyle.Sinar Matahari'    => 'required|string|in:Low,Moderate,High',
-            // NEW CODE: jawaban anamnesis bersifat opsional (0.0–1.0 per pertanyaan)
-            // symptom_answers adalah array [symptom_rule_id => cf_user_value]
-            'symptom_answers'             => 'nullable|array',
-            'symptom_answers.*'           => 'nullable|numeric|min:0|max:1',
-        ], [
-            'lifestyle.required'   => 'Semua pertanyaan gaya hidup wajib dijawab.',
-            'lifestyle.min'        => 'Harap jawab seluruh 5 pertanyaan gaya hidup.',
-            'lifestyle.*.required' => 'Pertanyaan ini wajib dijawab.',
-            'lifestyle.*.in'       => 'Pilihan tidak valid.',
+            'symptom_answers'   => 'nullable|array',
+            'symptom_answers.*' => 'nullable|numeric|min:0|max:1',
         ]);
-
-        $lifestyle = $request->input('lifestyle');
 
         // NEW CODE: Ambil jawaban anamnesis dinamis dari form (nullable)
         $symptomAnswers = $request->input('symptom_answers', []);
 
         try {
-            // ── Hitung CF gaya hidup ─────────────────────────────────
-            $lifestyleResult = $this->analysisService->analyzeLifestyle($lifestyle);
-
             $temuanKlinis = $scanData['temuan'];
 
             // ════════════════════════════════════════════════════════
-            // NEW CODE: Kalkulasi CF Berlapis (3-Tahap)
+            // Kalkulasi CF Hybrid 2-Pilar
             //
-            // Tahap 1: CF Visual — dari array temuan Roboflow
+            // Pilar 1: CF Visual — dari array temuan Roboflow
             $cfVisualList = array_column($temuanKlinis, 'cf_final');
             $cfVisual     = $this->analysisService->calculateFinalCF($cfVisualList);
 
-            // Tahap 2: CF Gejala Dinamis — proses jawaban anamnesis
-            // Ambil SymptomRule dari DB (cf_gejala = CF Pakar)
-            // lalu hitung CFgejala = CFuser × CFpakar, kombinasi paralel.
+            // Pilar 2: CF Anamnesis — jawaban kuesioner gejala klinis
             $cfGejala = $this->analysisService->calculateSymptomCF($symptomAnswers);
 
-            // Gabungkan Tahap 1 + Tahap 2 (paralel)
-            $cfCombined = $this->analysisService->combineParallel($cfVisual, $cfGejala);
-
-            // ── GANTI DENGAN KODE BARU INI ──────────────────────────
-        $cfLifestyleList = array_column($lifestyleResult, 'cf_pakar');
-
-            // Hitung Weighted Average Index untuk Gaya Hidup (Skala Stabil 0.0 - 1.0)
-        $indexRisk = !empty($cfLifestyleList) 
-        ? array_sum($cfLifestyleList) / count($cfLifestyleList) 
-        : 0.0;
-
-    // Konstanta Alpha sebagai Batas Maksimal Pengaruh Faktor Risiko (10%)
-        $alpha = 0.10;
-
-    // Rumus Modulasi Akhir: Bukti Klinis diperkuat oleh Indeks Risiko secara terbatas
-    $cfFinal = $cfCombined + (($alpha * $indexRisk) * (1.0 - $cfCombined));
-    $cfFinal = min(1.0, max(0.0, round($cfFinal, 4)));
-
-    // Set nilai rata-rata ke variabel $cfLifestyle untuk menjaga integritas database
-    $cfLifestyle = round($indexRisk, 4);
-    // ────────────────────────────────────────────────────────
+            // ── Rumus Hybrid 2-Pilar ─────────────────────────────────
+            // CF_Final = CF_Visual + CF_Anamnesis × (1 − CF_Visual)
+            $cfFinal = $this->analysisService->combineParallel($cfVisual, $cfGejala);
+            $cfFinal = min(1.0, max(0.0, round($cfFinal, 4)));
 
             Log::info('[AnalisisController@processFinal] CF Breakdown.', [
-                'cf_visual'   => $cfVisual,
-                'cf_gejala'   => $cfGejala,
-                'cf_combined' => $cfCombined,
-                'cf_lifestyle'=> $cfLifestyle,
-                'cf_final'    => $cfFinal,
+                'cf_visual'  => $cfVisual,
+                'cf_gejala'  => $cfGejala,
+                'cf_final'   => $cfFinal,
             ]);
 
             // ── Susun data hasil lengkap ─────────────────────────────
-            $skorKesehatan  = max(0, round(100 - ($cfFinal * 100)));
-            $kondisiLabel   = $this->labelFromScore($skorKesehatan);
-            $lifestyleRisiko = array_values(
-                array_filter($lifestyleResult, fn($l) => $l['cf_pakar'] > 0.0)
-            );
+            $skorKesehatan = max(0, round(100 - ($cfFinal * 100)));
+            $kondisiLabel  = $this->labelFromScore($skorKesehatan);
 
             $hasil = [
                 'cf_final'               => $cfFinal,
@@ -299,22 +253,18 @@ class AnalisisController extends Controller
                 'temuan_klinis'          => $temuanKlinis,
                 'roboflow_success'       => $scanData['roboflow_success'],
                 'error_message'          => $scanData['error_message'],
-                'lifestyle_detail'       => $lifestyleResult,
-                'lifestyle_berisiko'     => $lifestyleRisiko,
                 'total_objek_terdeteksi' => array_sum(array_column($temuanKlinis, 'jumlah')),
                 'jenis_objek_unik'       => count($temuanKlinis),
-                // NEW CODE: simpan breakdown CF untuk keperluan audit/debug
+                // CF Breakdown untuk audit trail
                 'cf_breakdown'           => [
-                    'cf_visual'    => round($cfVisual, 4),
-                    'cf_gejala'    => round($cfGejala, 4),
-                    'cf_interim'   => round($cfCombined, 4),
-                    'cf_lifestyle' => round($cfLifestyle, 4),
+                    'cf_visual'  => round($cfVisual, 4),
+                    'cf_gejala'  => round($cfGejala, 4),
                 ],
-                // LANGKAH 1: Teruskan raw_predictions & dimensi gambar ke view & saveHistory
+                // Raw predictions & dimensi gambar untuk bounding box overlay
                 'raw_predictions'        => $scanData['raw_predictions'] ?? [],
                 'img_width'              => $scanData['img_width']  ?? null,
                 'img_height'             => $scanData['img_height'] ?? null,
-                // Preview foto wajah (base64 thumbnail, disimpan sebelum session dihapus)
+                // Preview foto wajah (base64 thumbnail)
                 'preview_base64'         => $scanData['preview_base64'] ?? null,
             ];
 
@@ -325,17 +275,13 @@ class AnalisisController extends Controller
             // ─────────────────────────────────────────────────────────────────────
 
             // ── Simpan ke tabel analysis_histories ───────────────────
-            // NEW CODE: FASE 4 — Kirim konteks lengkap ke saveHistory
             $history = $this->saveHistory(
                 hasil: $hasil,
                 cfBreakdown: [
-                    'cf_visual'    => round($cfVisual, 4),
-                    'cf_gejala'    => round($cfGejala, 4),
-                    'cf_interim'   => round($cfCombined, 4),
-                    'cf_lifestyle' => round($cfLifestyle, 4),
+                    'cf_visual' => round($cfVisual, 4),
+                    'cf_gejala' => round($cfGejala, 4),
                 ],
                 symptomAnswers: $symptomAnswers,
-                lifestyle: $lifestyle,
                 namaObjekDominan: $namaObjekDominan,
             );
 
@@ -394,8 +340,6 @@ class AnalisisController extends Controller
             'skor_kesehatan'         => $skor,
             'kondisi_label'          => $this->labelFromScore($skor),
             'temuan_klinis'          => $history->analysis_data['temuan_klinis']          ?? [],
-            'lifestyle_detail'       => $history->analysis_data['lifestyle_detail']       ?? [],
-            'lifestyle_berisiko'     => $history->analysis_data['lifestyle_berisiko']     ?? [],
             'total_objek_terdeteksi' => $history->analysis_data['total_objek_terdeteksi'] ?? 0,
             'generated_at'           => now()->locale('id')->isoFormat('D MMMM YYYY, HH:mm') . ' WIB',
         ];
@@ -438,15 +382,13 @@ class AnalisisController extends Controller
             'skor_kesehatan'         => $skor,
             'kondisi_label'          => $this->labelFromScore($skor),
             'temuan_klinis'          => $history->analysis_data['temuan_klinis']          ?? [],
-            'lifestyle_detail'       => $history->analysis_data['lifestyle_detail']       ?? [],
-            'lifestyle_berisiko'     => $history->analysis_data['lifestyle_berisiko']     ?? [],
             'total_objek_terdeteksi' => $history->analysis_data['total_objek_terdeteksi'] ?? 0,
             'jenis_objek_unik'       => $history->analysis_data['jenis_objek_unik']       ?? 0,
             'roboflow_success'       => true,
             'error_message'          => null,
-            // NEW CODE: FASE 4 — Restore cf_breakdown dari JSON agar view dapat menampilkan audit trail
+            // Restore cf_breakdown dari JSON untuk audit trail
             'cf_breakdown'           => $history->analysis_data['breakdown_cf']   ?? [],
-            // LANGKAH 1: Restore raw_predictions & dimensi untuk bounding box pada halaman riwayat
+            // Restore raw_predictions & dimensi untuk bounding box overlay
             'raw_predictions'        => $history->analysis_data['raw_predictions'] ?? [],
             'img_width'              => $history->analysis_data['img_width']       ?? null,
             'img_height'             => $history->analysis_data['img_height']      ?? null,
@@ -511,22 +453,20 @@ class AnalisisController extends Controller
         }
     }
 
-   /**
+    /**
      * Simpan hasil analisis ke tabel analysis_histories beserta data rekomendasi.
      *
      * @param  array   $hasil            Array output CF dari processFinal
-     * @param  array   $cfBreakdown      Breakdown: cf_visual, cf_gejala, cf_interim, cf_lifestyle
+     * @param  array   $cfBreakdown      Breakdown: cf_visual, cf_gejala
      * @param  array   $symptomAnswers   Jawaban slider anamnesis [id => nilai]
-     * @param  array   $lifestyle        Jawaban gaya hidup [kategori => pilihan]
      * @param  string  $namaObjekDominan Nama objek terdeteksi paling dominan
      * @return AnalysisHistoryModel|null
      */
     private function saveHistory(
         array  $hasil,
-        array  $cfBreakdown      = [],   
-        array  $symptomAnswers   = [],   
-        array  $lifestyle        = [],   
-        string $namaObjekDominan = '-',  
+        array  $cfBreakdown      = [],
+        array  $symptomAnswers   = [],
+        string $namaObjekDominan = '-',
     ): ?AnalysisHistoryModel {
         try {
             // 1. Inisialisasi variabel untuk menampung resep obat & diagnosis
@@ -575,44 +515,36 @@ class AnalisisController extends Controller
 
             // 4. Simpan ke database beserta Resep yang Ditemukan
             return AnalysisHistoryModel::create([
-                'user_id'          => Auth::id(),
+                'user_id' => Auth::id(),
 
                 'analysis_data' => [
                     'temuan_klinis'          => $hasil['temuan_klinis'],
-                    'lifestyle_detail'       => $hasil['lifestyle_detail'],
-                    'lifestyle_berisiko'     => $hasil['lifestyle_berisiko'],
                     'total_objek_terdeteksi' => $hasil['total_objek_terdeteksi'],
                     'jenis_objek_unik'       => $hasil['jenis_objek_unik'],
                     'breakdown_cf' => [
-                        'cf_visual'    => $cfBreakdown['cf_visual']    ?? 0.0,
-                        'cf_gejala'    => $cfBreakdown['cf_gejala']    ?? 0.0,
-                        'cf_interim'   => $cfBreakdown['cf_interim']   ?? 0.0,
-                        'cf_lifestyle' => $cfBreakdown['cf_lifestyle']  ?? 0.0,
+                        'cf_visual' => $cfBreakdown['cf_visual'] ?? 0.0,
+                        'cf_gejala' => $cfBreakdown['cf_gejala'] ?? 0.0,
                     ],
                     'jawaban_anamnesis' => $symptomAnswers,
-                    'jawaban_lifestyle' => $lifestyle,
                     'raw_predictions'   => $hasil['raw_predictions'] ?? [],
                     'img_width'         => $hasil['img_width']       ?? null,
                     'img_height'        => $hasil['img_height']      ?? null,
                 ],
 
                 // 5. Masukkan ID Penyakit Asli & Data Resep
-                // result_problem_id adalah NOT NULL di DB, jadi perlu fallback
                 'result_problem_id'       => $resultProblemId ?? (SkinProblemModel::first()?->id ?? 1),
                 'confidence_score'        => round($hasil['cf_final'] * 100, 2),
-                'recommended_ingredients' => [], // bisa dibiarkan kosong
-                // Cukup kirim array mentah, biarkan Model casting yang mengubahnya menjadi JSON otomatis
+                'recommended_ingredients' => [],
                 'recommended_products'    => $recommendedProducts,
                 'recommended_treatments'  => $recommendedTreatments,
 
                 'notes' => sprintf(
-                    'Analisis Hybrid CF — Objek Dominan: %s | Skor: %d/100 (%s) | CF: Visual=%.2f Gejala=%.2f Lifestyle=%.2f Final=%.2f',
+                    'Analisis Hybrid CF 2-Pilar — Objek Dominan: %s | Skor: %d/100 (%s) | CF: Visual=%.2f Anamnesis=%.2f Final=%.2f',
                     $namaObjekDominan,
                     $hasil['skor_kesehatan'],
                     $hasil['kondisi_label'],
-                    $cfBreakdown['cf_visual']    ?? 0,
-                    $cfBreakdown['cf_gejala']    ?? 0,
-                    $cfBreakdown['cf_lifestyle'] ?? 0,
+                    $cfBreakdown['cf_visual'] ?? 0,
+                    $cfBreakdown['cf_gejala'] ?? 0,
                     $hasil['cf_final'],
                 ),
             ]);
