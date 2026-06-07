@@ -1,4 +1,5 @@
 <?php
+// app/Models/ProductModel.php
 
 namespace App\Models;
 
@@ -14,23 +15,19 @@ class ProductModel extends Model
         'category',
         'description',
         'image_path',
+        'how_to_use',
     ];
 
     /**
      * Produk yang diindikasikan untuk Masalah Kulit tertentu.
-     *
-     * GAP 3 — Explicit pivot FK binding:
-     * Pivot table : problem_product
-     * FK (this)   : product_id       (column referencing products.id)
-     * FK (related): skin_problem_id  (column referencing skin_problems.id)
      */
     public function skinProblems()
     {
         return $this->belongsToMany(
             SkinProblemModel::class,
-            'problem_product',  // pivot table
-            'product_id',       // FK for ProductModel on pivot
-            'skin_problem_id'   // FK for SkinProblemModel on pivot
+            'problem_product',
+            'product_id',
+            'skin_problem_id'
         );
     }
 }

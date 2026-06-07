@@ -22,7 +22,6 @@ class DataTreatment_ADMController extends Controller
             'name'            => 'required|string|max:255',
             'description'     => 'required|string',
             'category'        => 'required|string|in:daily_habit,avoidance,protection,lifestyle',
-            'priority'        => 'nullable|integer|min:0|max:10',
             'skin_problems'   => 'nullable|array',
             'skin_problems.*' => 'integer|exists:skin_problems,id',
         ]);
@@ -31,7 +30,6 @@ class DataTreatment_ADMController extends Controller
             'name'        => $request->name,
             'description' => $request->description,
             'category'    => $request->category,
-            'priority'    => $request->input('priority', 0),
         ]);
 
         // Sync pivot (problem_treatment)
@@ -48,7 +46,6 @@ class DataTreatment_ADMController extends Controller
             'name'            => 'required|string|max:255',
             'description'     => 'required|string',
             'category'        => 'required|string|in:daily_habit,avoidance,protection,lifestyle',
-            'priority'        => 'nullable|integer|min:0|max:10',
             'skin_problems'   => 'nullable|array',
             'skin_problems.*' => 'integer|exists:skin_problems,id',
         ]);
@@ -59,7 +56,6 @@ class DataTreatment_ADMController extends Controller
             'name'        => $request->name,
             'description' => $request->description,
             'category'    => $request->category,
-            'priority'    => $request->input('priority', 0),
         ]);
 
         // Sync pivot (problem_treatment)

@@ -1,7 +1,9 @@
 <?php
+// database/seeders/ProductSeeder.php
 
 namespace Database\Seeders;
 
+use App\Models\ProductModel;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -10,124 +12,110 @@ class ProductsSeeder extends Seeder
     public function run(): void
     {
         $products = [
-            // Produk untuk Jerawat (problem_id = 1)
+            // ==================== PRODUK TOPIKAL (KRIM/GEL) ====================
             [
-                'name' => 'Facial Wash Salicylic Acid',
-                'brand' => 'Avoskin',
-                'category' => 'facial_wash',
-                'description' => 'Pembersih wajah dengan kandungan Salicylic Acid yang membantu membersihkan jerawat dan mencegah timbulnya jerawat baru. Cocok untuk kulit berjerawat dan berminyak.',
-                'image_path' => 'public/images/product/avoskin-salicylic.jpg',
+                'name' => 'Evalen Gel',
+                'brand' => 'Evalen',
+                'category' => 'cream',
+                'description' => 'Gel yang mengandung Adapalene 0,1% untuk pengobatan jerawat ringan hingga sedang. Adapalene adalah retinoid topikal yang bekerja dengan mengatur regenerasi sel kulit dan mengurangi peradangan pada jerawat.',
+                'how_to_use' => 'Cuci tangan terlebih dahulu. Oleskan tipis-tipis pada area yang berjerawat setiap malam sebelum tidur. Hindari area mata, bibir, dan luka terbuka. Gunakan tabir surya di pagi hari karena kulit menjadi lebih sensitif terhadap sinar matahari.',
+                'image_path' => 'images/product/evalen-gel.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Acne Spot Treatment',
-                'brand' => 'Emina',
-                'category' => 'treatment',
-                'description' => 'Krim khusus untuk mengeringkan jerawat dengan cepat. Mengandung tea tree oil dan zinc yang membantu mengurangi peradangan.',
-                'image_path' => 'public/images/product/emina-spot-treatment.jpg',
+                'name' => 'Aklief Cream',
+                'brand' => 'Galderma',
+                'category' => 'cream',
+                'description' => 'Krim yang mengandung Trifarotene 50mcg/g, retinoid generasi ke-4 untuk pengobatan jerawat di wajah dan tubuh. Trifarotene bekerja lebih selektif pada reseptor kulit sehingga efek samping iritasi lebih minimal.',
+                'how_to_use' => 'Oleskan tipis-tipis pada area yang berjerawat satu kali sehari di malam hari. Gunakan pelembab yang sesuai dan tabir surya di pagi hari. Hasil optimal biasanya terlihat setelah 12 minggu pemakaian rutin.',
+                'image_path' => 'images/product/aklief-cream.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // ==================== PRODUK ORAL (KAPSUL/TABLET) ====================
+            [
+                'name' => 'Doxycycline Capsules',
+                'brand' => 'Generik',
+                'category' => 'obat',
+                'description' => 'Kapsul Doxycycline 100mg, antibiotik golongan tetrasiklin untuk pengobatan jerawat sedang hingga berat. Doxycycline bekerja dengan menghambat pertumbuhan bakteri penyebab jerawat (Propionibacterium acnes) dan memiliki efek anti-inflamasi.',
+                'how_to_use' => 'Konsumsi sesuai resep dokter (biasanya 1-2 kali sehari). Minum dengan segelas air penuh, jangan berbaring setelah minum untuk mencegah iritasi kerongkongan. Hindari konsumsi susu atau produk olahan susu 2 jam sebelum/sesudah minum obat.',
+                'image_path' => 'images/product/doxycycline.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Azelaic Acid Serum',
-                'brand' => 'Anua',
-                'category' => 'serum',
-                'description' => 'Serum dengan Azelaic Acid yang membantu mencerahkan bekas jerawat dan mengurangi kemerahan. Aman untuk kulit sensitif.',
-                'image_path' => 'public/images/product/anua-azelaic.png',
+                'name' => 'Isotretinoin Capsules',
+                'brand' => 'Generik (Roaccutane)',
+                'category' => 'obat',
+                'description' => 'Kapsul Isotretinoin (10mg / 20mg), obat oral golongan retinoid untuk jerawat batu (nodulocystic acne) yang parah dan tidak merespon pengobatan lain. Isotretinoin adalah terapi lini terakhir dengan efek samping signifikan.',
+                'how_to_use' => 'HARUS DENGAN RESEP DAN PENGAWASAN DOKTER SPESIALIS KULIT. Dosis disesuaikan dengan berat badan (biasanya 0.5-1mg/kgBB/hari). Konsumsi bersama makanan berlemak untuk absorbsi optimal. Harus melakukan kontrasepsi wajib bagi wanita usia subur.',
+                'image_path' => 'images/product/isotretinoin.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            
-            // Produk untuk Kulit Kering (problem_id = 2)
+
+            // ==================== PRODUK PEMBERSIH (CLEANSER) ====================
             [
-                'name' => 'Hydrating Moisturizer',
-                'brand' => 'Skintific',
-                'category' => 'moisturizer',
-                'description' => 'Pelembab dengan kandungan hyaluronic acid dan ceramide yang menghidrasi kulit kering sepanjang hari. Tekstur ringan dan tidak lengket.',
-                'image_path' => 'public/images/product/skintific-hydrating.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Gentle Cleansing Milk',
-                'brand' => 'Wardah',
-                'category' => 'facial_wash',
-                'description' => 'Pembersih wajah berbasis susu yang lembut dan tidak menghilangkan kelembaban alami kulit. Cocok untuk kulit kering dan sensitif.',
-                'image_path' => 'public/images/product/wardah-cleansing-milk.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            
-            // Produk untuk Kulit Berminyak (problem_id = 3)
-            [
-                'name' => 'Niacinamide Serum',
-                'brand' => 'The Originote',
-                'category' => 'serum',
-                'description' => 'Serum dengan Niacinamide 10% yang membantu mengontrol minyak berlebih dan mengecilkan pori-pori.',
-                'image_path' => 'public/images/product/originote-niacinamide.jpg',
+                'name' => 'Senka Perfect Whip Acne Care',
+                'brand' => 'Shiseido',
+                'category' => 'cleanser',
+                'description' => 'Pembersih wajah yang mengandung Salicylic Acid (Asam Salisilat) untuk mengatasi jerawat hingga ke pori-pori. Membantu membunuh bakteri penyebab jerawat dan mencegah timbulnya jerawat baru tanpa membuat kulit kering.',
+                'how_to_use' => 'Basahi wajah dan tangan. Tuang secukupnya, tambah sedikit air, lalu busakan dengan gerakan memutar. Pijat lembut ke seluruh wajah, bilas hingga bersih dengan air. Gunakan pagi dan malam.',
+                'image_path' => 'images/product/senka-acne-care.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Oil Control Moisturizer',
-                'brand' => 'Garnier',
-                'category' => 'moisturizer',
-                'description' => 'Pelembab ringan yang mengontrol minyak tanpa membuat kulit kering. Mengandung salicylic acid untuk mencegah jerawat.',
-                'image_path' => 'public/images/product/garnier-oil-control.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            
-            // Produk untuk Komedo (problem_id = 4)
-            [
-                'name' => 'BHA Exfoliant',
-                'brand' => 'Paula\'s Choice',
-                'category' => 'exfoliant',
-                'description' => 'Eksfoliator cair dengan BHA 2% yang membersihkan pori-pori dan mengangkat komedo hitam maupun putih.',
-                'image_path' => 'public/images/product/paulas-choice-bha.jpg',
+                'name' => 'Salicylic Acid 2% Face Wash',
+                'brand' => 'The Ordinary',
+                'category' => 'cleanser',
+                'description' => 'Pembersih wajah dengan Salicylic Acid 2% konsentrasi tinggi untuk eksfoliasi kimiawi. Efektif untuk mengatasi jerawat, komedo, dan tekstur kulit tidak rata.',
+                'how_to_use' => 'Gunakan 1-2 kali sehari. Busakan di telapak tangan, pijat lembut ke wajah selama 30-60 detik, lalu bilas. Gunakan tabir surya di pagi hari.',
+                'image_path' => 'images/product/salicylic-acid-foam.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Pore Strip',
-                'brand' => 'Pimplo',
-                'category' => 'treatment',
-                'description' => 'Striper pori-pori yang efektif mengangkat komedo hitam di area hidung dan dagu.',
-                'image_path' => 'public/images/product/pimplo-pore-strip.jpg',
+                'name' => 'Neutrogena Oil-Free Acne Wash',
+                'brand' => 'Neutrogena',
+                'category' => 'cleanser',
+                'description' => 'Pembersih wajah bebas minyak dengan Salicylic Acid 2% untuk mengobati dan mencegah jerawat. Formula yang lembut namun efektif membersihkan pori-pori tanpa mengiritasi kulit.',
+                'how_to_use' => 'Gunakan 1-2 kali sehari. Basahi wajah, pijat lembut, lalu bilas hingga bersih. Hindari area mata.',
+                'image_path' => 'images/product/neutrogena-acne-wash.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            
-            // Produk untuk Kulit Sensitif (problem_id = 5)
+
+            // ==================== PRODUK TAMBAHAN (VARIASI DOSIS) ====================
             [
-                'name' => 'Cica Repair Serum',
-                'brand' => 'Azarine',
-                'category' => 'serum',
-                'description' => 'Serum dengan Centella Asiatica (Cica) yang menenangkan kulit merah dan iritasi. Membantu memperbaiki skin barrier.',
-                'image_path' => 'public/images/product/azarine-cica.jpg',
+                'name' => 'Adapalene 0.1% Gel',
+                'brand' => 'Differin',
+                'category' => 'cream',
+                'description' => 'Gel Adapalene 0.1% untuk pengobatan jerawat. Differin adalah salah satu merek paling dikenal untuk Adapalene, efektif untuk mengurangi jerawat dan komedo.',
+                'how_to_use' => 'Oleskan tipis-tipis pada area berjerawat setiap malam. Mulai dengan pemakaian 2-3 kali seminggu untuk adaptasi, tingkatkan menjadi setiap malam jika kulit toleran.',
+                'image_path' => 'images/product/differin-gel.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            
-            // Produk untuk Hiperpigmentasi (problem_id = 6)
             [
-                'name' => 'Vitamin C Serum',
-                'brand' => 'Luxcrime',
-                'category' => 'serum',
-                'description' => 'Serum vitamin C 15% yang mencerahkan bekas jerawat dan meratakan warna kulit.',
-                'image_path' => 'public/images/product/luxcrime-vitc.jpg',
+                'name' => 'Isotretinoin 10mg',
+                'brand' => 'Zenatane',
+                'category' => 'obat',
+                'description' => 'Isotretinoin dosis 10mg untuk terapi jerawat batu parah. Obat ini sangat efektif namun memiliki efek samping serius sehingga memerlukan monitoring ketat oleh dokter.',
+                'how_to_use' => 'Minum sesuai resep dokter setelah makan. Perlu pemeriksaan darah rutin selama terapi. WANITA: HARUS MENGGUNAAN KONTRASEPSI EFEKTIF selama dan 1 bulan setelah terapi.',
+                'image_path' => 'images/product/isotretinoin-10mg.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            
-            // Produk untuk Semua Jenis Kulit (Sunscreen)
             [
-                'name' => 'Sunscreen SPF 50 PA++++',
-                'brand' => 'Skin Aqua',
-                'category' => 'sunscreen',
-                'description' => 'Tabir surya ringan dengan SPF 50 PA++++ yang melindungi kulit dari sinar UV tanpa meninggalkan whitecast.',
-                'image_path' => 'public/images/product/skinaqua-sunscreen.jpg',
+                'name' => 'Doxycycline Hyclate 100mg',
+                'brand' => 'Vibramycin',
+                'category' => 'obat',
+                'description' => 'Doxycycline Hyclate 100mg untuk infeksi bakteri termasuk jerawat. Bekerja dengan menghambat sintesis protein bakteri.',
+                'how_to_use' => 'Minum 1-2 kapsul per hari sesuai resep. Jangan dikonsumsi bersama antasida atau suplemen zat besi.',
+                'image_path' => 'images/product/vibramycin.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
