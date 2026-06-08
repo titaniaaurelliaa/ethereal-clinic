@@ -115,10 +115,10 @@
             <span class="ml-3 whitespace-nowrap sidebar-text">Data Gejala</span>
         </a>
 
-        <!-- Riwayat Analisis -->
-        <a href="#"
-            class="flex items-center px-3 py-3 rounded-xl transition-colors group text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium"
-            title="Riwayat Analisis">
+        <!-- Riwayat Analisis / Manajemen Riwayat Pasien -->
+        <a href="{{ route('admin.riwayat-pasien.index') }}"
+            class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('admin.riwayat-pasien*') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}"
+            title="Riwayat Pasien">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round"

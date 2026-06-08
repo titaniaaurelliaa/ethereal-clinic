@@ -12,6 +12,7 @@ use App\Http\Controllers\DataProduct_ADMController;
 use App\Http\Controllers\AnalisisController;
 use App\Http\Controllers\SymptomRuleController;
 use App\Http\Controllers\Dashboard_PSNController;
+use App\Http\Controllers\RiwayatPasien_ADMController;
 
 // ==========================================
 // 1. ROUTE LANDING PAGE
@@ -147,5 +148,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         'update'  => 'news.update',
         'destroy' => 'news.destroy',
     ]);
+
+     // ── Manajemen Riwayat Pasien ──────────────────────────────────
+    Route::get('/riwayat-pasien', [RiwayatPasien_ADMController::class, 'index'])->name('riwayat-pasien.index');
+    Route::get('/riwayat-pasien/{userId}', [RiwayatPasien_ADMController::class, 'show'])->name('riwayat-pasien.show');
     
 });
