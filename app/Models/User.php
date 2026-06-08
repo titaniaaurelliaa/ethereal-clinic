@@ -68,4 +68,10 @@ class User extends Authenticatable
     {
         return $this->role === 'pasien';
     }
+
+    public function latestAnalysisHistory()
+    {
+        return $this->hasOne(AnalysisHistoryModel::class, 'user_id', 'id')
+                    ->whereRaw('analysis_histories.id = (SELECT MAX(inner_ah.id) FROM analysis_histories inner_ah WHERE inner_ah.user_id = analysis_histories.user_id)');
+    }
 }
