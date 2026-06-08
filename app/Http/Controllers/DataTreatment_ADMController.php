@@ -21,7 +21,6 @@ class DataTreatment_ADMController extends Controller
         $request->validate([
             'name'            => 'required|string|max:255',
             'description'     => 'required|string',
-            'category'        => 'required|string|in:daily_habit,avoidance,protection,lifestyle',
             'skin_problems'   => 'nullable|array',
             'skin_problems.*' => 'integer|exists:skin_problems,id',
         ]);
@@ -29,7 +28,6 @@ class DataTreatment_ADMController extends Controller
         $treatment = TreatmentModel::create([
             'name'        => $request->name,
             'description' => $request->description,
-            'category'    => $request->category,
         ]);
 
         // Sync pivot (problem_treatment)
@@ -45,7 +43,6 @@ class DataTreatment_ADMController extends Controller
         $request->validate([
             'name'            => 'required|string|max:255',
             'description'     => 'required|string',
-            'category'        => 'required|string|in:daily_habit,avoidance,protection,lifestyle',
             'skin_problems'   => 'nullable|array',
             'skin_problems.*' => 'integer|exists:skin_problems,id',
         ]);
@@ -55,7 +52,6 @@ class DataTreatment_ADMController extends Controller
         $treatment->update([
             'name'        => $request->name,
             'description' => $request->description,
-            'category'    => $request->category,
         ]);
 
         // Sync pivot (problem_treatment)

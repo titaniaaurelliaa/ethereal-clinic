@@ -15,12 +15,12 @@ class SymptomRule extends Model
     protected $fillable = [
         'knowledge_base_id',
         'pertanyaan',
-        'cf_gejala',
+        'cf_pakar',
     ];
 
     protected $casts = [
         'knowledge_base_id' => 'integer',
-        'cf_gejala'         => 'float',
+        'cf_pakar'          => 'float',
     ];
 
     // ──────────────────────────────────────────────────

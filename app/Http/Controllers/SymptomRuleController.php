@@ -42,7 +42,12 @@ class SymptomRuleController extends Controller
         // Daftar unik nama_objek untuk dropdown filter
         $objekList = KnowledgeBase::distinct()->orderBy('nama_objek')->pluck('nama_objek');
 
-        return view('Admin.symptom_rules.index', compact('rules', 'total', 'objekList'));
+        // Ambil semua KnowledgeBase untuk modal create & edit
+        $knowledgeBases = KnowledgeBase::orderBy('nama_objek')
+                                       ->orderByRaw("FIELD(tingkat_keparahan, 'Ringan', 'Sedang', 'Parah')")
+                                       ->get();
+
+        return view('Admin.symptom_rules.index', compact('rules', 'total', 'objekList', 'knowledgeBases'));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -51,11 +56,9 @@ class SymptomRuleController extends Controller
 
     /**
      * Menampilkan form tambah SymptomRule.
-     * Mengirimkan semua KnowledgeBase agar admin bisa memilih lewat dropdown.
      */
     public function create(): View
     {
-        // Ambil semua KnowledgeBase diurutkan per nama dan keparahan
         $knowledgeBases = KnowledgeBase::orderBy('nama_objek')
                                        ->orderByRaw("FIELD(tingkat_keparahan, 'Ringan', 'Sedang', 'Parah')")
                                        ->get();
@@ -65,27 +68,29 @@ class SymptomRuleController extends Controller
 
     /**
      * Menyimpan SymptomRule baru ke database.
+     * Menambahkan parameter page untuk redirect ke halaman yang sama.
      */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'knowledge_base_id' => ['required', 'integer', 'exists:knowledge_bases,id'],
             'pertanyaan'        => ['required', 'string', 'max:500'],
-            'cf_gejala'         => ['required', 'numeric', 'min:0.1', 'max:1.0'],
+            'cf_pakar'          => ['required', 'numeric', 'min:0.1', 'max:1.0'], // <-- GANTI cf_gejala MENJADI cf_pakar
         ], [
             'knowledge_base_id.required' => 'Pilih kondisi kulit / KnowledgeBase terlebih dahulu.',
             'knowledge_base_id.exists'   => 'Kondisi kulit yang dipilih tidak valid.',
             'pertanyaan.required'        => 'Teks pertanyaan anamnesis wajib diisi.',
             'pertanyaan.max'             => 'Pertanyaan maksimal 500 karakter.',
-            'cf_gejala.required'         => 'Nilai CF Gejala wajib diisi.',
-            'cf_gejala.min'              => 'Nilai CF Gejala minimal 0.1.',
-            'cf_gejala.max'              => 'Nilai CF Gejala tidak boleh melebihi 1.0.',
+            'cf_pakar.required'          => 'Nilai CF Pakar wajib diisi.',
+            'cf_pakar.min'               => 'Nilai CF Pakar minimal 0.1.',
+            'cf_pakar.max'               => 'Nilai CF Pakar tidak boleh melebihi 1.0.',
         ]);
 
         SymptomRule::create($validated);
 
+        $page = $request->input('page', 1);
         return redirect()
-            ->route('admin.symptom-rules.index')
+            ->route('admin.symptom-rules.index', ['page' => $page])
             ->with('success', 'Pertanyaan anamnesis berhasil ditambahkan!');
     }
 
@@ -107,27 +112,29 @@ class SymptomRuleController extends Controller
 
     /**
      * Menyimpan perubahan SymptomRule ke database.
+     * Menambahkan parameter page untuk redirect ke halaman yang sama.
      */
     public function update(Request $request, SymptomRule $symptomRule): RedirectResponse
     {
         $validated = $request->validate([
             'knowledge_base_id' => ['required', 'integer', 'exists:knowledge_bases,id'],
             'pertanyaan'        => ['required', 'string', 'max:500'],
-            'cf_gejala'         => ['required', 'numeric', 'min:0.1', 'max:1.0'],
+            'cf_pakar'          => ['required', 'numeric', 'min:0.1', 'max:1.0'], // <-- GANTI cf_gejala MENJADI cf_pakar
         ], [
             'knowledge_base_id.required' => 'Pilih kondisi kulit / KnowledgeBase terlebih dahulu.',
             'knowledge_base_id.exists'   => 'Kondisi kulit yang dipilih tidak valid.',
             'pertanyaan.required'        => 'Teks pertanyaan anamnesis wajib diisi.',
             'pertanyaan.max'             => 'Pertanyaan maksimal 500 karakter.',
-            'cf_gejala.required'         => 'Nilai CF Gejala wajib diisi.',
-            'cf_gejala.min'              => 'Nilai CF Gejala minimal 0.1.',
-            'cf_gejala.max'              => 'Nilai CF Gejala tidak boleh melebihi 1.0.',
+            'cf_pakar.required'          => 'Nilai CF Pakar wajib diisi.',
+            'cf_pakar.min'               => 'Nilai CF Pakar minimal 0.1.',
+            'cf_pakar.max'               => 'Nilai CF Pakar tidak boleh melebihi 1.0.',
         ]);
 
         $symptomRule->update($validated);
 
+        $page = $request->input('page', 1);
         return redirect()
-            ->route('admin.symptom-rules.index')
+            ->route('admin.symptom-rules.index', ['page' => $page])
             ->with('success', 'Pertanyaan anamnesis berhasil diperbarui!');
     }
 
@@ -137,13 +144,15 @@ class SymptomRuleController extends Controller
 
     /**
      * Menghapus SymptomRule dari database.
+     * Menambahkan parameter page untuk redirect ke halaman yang sama.
      */
-    public function destroy(SymptomRule $symptomRule): RedirectResponse
+    public function destroy(Request $request, SymptomRule $symptomRule): RedirectResponse
     {
         $symptomRule->delete();
 
+        $page = $request->input('page', 1);
         return redirect()
-            ->route('admin.symptom-rules.index')
+            ->route('admin.symptom-rules.index', ['page' => $page])
             ->with('success', 'Pertanyaan anamnesis berhasil dihapus!');
     }
 }

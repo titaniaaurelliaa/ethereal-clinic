@@ -21,19 +21,12 @@
             <h3 class="font-semibold text-gray-700">Daftar Treatment</h3>
             <div class="flex gap-2">
                 <form method="GET" action="{{ route('admin.treatment.index') }}" class="flex gap-2">
-                    <select name="category" class="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
-                        <option value="">Semua Kategori</option>
-                        <option value="daily_habit" {{ request('category') == 'daily_habit' ? 'selected' : '' }}>Daily Habit</option>
-                        <option value="avoidance" {{ request('category') == 'avoidance' ? 'selected' : '' }}>Avoidance</option>
-                        <option value="protection" {{ request('category') == 'protection' ? 'selected' : '' }}>Protection</option>
-                        <option value="lifestyle" {{ request('category') == 'lifestyle' ? 'selected' : '' }}>Lifestyle</option>
-                    </select>
                     <input type="text" name="search" placeholder="Cari treatment..." value="{{ request('search') }}"
                         class="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
                     <button type="submit" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
                         <i class="fas fa-search"></i> Cari
                     </button>
-                    @if(request('search') || request('category'))
+                    @if(request('search'))
                         <a href="{{ route('admin.treatment.index') }}" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
                             <i class="fas fa-times"></i> Reset
                         </a>
@@ -48,7 +41,6 @@
                     <tr>
                         <th class="p-4 text-left">ID</th>
                         <th class="p-4 text-left">Nama Treatment</th>
-                        <th class="p-4 text-left">Kategori</th>
                         <th class="p-4 text-left">Deskripsi</th>
                         <th class="p-4 text-center">Aksi</th>
                     </tr>
@@ -56,10 +48,6 @@
 
                 <tbody class="divide-y">
                     @forelse ($treatment as $item)
-                        @php
-                            $categoryLabels = ['daily_habit'=>'Daily Habit','avoidance'=>'Avoidance','protection'=>'Protection','lifestyle'=>'Lifestyle'];
-                            $categoryColor = ['daily_habit'=>'bg-green-100 text-green-600','avoidance'=>'bg-yellow-100 text-yellow-600','protection'=>'bg-blue-100 text-blue-600','lifestyle'=>'bg-purple-100 text-purple-600'];
-                        @endphp
                         <tr class="hover:bg-pink-50 transition">
                             <td class="p-4">
                                 <span class="bg-pink-100 text-pink-600 px-2 py-1 rounded-md text-xs font-semibold">
@@ -71,20 +59,14 @@
                                 {{ $item->name }}
                             </td>
 
-                            <td class="p-4">
-                                <span class="px-2 py-1 {{ $categoryColor[$item->category] ?? 'bg-gray-100 text-gray-600' }} rounded-md text-xs">
-                                    {{ $categoryLabels[$item->category] ?? $item->category }}
-                                </span>
-                            </td>
-
                             <td class="p-4 text-gray-500 max-w-xs">
-                                {{ \Illuminate\Support\Str::limit($item->description, 50) }}
+                                {{ \Illuminate\Support\Str::limit($item->description, 60) }}
                             </td>
 
                             <td class="p-4 text-center">
                                 <div class="flex justify-center gap-2">
                                     <button type="button"
-                                        onclick="openEditModal({{ $item->id }}, @js($item->name), @js($item->description), @js($item->category))"
+                                        onclick="openEditModal({{ $item->id }}, @js($item->name), @js($item->description))"
                                         class="px-3 py-1 text-xs bg-pink-100 text-pink-600 rounded-lg hover:bg-pink-200 transition">
                                         <i class="fas fa-edit"></i> Edit
                                     </button>
@@ -99,7 +81,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="p-6 text-center text-gray-400">
+                            <td colspan="4" class="p-6 text-center text-gray-400">
                                 <i class="fas fa-inbox text-2xl mb-2 block"></i>
                                 Data treatment belum tersedia
                             </td>
@@ -126,24 +108,10 @@
             @csrf
             <input type="hidden" name="page" id="addPage" value="{{ request()->get('page', 1) }}">
 
-            <div class="grid grid-cols-2 gap-3">
-                <div class="mb-3">
-                    <label class="text-sm text-gray-600">Nama Treatment</label>
-                    <input type="text" id="addName" name="name" placeholder="Masukkan nama treatment"
-                        class="w-full mt-1 border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none">
-                </div>
-
-                <div class="mb-3">
-                    <label class="text-sm text-gray-600">Kategori</label>
-                    <select id="addCategory" name="category"
-                        class="w-full mt-1 border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none">
-                        <option value="">Pilih Kategori</option>
-                        <option value="daily_habit">Daily Habit</option>
-                        <option value="avoidance">Avoidance</option>
-                        <option value="protection">Protection</option>
-                        <option value="lifestyle">Lifestyle</option>
-                    </select>
-                </div>
+            <div class="mb-3">
+                <label class="text-sm text-gray-600">Nama Treatment</label>
+                <input type="text" id="addName" name="name" placeholder="Masukkan nama treatment"
+                    class="w-full mt-1 border p-2 rounded focus:ring-2 focus:ring-pink-400 outline-none">
             </div>
 
             <div class="mb-3">
@@ -176,23 +144,10 @@
             @method('PUT')
             <input type="hidden" name="page" id="editPage" value="{{ request()->get('page', 1) }}">
 
-            <div class="grid grid-cols-2 gap-3">
-                <div class="mb-3">
-                    <label class="text-sm text-gray-600">Nama Treatment</label>
-                    <input type="text" id="editName" name="name"
-                        class="w-full mt-1 border border-gray-200 p-2 rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
-                </div>
-
-                <div class="mb-3">
-                    <label class="text-sm text-gray-600">Kategori</label>
-                    <select id="editCategory" name="category"
-                        class="w-full mt-1 border border-gray-200 p-2 rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
-                        <option value="daily_habit">Daily Habit</option>
-                        <option value="avoidance">Avoidance</option>
-                        <option value="protection">Protection</option>
-                        <option value="lifestyle">Lifestyle</option>
-                    </select>
-                </div>
+            <div class="mb-3">
+                <label class="text-sm text-gray-600">Nama Treatment</label>
+                <input type="text" id="editName" name="name"
+                    class="w-full mt-1 border border-gray-200 p-2 rounded-lg focus:ring-2 focus:ring-pink-400 outline-none">
             </div>
 
             <div class="mb-3">
@@ -282,7 +237,6 @@
         if (id === 'editModal') {
             document.getElementById('editName').value = '';
             document.getElementById('editDescription').value = '';
-            document.getElementById('editCategory').value = '';
             const error = document.getElementById('editError');
             if (error) error.classList.add('hidden');
         }
@@ -291,29 +245,22 @@
     function resetAddForm() {
         document.getElementById('addName').value = '';
         document.getElementById('addDescription').value = '';
-        document.getElementById('addCategory').value = '';
         const error = document.getElementById('addError');
         if (error) error.classList.add('hidden');
     }
 
     function validateAddForm() {
         const name = document.getElementById('addName');
-        const category = document.getElementById('addCategory');
         const description = document.getElementById('addDescription');
         const error = document.getElementById('addError');
 
         let messages = [];
         name.classList.remove('border-red-500');
-        category.classList.remove('border-red-500');
         description.classList.remove('border-red-500');
 
         if (name.value.trim() === '') {
             name.classList.add('border-red-500');
             messages.push('Nama treatment wajib diisi.');
-        }
-        if (category.value === '') {
-            category.classList.add('border-red-500');
-            messages.push('Kategori wajib dipilih.');
         }
         if (description.value.trim() === '') {
             description.classList.add('border-red-500');
@@ -330,22 +277,16 @@
 
     function validateEditForm() {
         const name = document.getElementById('editName');
-        const category = document.getElementById('editCategory');
         const description = document.getElementById('editDescription');
         const error = document.getElementById('editError');
 
         let messages = [];
         name.classList.remove('border-red-500');
-        category.classList.remove('border-red-500');
         description.classList.remove('border-red-500');
 
         if (name.value.trim() === '') {
             name.classList.add('border-red-500');
             messages.push('Nama treatment wajib diisi.');
-        }
-        if (category.value === '') {
-            category.classList.add('border-red-500');
-            messages.push('Kategori wajib dipilih.');
         }
         if (description.value.trim() === '') {
             description.classList.add('border-red-500');
@@ -360,12 +301,11 @@
         return true;
     }
 
-    function openEditModal(id, name, description, category) {
+    function openEditModal(id, name, description) {
         const editForm = document.getElementById('editForm');
 
         document.getElementById('editName').value = name;
         document.getElementById('editDescription').value = description;
-        document.getElementById('editCategory').value = category;
         document.getElementById('editPage').value = getCurrentPage();
 
         editForm.action = "{{ url('/admin/treatment') }}/" + id;
