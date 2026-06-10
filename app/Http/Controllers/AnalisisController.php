@@ -126,40 +126,41 @@ class AnalisisController extends Controller
                 'jumlah_temuan'    => count($visualResult['temuan']),
             ]);
 
-            // ── NEW CODE: Resolve SymptomRule kontekstual ────────────
-            // Ambil temuan visual yang paling dominan (CF tertinggi, urutan pertama)
-            // untuk menentukan pertanyaan anamnesis yang relevan bagi pasien.
+            // ── Resolve SymptomRule kontekstual untuk SEMUA temuan ───
+            // Iterasi seluruh temuan visual (bukan hanya item dominan ke-0)
+            // agar pertanyaan anamnesis mencakup semua kondisi yang terdeteksi.
             $dynamicSymptoms = collect(); // default: kosong jika tidak ada temuan
 
             if (! empty($visualResult['temuan'])) {
-                $temuanDominan = $visualResult['temuan'][0]; // sudah diurutkan by cf_final DESC
+                foreach ($visualResult['temuan'] as $temuan) {
+                    // Cari KnowledgeBase yang cocok: nama_objek + rentang min/max objek
+                    $knowledgeBase = KnowledgeBase::where('nama_objek', $temuan['nama_objek'])
+                        ->where('min_objek', '<=', $temuan['jumlah'])
+                        ->where(function ($q) use ($temuan) {
+                            $q->whereNull('max_objek')
+                              ->orWhere('max_objek', '>=', $temuan['jumlah']);
+                        })
+                        ->first();
 
-                // Cari KnowledgeBase yang cocok: nama_objek + rentang min/max objek
-                $knowledgeBase = KnowledgeBase::where('nama_objek', $temuanDominan['nama_objek'])
-                    ->where('min_objek', '<=', $temuanDominan['jumlah'])
-                    ->where(function ($q) use ($temuanDominan) {
-                        $q->whereNull('max_objek')
-                          ->orWhere('max_objek', '>=', $temuanDominan['jumlah']);
-                    })
-                    ->first();
+                    if ($knowledgeBase) {
+                        // Gabungkan pertanyaan anamnesis dari KB ini ke koleksi utama
+                        $dynamicSymptoms = $dynamicSymptoms->merge($knowledgeBase->symptomRules);
 
-                if ($knowledgeBase) {
-                    // Ambil semua pertanyaan anamnesis terkait KB ini via relasi hasMany
-                    $dynamicSymptoms = $knowledgeBase->symptomRules;
-
-                    Log::info('[AnalisisController@scan] SymptomRule ditemukan.', [
-                        'knowledge_base_id' => $knowledgeBase->id,
-                        'nama_objek'        => $temuanDominan['nama_objek'],
-                        'jumlah_pertanyaan' => $dynamicSymptoms->count(),
-                    ]);
-                } else {
-                    Log::info('[AnalisisController@scan] Tidak ada KnowledgeBase matching untuk anamnesis.', [
-                        'nama_objek' => $temuanDominan['nama_objek'],
-                        'jumlah'     => $temuanDominan['jumlah'],
-                    ]);
+                        Log::info('[AnalisisController@scan] SymptomRule ditemukan.', [
+                            'knowledge_base_id' => $knowledgeBase->id,
+                            'nama_objek'        => $temuan['nama_objek'],
+                            'jumlah_pertanyaan' => $knowledgeBase->symptomRules->count(),
+                            'total_kumulatif'   => $dynamicSymptoms->count(),
+                        ]);
+                    } else {
+                        Log::info('[AnalisisController@scan] Tidak ada KnowledgeBase matching untuk anamnesis.', [
+                            'nama_objek' => $temuan['nama_objek'],
+                            'jumlah'     => $temuan['jumlah'],
+                        ]);
+                    }
                 }
             }
-            // ── END NEW CODE ─────────────────────────────────────────
+            // ── END: Resolve SymptomRule kontekstual ─────────────────
 
             // ── Tampilkan Step 2 ─────────────────────────────────────
             return view('analisis.step2', [
@@ -222,24 +223,30 @@ class AnalisisController extends Controller
             $temuanKlinis = $scanData['temuan'];
 
             // ════════════════════════════════════════════════════════
-            // Kalkulasi CF Hybrid 2-Pilar
-            //
-            // Pilar 1: CF Visual — dari array temuan Roboflow
-            $cfVisualList = array_column($temuanKlinis, 'cf_final');
-            $cfVisual     = $this->analysisService->calculateFinalCF($cfVisualList);
+            // Kalkulasi CF via Hybrid Multi-Diagnosis Engine
+            // Menghitung CF final per klaster penyakit secara paralel
+            // ════════════════════════════════════════════════════════
+            $multiDiagnosis = $this->analysisService->calculateMultiHybridCF(
+                $symptomAnswers,
+                $temuanKlinis
+            );
 
-            // Pilar 2: CF Anamnesis — jawaban kuesioner gejala klinis
-            $cfGejala = $this->analysisService->calculateSymptomCF($symptomAnswers);
+            // ── Ambil diagnosis dominan (CF tertinggi, posisi [0]) ───
+            // Engine sudah mengurutkan dari cf_final terbesar ke terkecil
+            $dominan = $multiDiagnosis[0] ?? [
+                'nama_objek' => 'Tidak Terdeteksi',
+                'cf_visual'  => 0.0,
+                'cf_gejala'  => 0.0,
+                'cf_final'   => 0.0,
+                'persentase' => '0%',
+            ];
 
-            // ── Rumus Hybrid 2-Pilar ─────────────────────────────────
-            // CF_Final = CF_Visual + CF_Anamnesis × (1 − CF_Visual)
-            $cfFinal = $this->analysisService->combineParallel($cfVisual, $cfGejala);
-            $cfFinal = min(1.0, max(0.0, round($cfFinal, 4)));
+            $cfFinal = (float) $dominan['cf_final'];
 
-            Log::info('[AnalisisController@processFinal] CF Breakdown.', [
-                'cf_visual'  => $cfVisual,
-                'cf_gejala'  => $cfGejala,
-                'cf_final'   => $cfFinal,
+            Log::info('[AnalisisController@processFinal] Multi-Hybrid CF selesai.', [
+                'jumlah_diagnosis' => count($multiDiagnosis),
+                'dominan'          => $dominan['nama_objek'],
+                'cf_final'         => $cfFinal,
             ]);
 
             // ── Susun data hasil lengkap ─────────────────────────────
@@ -255,11 +262,13 @@ class AnalisisController extends Controller
                 'error_message'          => $scanData['error_message'],
                 'total_objek_terdeteksi' => array_sum(array_column($temuanKlinis, 'jumlah')),
                 'jenis_objek_unik'       => count($temuanKlinis),
-                // CF Breakdown untuk audit trail
+                // CF Breakdown per klaster penyakit (multi-diagnosis utuh)
                 'cf_breakdown'           => [
-                    'cf_visual'  => round($cfVisual, 4),
-                    'cf_gejala'  => round($cfGejala, 4),
+                    'cf_visual'  => round($dominan['cf_visual'], 4),
+                    'cf_gejala'  => round($dominan['cf_gejala'], 4),
                 ],
+                // Seluruh array multi-diagnosis untuk rekam medis lengkap
+                'multi_diagnosis'        => $multiDiagnosis,
                 // Raw predictions & dimensi gambar untuk bounding box overlay
                 'raw_predictions'        => $scanData['raw_predictions'] ?? [],
                 'img_width'              => $scanData['img_width']  ?? null,
@@ -268,18 +277,15 @@ class AnalisisController extends Controller
                 'preview_base64'         => $scanData['preview_base64'] ?? null,
             ];
 
-            // ── NEW CODE: FASE 4 — Resolusi nama objek dominan untuk notes & audit ──
-            $namaObjekDominan = ! empty($temuanKlinis)
-                ? ($temuanKlinis[0]['nama_objek'] ?? 'Tidak Terdeteksi')
-                : 'Tidak Terdeteksi';
-            // ─────────────────────────────────────────────────────────────────────
+            // ── Nama objek dominan dari hasil engine ─────────────────
+            $namaObjekDominan = $dominan['nama_objek'];
 
             // ── Simpan ke tabel analysis_histories ───────────────────
             $history = $this->saveHistory(
                 hasil: $hasil,
                 cfBreakdown: [
-                    'cf_visual' => round($cfVisual, 4),
-                    'cf_gejala' => round($cfGejala, 4),
+                    'cf_visual' => round($dominan['cf_visual'], 4),
+                    'cf_gejala' => round($dominan['cf_gejala'], 4),
                 ],
                 symptomAnswers: $symptomAnswers,
                 namaObjekDominan: $namaObjekDominan,
@@ -525,6 +531,8 @@ class AnalisisController extends Controller
                         'cf_visual' => $cfBreakdown['cf_visual'] ?? 0.0,
                         'cf_gejala' => $cfBreakdown['cf_gejala'] ?? 0.0,
                     ],
+                    // Rekam medis multi-diagnosis lengkap (seluruh klaster penyakit)
+                    'multi_diagnosis'   => $hasil['multi_diagnosis'] ?? [],
                     'jawaban_anamnesis' => $symptomAnswers,
                     'raw_predictions'   => $hasil['raw_predictions'] ?? [],
                     'img_width'         => $hasil['img_width']       ?? null,
@@ -539,13 +547,14 @@ class AnalisisController extends Controller
                 'recommended_treatments'  => $recommendedTreatments,
 
                 'notes' => sprintf(
-                    'Analisis Hybrid CF 2-Pilar — Objek Dominan: %s | Skor: %d/100 (%s) | CF: Visual=%.2f Anamnesis=%.2f Final=%.2f',
+                    'Multi-Hybrid CF Engine — Dominan: %s | Skor: %d/100 (%s) | CF: Visual=%.4f Gejala=%.4f Final=%.4f | Diagnosis: %d klaster',
                     $namaObjekDominan,
                     $hasil['skor_kesehatan'],
                     $hasil['kondisi_label'],
                     $cfBreakdown['cf_visual'] ?? 0,
                     $cfBreakdown['cf_gejala'] ?? 0,
                     $hasil['cf_final'],
+                    count($hasil['multi_diagnosis'] ?? []),
                 ),
             ]);
 

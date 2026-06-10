@@ -8,187 +8,69 @@ class SymptomRulesTableSeeder extends Seeder
 {
 
     /**
-     * Auto generated seed file
+     * Seed tabel symptom_rules menggunakan teknik string matching dinamis.
+     *
+     * knowledge_base_id ditentukan secara otomatis dari tabel knowledge_bases
+     * berdasarkan pencocokan nama_objek + tingkat_keparahan, sehingga tidak
+     * bergantung pada ID statis yang bisa berubah.
      *
      * @return void
      */
     public function run()
     {
-        
+        // Ambil peta ID dari database untuk mencocokkan nama_objek + tingkat_keparahan secara akurat
+        $kbMap = \DB::table('knowledge_bases')
+            ->select('id', 'nama_objek', 'tingkat_keparahan')
+            ->get()
+            ->groupBy(['nama_objek', 'tingkat_keparahan']);
+
+        $symptomData = [
+            // --- KELOMPOK GEJALA: JERAWAT ---
+            ['objek' => 'Jerawat', 'keparahan' => 'Ringan', 'tanya' => 'Muncul benjolan kecil berwarna kemerahan di permukaan kulit', 'cf' => 0.8],
+            ['objek' => 'Jerawat', 'keparahan' => 'Ringan', 'tanya' => 'Pori-pori kulit tampak membesar dan terbuka di sekitar area kemerahan', 'cf' => 0.6],
+            ['objek' => 'Jerawat', 'keparahan' => 'Sedang', 'tanya' => 'Menunjukkan adanya tanda peradangan aktif pada kulit wajah', 'cf' => 0.7],
+            ['objek' => 'Jerawat', 'keparahan' => 'Sedang', 'tanya' => 'Benjolan merah dengan puncak berwarna putih atau kekuningan (mengandung nanah ringan)', 'cf' => 0.8],
+            ['objek' => 'Jerawat', 'keparahan' => 'Parah', 'tanya' => 'Mengandung nanah yang banyak dan menyebar di beberapa area wajah', 'cf' => 0.8],
+
+            // --- KELOMPOK GEJALA: KOMEDO HITAM ---
+            ['objek' => 'Komedo Hitam', 'keparahan' => 'Ringan', 'tanya' => 'Terdapat bintik kecil berwarna hitam pada permukaan pori-pori kulit', 'cf' => 0.2],
+            ['objek' => 'Komedo Hitam', 'keparahan' => 'Ringan', 'tanya' => 'Tidak disertai rasa nyeri atau tanda peradangan di sekitarnya', 'cf' => 0.6],
+            ['objek' => 'Komedo Hitam', 'keparahan' => 'Sedang', 'tanya' => 'Umumnya muncul berkerumun pada area hidung, dahi, dan dagu', 'cf' => 0.3],
+
+            // --- KELOMPOK GEJALA: KOMEDO PUTIH ---
+            ['objek' => 'Komedo Putih', 'keparahan' => 'Ringan', 'tanya' => 'Muncul benjolan kecil berwarna putih atau sewarna dengan kulit (tersumbat)', 'cf' => 0.8],
+            ['objek' => 'Komedo Putih', 'keparahan' => 'Ringan', 'tanya' => 'Pori-pori tersumbat namun kondisinya tertutup oleh lapisan kulit tipis', 'cf' => 0.6],
+            ['objek' => 'Komedo Putih', 'keparahan' => 'Sedang', 'tanya' => 'Tidak menimbulkan rasa gatal ataupun rasa nyeri saat disentuh', 'cf' => 0.5],
+            ['objek' => 'Komedo Putih', 'keparahan' => 'Sedang', 'tanya' => 'Umumnya muncul di area wajah yang cenderung berminyak tinggi', 'cf' => 0.3],
+
+            // --- KELOMPOK GEJALA: BEKAS JERAWAT ---
+            ['objek' => 'Bekas Jerawat', 'keparahan' => 'Sedang', 'tanya' => 'Meninggalkan noda kecokelatan atau kemerahan setelah jerawat kempes', 'cf' => 0.6],
+            ['objek' => 'Bekas Jerawat', 'keparahan' => 'Sedang', 'tanya' => 'Permukaan tekstur kulit terasa tidak rata saat diraba', 'cf' => 0.5],
+
+            // --- KELOMPOK GEJALA: KISTA (CYSTIC ACNE) ---
+            ['objek' => 'Kista', 'keparahan' => 'Ringan', 'tanya' => 'Benjolan berukuran besar, keras, dan tertanam jauh di bawah jaringan kulit', 'cf' => 0.8],
+            ['objek' => 'Kista', 'keparahan' => 'Sedang', 'tanya' => 'Terasa sangat nyeri, berdenyut, dan meradang hebat meskipun tidak disentuh', 'cf' => 0.6],
+            ['objek' => 'Kista', 'keparahan' => 'Sedang', 'tanya' => 'Benjolan besar berisi cairan atau nanah di bawah permukaan kulit wajah', 'cf' => 0.8],
+            ['objek' => 'Kista', 'keparahan' => 'Parah', 'tanya' => 'Nyeri hebat, peradangan meluas, dan ukuran jerawat relatif besar serta lunak (karena akumulasi infeksi)', 'cf' => 0.6],
+        ];
+
+        $inserts = [];
+        foreach ($symptomData as $data) {
+            // Ambil ID secara dinamis dari map database
+            $kbId = $kbMap[$data['objek']][$data['keparahan']][0]->id ?? null;
+
+            if ($kbId) {
+                $inserts[] = [
+                    'knowledge_base_id' => $kbId,
+                    'pertanyaan'        => $data['tanya'],
+                    'cf_pakar'          => $data['cf'],
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
+                ];
+            }
+        }
 
         \DB::table('symptom_rules')->delete();
-        
-        \DB::table('symptom_rules')->insert(array (
-            0 => array (
-                'id' => 1,
-                'knowledge_base_id' => 4,
-                'pertanyaan' => 'Terdapat bintik kecil berwarna hitam pada permukaan kulit',
-                'cf_pakar' => 0.8,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            1 => array (
-                'id' => 2,
-                'knowledge_base_id' => 4,
-                'pertanyaan' => 'Pori-pori kulit tampak membesar dan terbuka',
-                'cf_pakar' => 0.6,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            2 => array (
-                'id' => 3,
-                'knowledge_base_id' => 4,
-                'pertanyaan' => 'Tidak disertai rasa nyeri atau peradangan',
-                'cf_pakar' => 0.6,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            3 => array (
-                'id' => 4,
-                'knowledge_base_id' => 4,
-                'pertanyaan' => 'Umumnya muncul pada area hidung, dahi, dan dagu',
-                'cf_pakar' => 0.0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            4 => array (
-                'id' => 5,
-                'knowledge_base_id' => 4,
-                'pertanyaan' => 'Muncul benjolan kecil berwarna putih atau sewarna kulit',
-                'cf_pakar' => 0.8,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            5 => array (
-                'id' => 6,
-                'knowledge_base_id' => 4,
-                'pertanyaan' => 'Pori-pori tersumbat namun tertutup oleh kulit',
-                'cf_pakar' => 0.6,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            6 => array (
-                'id' => 7,
-                'knowledge_base_id' => 4,
-                'pertanyaan' => 'Tidak menimbulkan rasa nyeri',
-                'cf_pakar' => 0.5,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            7 => array (
-                'id' => 8,
-                'knowledge_base_id' => 4,
-                'pertanyaan' => 'Umumnya muncul di wajah dan dagu',
-                'cf_pakar' => 0.3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            8 => array (
-                'id' => 9,
-                'knowledge_base_id' => 4,
-                'pertanyaan' => 'Benjolan kecil berwarna kemerahan',
-                'cf_pakar' => 0.8,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            9 => array (
-                'id' => 10,
-                'knowledge_base_id' => 2,
-                'pertanyaan' => 'Terasa nyeri saat disentuh',
-                'cf_pakar' => 0.6,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            10 => array (
-                'id' => 11,
-                'knowledge_base_id' => 2,
-                'pertanyaan' => 'Tidak mengandung nanah',
-                'cf_pakar' => 0.5,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            11 => array (
-                'id' => 12,
-                'knowledge_base_id' => 2,
-                'pertanyaan' => 'Menunjukkan adanya peradangan pada kulit',
-                'cf_pakar' => 0.7,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            12 => array (
-                'id' => 13,
-                'knowledge_base_id' => 2,
-                'pertanyaan' => 'Benjolan merah dengan puncak berwarna putih atau kuning',
-                'cf_pakar' => 0.8,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            13 => array (
-                'id' => 14,
-                'knowledge_base_id' => 2,
-                'pertanyaan' => 'Mengandung nanah',
-                'cf_pakar' => 1.0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            14 => array (
-                'id' => 15,
-                'knowledge_base_id' => 2,
-                'pertanyaan' => 'Terasa nyeri dan meradang',
-                'cf_pakar' => 0.6,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            15 => array (
-                'id' => 16,
-                'knowledge_base_id' => 7,
-                'pertanyaan' => 'Benjolan besar dan keras di bawah kulit',
-                'cf_pakar' => 0.8,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            16 => array (
-                'id' => 17,
-                'knowledge_base_id' => 7,
-                'pertanyaan' => 'Terasa sangat nyeri',
-                'cf_pakar' => 0.6,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            17 => array (
-                'id' => 18,
-                'knowledge_base_id' => 7,
-                'pertanyaan' => 'Tidak memiliki puncak nanah yang jelas',
-                'cf_pakar' => 0.5,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            18 => array (
-                'id' => 19,
-                'knowledge_base_id' => 8,
-                'pertanyaan' => 'Benjolan besar berisi cairan atau nanah di bawah kulit',
-                'cf_pakar' => 0.8,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            19 => array (
-                'id' => 20,
-                'knowledge_base_id' => 8,
-                'pertanyaan' => 'Nyeri hebat dan peradangan luas',
-                'cf_pakar' => 0.6,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-            20 => array (
-                'id' => 21,
-                'knowledge_base_id' => 8,
-                'pertanyaan' => 'Ukuran jerawat relatif besar dan lunak',
-                'cf_pakar' => 0.5,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ),
-        ));
-        
-        
+        \DB::table('symptom_rules')->insert($inserts);
     }
 }

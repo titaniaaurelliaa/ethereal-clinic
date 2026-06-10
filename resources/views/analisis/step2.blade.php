@@ -262,7 +262,7 @@ $keparahanColor = [
 
                     {{-- CF Pakar info --}}
                     <p class="text-[10px] text-[#A8ABA7] pl-10 mt-2.5">
-                        Bobot pakar: {{ number_format($symptom->cf_gejala, 1) }}
+                        Bobot pakar: {{ number_format($symptom->cf_pakar, 1) }}
                     </p>
                 </div>
                 @endforeach

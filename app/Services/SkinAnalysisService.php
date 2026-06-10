@@ -284,7 +284,7 @@ class SkinAnalysisService
 
         // NEW CODE: Ambil CF Pakar dari database sekaligus untuk semua ID
         $rules = SymptomRule::whereIn('id', $validIds)
-                            ->pluck('cf_gejala', 'id');
+                            ->pluck('cf_pakar', 'id');
 
         $cfCombined = 0.0;
 
@@ -333,6 +333,166 @@ class SkinAnalysisService
         $result = $cfA + ($cfB * (1.0 - $cfA));
 
         return min(1.0, max(0.0, round($result, 4)));
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Hybrid Multi-Diagnosis Certainty Factor Engine
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * Mesin kalkulasi CF Hybrid Multi-Diagnosis.
+     *
+     * Menghitung CF final PER KLASTER PENYAKIT dengan menggabungkan dua pilar:
+     *   Pilar 1 — CF Visual  : confidence Roboflow × cf_pakar dari KnowledgeBase
+     *   Pilar 2 — CF Gejala  : jawaban anamnesis × cf_pakar dari SymptomRule
+     *
+     * Rumus Kombinasi Paralel Gejala (intra-klaster):
+     *   CF_combine = CF_old + CF_new × (1 − CF_old)
+     *
+     * Rumus Fusi Hybrid (inter-pilar):
+     *   CF_final = CF_visual + CF_combine × (1 − CF_visual)
+     *
+     * @param  array<int|string, float|null>  $answers        [symptom_rule_id => user_value] dari form kuesioner
+     * @param  array<int, array{nama_objek: string, confidence: float, jumlah: int}>  $visualResults  Temuan multi-objek Roboflow
+     * @return array<int, array{nama_objek: string, cf_visual: float, cf_gejala: float, cf_final: float, persentase: string}>
+     */
+    public function calculateMultiHybridCF(array $answers, array $visualResults): array
+    {
+        // ══════════════════════════════════════════════════════════════
+        // TAHAP 1 — Filtering: Saring jawaban valid (non-null, >= 0)
+        // ══════════════════════════════════════════════════════════════
+        $validAnswers = array_filter(
+            $answers,
+            fn($v) => !is_null($v) && is_numeric($v) && floatval($v) >= 0
+        );
+
+        // ══════════════════════════════════════════════════════════════
+        // TAHAP 2 — Eager Loading (Anti N+1 Query)
+        // Ambil SymptomRule beserta relasi KnowledgeBase sekaligus
+        // ══════════════════════════════════════════════════════════════
+        $ruleIds = array_keys($validAnswers);
+        $rules   = collect();
+
+        if (!empty($ruleIds)) {
+            $rules = SymptomRule::with('knowledgeBase')
+                ->whereIn('id', $ruleIds)
+                ->get();
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // TAHAP 3 — Isolasi & Klasterisasi Penyakit (Disease Isolation)
+        // Kelompokkan setiap gejala ke klaster penyakit induknya
+        // berdasarkan relasi SymptomRule → KnowledgeBase → nama_objek
+        // ══════════════════════════════════════════════════════════════
+        $groupedCalculations = [];
+
+        foreach ($rules as $rule) {
+            // Guard: lewati jika relasi KnowledgeBase putus
+            if (!$rule->knowledgeBase) {
+                Log::warning("[SkinAnalysis] SymptomRule ID={$rule->id} tidak memiliki relasi KnowledgeBase, dilewati.");
+                continue;
+            }
+
+            $namaObjek = $rule->knowledgeBase->nama_objek;
+
+            // Inisialisasi klaster baru jika belum ada
+            if (!isset($groupedCalculations[$namaObjek])) {
+                $groupedCalculations[$namaObjek] = [
+                    'nama_objek' => $namaObjek,
+                    'symptoms'   => [],
+                    'cf_visual'  => 0.0,
+                ];
+            }
+
+            // Hitung CF Gejala Tunggal: CF_user × CF_pakar
+            $cfUser          = min(1.0, max(0.0, floatval($validAnswers[$rule->id])));
+            $cfPakarGejala   = floatval($rule->cf_pakar);
+            $cfGejalaTunggal = $cfUser * $cfPakarGejala;
+
+            if ($cfGejalaTunggal > 0.0) {
+                $groupedCalculations[$namaObjek]['symptoms'][] = $cfGejalaTunggal;
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // TAHAP 4 — Kalibrasi Visual Dinamis ($CF_visual)
+        // Ambil cf_pakar visual dari database via KnowledgeBase::findRule()
+        // bukan menggunakan konstanta statis 0.6
+        // ══════════════════════════════════════════════════════════════
+        foreach ($visualResults as $visual) {
+            $namaObjek = $visual['nama_objek'] ?? '';
+
+            if (empty($namaObjek)) {
+                continue;
+            }
+
+            // Inisialisasi klaster jika belum ada (kondisi: visual ada tapi tanpa gejala)
+            if (!isset($groupedCalculations[$namaObjek])) {
+                $groupedCalculations[$namaObjek] = [
+                    'nama_objek' => $namaObjek,
+                    'symptoms'   => [],
+                    'cf_visual'  => 0.0,
+                ];
+            }
+
+           // Resolve cf_pakar visual secara dinamis dari database
+        $kbRule        = KnowledgeBase::findRule($namaObjek, intval($visual['jumlah']));
+        $cfPakarVisual = $kbRule ? floatval($kbRule->cf_pakar) : 0.6;
+
+        //PERBAIKAN DI SINI: Ambil skor secara dinamis (antisipasi key avg_confidence atau confidence)
+        $confidenceScore = floatval($visual['avg_confidence'] ?? $visual['confidence'] ?? 0.0);
+
+        // CF_visual = confidence_score × cf_pakar_visual_dari_db
+        $cfVisual = $confidenceScore * $cfPakarVisual;
+        $groupedCalculations[$namaObjek]['cf_visual'] = round($cfVisual, 4);
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // TAHAP 5 — Core Math Engine (per Klaster Penyakit)
+        // ══════════════════════════════════════════════════════════════
+        $results = [];
+
+        foreach ($groupedCalculations as $namaObjek => $cluster) {
+            // ── A. Akumulasi Kombinasi Gejala Paralel ────────────────
+            // CF_combine = CF_old + CF_new × (1 − CF_old)
+            $cfCombine = 0.0;
+
+            foreach ($cluster['symptoms'] as $cfGejala) {
+                $cfCombine = $cfCombine + ($cfGejala * (1.0 - $cfCombine));
+            }
+
+            $cfCombine = round($cfCombine, 4);
+
+            // ── B. Fusi Hybrid Visual + Gejala ───────────────────────
+            // CF_final = CF_visual + CF_combine × (1 − CF_visual)
+            $cfVisual = $cluster['cf_visual'];
+            $cfFinal  = $cfVisual + ($cfCombine * (1.0 - $cfVisual));
+            $cfFinal  = min(1.0, max(0.0, round($cfFinal, 4)));
+
+            // ── TAHAP 6 — Standarisasi Format Output ─────────────────
+            $results[] = [
+                'nama_objek' => $namaObjek,
+                'cf_visual'  => round($cfVisual, 4),
+                'cf_gejala'  => $cfCombine,
+                'cf_final'   => $cfFinal,
+                'persentase' => round($cfFinal * 100, 1) . '%',
+            ];
+
+            // ── TAHAP 7 — Audit Trail Logging ────────────────────────
+            Log::info("[SkinAnalysis] Multi-Hybrid CF — Klaster: {$namaObjek}", [
+                'cf_visual'         => round($cfVisual, 4),
+                'cf_gejala_combine' => $cfCombine,
+                'cf_final'          => $cfFinal,
+                'persentase'        => round($cfFinal * 100, 1) . '%',
+                'jumlah_gejala'     => count($cluster['symptoms']),
+                'detail_cf_gejala'  => $cluster['symptoms'],
+            ]);
+        }
+
+        // Urutkan: CF_final tertinggi di posisi pertama (diagnosis paling kuat)
+        usort($results, fn($a, $b) => $b['cf_final'] <=> $a['cf_final']);
+
+        return $results;
     }
 
     // ═══════════════════════════════════════════════════════════════
