@@ -8,19 +8,15 @@
     {{-- HEADER --}}
     <div class="flex flex-wrap justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Data Masalah Kulit</h1>
-        
+
         <button onclick="openModal('addModal')" class="bg-pink-500 text-white px-4 py-2 rounded-lg shadow hover:bg-pink-600 transition">
             + Tambah Masalah Kulit
         </button>
     </div>
 
-    {{-- TABLE --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-
-        <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
-            <h3 class="font-semibold text-gray-700">Daftar Masalah Kulit</h3>
-            <div class="flex gap-2">
-                <form method="GET" action="{{ route('admin.skin-problems.index') }}" class="flex gap-2">
+    {{-- FILTER BAR --}}
+    <div class="bg-white rounded-2xl border border-gray-100 p-4 mb-5 shadow-sm">
+        <form method="GET" action="{{ route('admin.skin-problems.index') }}" class="flex gap-2">
                     <select name="severity" class="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
                         <option value="">Semua Tingkat</option>
                         <option value="ringan" {{ request('severity') == 'ringan' ? 'selected' : '' }}>Ringan</option>
@@ -29,7 +25,7 @@
                     </select>
 
                     <input type="text" name="search" placeholder="Cari masalah kulit..." value="{{ request('search') }}"
-                        class="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                        class="flex-1 min-w-[180px] px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
 
                     <button type="submit" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
                         <i class="fas fa-search"></i> Cari
@@ -41,7 +37,13 @@
                         </a>
                     @endif
                 </form>
-            </div>
+    </div>
+
+    {{-- TABLE --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+            <h3 class="font-semibold text-gray-700">Daftar Masalah Kulit</h3>
+            <span class="text-xs text-gray-400">Total: {{ $problems->total() }}</span>
         </div>
 
         <div class="overflow-x-auto">
@@ -68,9 +70,6 @@
 
                             <td class="p-4 font-medium text-gray-800">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600">
-                                        <i class="fas fa-virus text-xs"></i>
-                                    </div>
                                     {{ $item->name }}
                                 </div>
                             </td>

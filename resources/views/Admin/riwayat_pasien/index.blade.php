@@ -25,8 +25,8 @@
     </div>
 
     {{-- ── Filter Bar ──────────────────────────────────────────────── --}}
-    <div class="bg-white rounded-2xl border border-[#E1E3DE] p-4 shadow-sm">
-        <form action="{{ route('admin.riwayat-pasien.index') }}" method="GET" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+    <div class="bg-white rounded-2xl border border-gray-100 p-4 mb-5 shadow-sm">
+        <form action="{{ route('admin.riwayat-pasien.index') }}" method="GET" class="flex gap-2">
             {{-- Search Input --}}
             <div class="relative flex-1">
                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">

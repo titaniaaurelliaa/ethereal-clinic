@@ -57,18 +57,18 @@
     </div>
 
     {{-- ─── FILTER BAR ────────────────────────────────────────────────────────── --}}
-    <div class="bg-white rounded-2xl border border-[#E1E3DE] p-4 mb-5">
+    <div class="bg-white rounded-2xl border border-gray-100 p-4 mb-5 shadow-sm">
         <form method="GET" action="{{ route('admin.news.index') }}" class="flex flex-wrap gap-3">
             <input type="text" name="search" placeholder="Cari judul berita..."
                 value="{{ request('search') }}"
-                class="flex-1 min-w-[200px] px-3 py-2 border border-[#E1E3DE] rounded-xl text-sm text-[#5D605C] focus:outline-none focus:ring-2 focus:ring-pink-400">
+                class="flex-1 min-w-[180px] px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
             <button type="submit"
-                class="px-4 py-2 bg-pink-500 text-white rounded-xl text-sm font-semibold hover:bg-pink-600 transition-colors">
+                class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
                 Cari
             </button>
             @if(request('search'))
                 <a href="{{ route('admin.news.index') }}"
-                    class="px-4 py-2 bg-[#E1E3DE] text-[#5D605C] rounded-xl text-sm font-semibold hover:bg-gray-200 transition-colors">
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
                     Reset
                 </a>
             @endif
@@ -193,22 +193,22 @@
 {{-- ════════════════════════════════════════════════════════════════ --}}
 <div id="deleteConfirmModal" class="fixed inset-0 bg-black/40 hidden justify-center items-center z-50">
     <div class="bg-white rounded-2xl w-96 p-6 shadow-xl border border-red-100">
-        
+
         <!-- Ikon Peringatan -->
         <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span class="text-red-600 text-2xl font-bold">!</span>
         </div>
-        
+
         <h2 class="text-lg font-bold text-gray-800 text-center mb-2">Hapus Berita?</h2>
         <p class="text-sm text-gray-500 text-center mb-2">
             Apakah Anda yakin ingin menghapus berita:
         </p>
-        
+
         <!-- Target Judul Berita -->
         <p id="deleteTargetName" class="text-sm text-gray-700 text-center font-medium italic mb-6 px-2"></p>
-        
+
         <p class="text-xs text-gray-400 text-center mb-6">Tindakan ini bersifat permanen dan tidak dapat dibatalkan. Foto cover berita juga akan dihapus.</p>
-        
+
         <!-- Tombol Aksi -->
         <div class="flex justify-center gap-2">
             <button type="button" onclick="closeDeleteModal()"
@@ -220,7 +220,7 @@
                 Ya, Hapus
             </button>
         </div>
-        
+
     </div>
 </div>
 
@@ -229,10 +229,10 @@ let _pendingDeleteFormId = null;
 
 function confirmDelete(id, title) {
     _pendingDeleteFormId = 'deleteForm-' + id;
-    
+
     // Sedikit modifikasi: menambahkan tanda kutip ganda otomatis seperti di referensi Anda
     document.getElementById('deleteTargetName').textContent = '"' + title + '"';
-    
+
     const modal = document.getElementById('deleteConfirmModal');
     modal.classList.remove('hidden');
     modal.classList.add('flex');

@@ -8,31 +8,33 @@
     {{-- HEADER --}}
     <div class="flex flex-wrap justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Data Treatment</h1>
-        
+
         <button onclick="openModal('addModal')" class="bg-pink-500 text-white px-4 py-2 rounded-lg shadow hover:bg-pink-600 transition">
             + Tambah Treatment
         </button>
     </div>
 
+    {{-- FILTER BAR --}}
+    <div class="bg-white rounded-2xl border border-gray-100 p-4 mb-5 shadow-sm">
+        <form method="GET" action="{{ route('admin.treatment.index') }}" class="flex gap-2">
+                <input type="text" name="search" placeholder="Cari treatment..." value="{{ request('search') }}"
+                    class="flex-1 min-w-[180px] px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                <button type="submit" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
+                    <i class="fas fa-search"></i> Cari
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('admin.treatment.index') }}" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                        <i class="fas fa-times"></i> Reset
+                    </a>
+                @endif
+        </form>
+    </div>
+
     {{-- TABLE --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-
-        <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
             <h3 class="font-semibold text-gray-700">Daftar Treatment</h3>
-            <div class="flex gap-2">
-                <form method="GET" action="{{ route('admin.treatment.index') }}" class="flex gap-2">
-                    <input type="text" name="search" placeholder="Cari treatment..." value="{{ request('search') }}"
-                        class="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
-                    <button type="submit" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
-                        <i class="fas fa-search"></i> Cari
-                    </button>
-                    @if(request('search'))
-                        <a href="{{ route('admin.treatment.index') }}" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
-                            <i class="fas fa-times"></i> Reset
-                        </a>
-                    @endif
-                </form>
-            </div>
+            <span class="text-xs text-gray-400">Total: {{ $treatment->total() }}</span>
         </div>
 
         <div class="overflow-x-auto">

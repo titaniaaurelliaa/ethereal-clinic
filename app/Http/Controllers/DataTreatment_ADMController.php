@@ -10,7 +10,17 @@ class DataTreatment_ADMController extends Controller
 {
     public function index(Request $request)
     {
-        $treatment    = TreatmentModel::with('skinProblems')->orderBy('id', 'asc')->paginate(10);
+        // Ambil data input pencarian jika ada
+        $search = $request->input('search');
+
+        $treatment = TreatmentModel::with('skinProblems')
+            // Query akan ditambahkan hanya jika variabel $search diisi oleh user
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'LIKE', '%' . $search . '%');
+            })
+            ->orderBy('id', 'asc')
+            ->paginate(10);
+
         $skinProblems = SkinProblemModel::orderBy('name')->get();
 
         return view('admin.treatment.index', compact('treatment', 'skinProblems'));
