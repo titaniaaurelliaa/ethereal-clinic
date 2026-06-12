@@ -6,7 +6,7 @@
 <div class="w-full px-4 md:px-6">
     
     <!-- Header Section dengan Background -->
-    <div class="bg-gradient-to-r from-[#7B5556] to-[#9B6B6C] rounded-2xl px-6 py-4 md:py-5 mb-6 shadow-sm">
+    <div class="bg-pink-500 rounded-2xl px-6 py-4 md:py-5 mb-6 shadow-sm">
         <div class="max-w-7xl mx-auto">
             <h1 class="text-xl md:text-2xl font-bold text-white">Profile Saya</h1>
             <p class="text-white/80 text-sm mt-0.5">Informasi akun administrator Anda</p>
@@ -19,12 +19,12 @@
             
             <!-- SIDE KIRI: Foto Profile & Info Singkat -->
             <div class="lg:col-span-1">
-                <div class="bg-white rounded-2xl shadow-sm border border-[#E1E3DE] overflow-hidden sticky top-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
                     
                     <!-- Foto Profile dengan Upload -->
-                    <div class="text-center py-6 px-4 border-b border-[#E1E3DE]">
+                    <div class="text-center py-6 px-4 border-b border-gray-100">
                         <div class="relative inline-block group">
-                            <div class="w-24 h-24 mx-auto rounded-full overflow-hidden shadow-md bg-gradient-to-br from-[#7B5556] to-[#9B6B6C]">
+                            <div class="w-24 h-24 mx-auto rounded-full overflow-hidden shadow-md bg-pink-500">
                                 @if($user->avatar && file_exists(public_path('storage/avatars/' . $user->avatar)))
                                     <img id="avatarPreview" src="{{ asset('storage/avatars/' . $user->avatar) }}" alt="Profile" class="w-full h-full object-cover">
                                 @else
@@ -48,17 +48,17 @@
                                 <input type="file" id="avatarUpload" name="avatar" accept="image/*" onchange="submitAvatarForm()">
                             </form>
                         </div>
-                        <h2 class="text-lg font-bold text-[#5D605C] mt-3">{{ $user->name }}</h2>
-                        <p class="text-[#797B78] text-xs">Administrator</p>
+                        <h2 class="text-lg font-bold text-gray-800 mt-3">{{ $user->name }}</h2>
+                        <p class="text-gray-500 text-xs">Administrator</p>
                     </div>
 
                     <!-- Informasi Singkat -->
                     <div class="p-4">
                         <div class="flex items-center gap-2 text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#7B5556]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
-                            <span class="text-[#797B78] text-xs break-all">{{ $user->email }}</span>
+                            <span class="text-gray-500 text-xs break-all">{{ $user->email }}</span>
                         </div>
                     </div>
                 </div>
@@ -68,49 +68,49 @@
             <div class="lg:col-span-2 space-y-6">
                 
                 <!-- Informasi Pribadi -->
-                <div class="bg-white rounded-2xl shadow-sm border border-[#E1E3DE] overflow-hidden">
-                    <div class="px-5 py-3 border-b border-[#E1E3DE] bg-gray-50">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">
                         <div>
-                            <h3 class="text-base font-bold text-[#5D605C]">Informasi Pribadi</h3>
-                            <p class="text-[#797B78] text-xs">Data diri administrator</p>
+                            <h3 class="text-base font-bold text-gray-800">Informasi Pribadi</h3>
+                            <p class="text-gray-500 text-xs">Data diri administrator</p>
                         </div>
                     </div>
                     
                     <div class="p-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="bg-gray-50 rounded-xl p-3">
-                                <label class="block text-[#797B78] text-xs mb-1">Nama Lengkap</label>
-                                <p class="text-[#5D605C] text-sm font-semibold">{{ $user->name }}</p>
+                                <label class="block text-gray-500 text-xs mb-1">Nama Lengkap</label>
+                                <p class="text-gray-800 text-sm font-semibold">{{ $user->name }}</p>
                             </div>
                             <div class="bg-gray-50 rounded-xl p-3">
-                                <label class="block text-[#797B78] text-xs mb-1">Alamat Email</label>
-                                <p class="text-[#5D605C] text-sm font-semibold">{{ $user->email }}</p>
+                                <label class="block text-gray-500 text-xs mb-1">Alamat Email</label>
+                                <p class="text-gray-800 text-sm font-semibold">{{ $user->email }}</p>
                             </div>
                             <div class="bg-gray-50 rounded-xl p-3">
-                                <label class="block text-[#797B78] text-xs mb-1">Jabatan</label>
-                                <p class="text-[#5D605C] text-sm font-semibold">Administrator</p>
+                                <label class="block text-gray-500 text-xs mb-1">Jabatan</label>
+                                <p class="text-gray-800 text-sm font-semibold">Administrator</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Pengaturan Akun (Tombol buka modal) -->
-                <div class="bg-white rounded-2xl shadow-sm border border-[#E1E3DE] overflow-hidden">
-                    <div class="px-5 py-3 border-b border-[#E1E3DE] bg-gray-50">
-                        <h3 class="text-base font-bold text-[#5D605C]">Pengaturan Akun</h3>
-                        <p class="text-[#797B78] text-xs">Kelola data diri dan keamanan akun Anda</p>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">
+                        <h3 class="text-base font-bold text-gray-800">Pengaturan Akun</h3>
+                        <p class="text-gray-500 text-xs">Kelola data diri dan keamanan akun Anda</p>
                     </div>
                     
                     <div class="p-5 flex flex-col sm:flex-row gap-4">
                         <button onclick="openEditProfileModal()" 
-                            class="flex-1 py-3 px-4 rounded-xl border-2 border-[#7B5556]/30 text-[#7B5556] font-bold hover:bg-[#7B5556] hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+                            class="flex-1 py-3 px-4 rounded-xl border-2 border-pink-500 text-pink-500 font-bold hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
                             Ubah Data Diri
                         </button>
                         <button onclick="openChangePasswordModal()" 
-                            class="flex-1 py-3 px-4 rounded-xl border-2 border-[#7B5556]/30 text-[#7B5556] font-bold hover:bg-[#7B5556] hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+                            class="flex-1 py-3 px-4 rounded-xl border-2 border-pink-500 text-pink-500 font-bold hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
@@ -124,14 +124,14 @@
 </div>
 
 {{-- MODAL EDIT DATA DIRI --}}
-<div id="editProfileModal" class="fixed inset-0 z-50 hidden bg-[#2A3435]/60 backdrop-blur-md flex items-center justify-center p-4 transition-opacity opacity-0">
-    <div class="bg-white rounded-[40px] w-full max-w-lg p-10 shadow-[0_20px_50px_rgba(0,0,0,0.1)] transform scale-95 transition-transform duration-300 border border-white/40">
+<div id="editProfileModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity opacity-0">
+    <div class="bg-white rounded-2xl w-full max-w-lg p-8 shadow-xl transform scale-95 transition-transform duration-300">
         
-        <div class="flex justify-between items-center mb-8">
-            <h3 class="font-extrabold text-[#2A3435] text-2xl tracking-tight">Ubah Data Diri</h3>
-            <button onclick="closeEditProfileModal()" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#F7F5F4] text-[#576162] hover:bg-red-50 hover:text-red-500 transition-colors">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800">Ubah Data Diri</h3>
+            <button onclick="closeEditProfileModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
         </div>
@@ -140,25 +140,25 @@
             @csrf
             @method('PUT')
 
-            <div class="space-y-5 mb-10">
+            <div class="space-y-4 mb-6">
                 <div>
-                    <label class="block text-[11px] font-bold text-[#797B78] uppercase tracking-widest mb-2 px-2">Nama Panjang</label>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Nama Lengkap</label>
                     <input type="text" name="name" value="{{ $user->name }}" required
-                        class="w-full bg-[#F7F5F4] border border-transparent text-[#2A3435] font-semibold rounded-2xl px-5 py-4 outline-none focus:bg-white focus:border-[#7B5556]/30 focus:ring-4 focus:ring-[#7B5556]/10 transition-all">
+                        class="w-full bg-gray-50 border border-gray-200 text-gray-800 font-semibold rounded-xl px-4 py-3 outline-none focus:bg-white focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all">
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-bold text-[#797B78] uppercase tracking-widest mb-2 px-2">Email</label>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Email</label>
                     <input type="email" name="email" value="{{ $user->email }}" required
-                        class="w-full bg-[#F7F5F4] border border-transparent text-[#2A3435] font-semibold rounded-2xl px-5 py-4 outline-none focus:bg-white focus:border-[#7B5556]/30 focus:ring-4 focus:ring-[#7B5556]/10 transition-all">
+                        class="w-full bg-gray-50 border border-gray-200 text-gray-800 font-semibold rounded-xl px-4 py-3 outline-none focus:bg-white focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all">
                 </div>
             </div>
 
-            <div class="flex gap-4">
-                <button type="button" onclick="closeEditProfileModal()" class="w-1/3 py-4 px-6 rounded-2xl border-2 border-[#E1E3DE] text-[#797B78] font-bold text-sm hover:bg-[#F7F5F4] hover:text-[#2A3435] transition-colors">
+            <div class="flex gap-3">
+                <button type="button" onclick="closeEditProfileModal()" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-100 transition-colors">
                     BATAL
                 </button>
-                <button type="submit" class="w-2/3 py-4 px-6 rounded-2xl bg-gradient-to-r from-[#7B5556] to-[#9B6B6C] text-white font-bold text-sm shadow-[0_8px_20px_rgba(123,85,86,0.25)] hover:shadow-[0_10px_25px_rgba(123,85,86,0.35)] transition-all transform hover:-translate-y-1">
+                <button type="submit" class="flex-1 py-3 rounded-xl bg-pink-500 text-white font-semibold text-sm shadow-md hover:bg-pink-600 transition-all transform hover:-translate-y-0.5">
                     SIMPAN PERUBAHAN
                 </button>
             </div>
@@ -167,14 +167,14 @@
 </div>
 
 {{-- MODAL UBAH PASSWORD --}}
-<div id="changePasswordModal" class="fixed inset-0 z-50 hidden bg-[#2A3435]/60 backdrop-blur-md flex items-center justify-center p-4 transition-opacity opacity-0">
-    <div class="bg-white rounded-[40px] w-full max-w-lg p-10 shadow-[0_20px_50px_rgba(0,0,0,0.1)] transform scale-95 transition-transform duration-300 border border-white/40">
+<div id="changePasswordModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity opacity-0">
+    <div class="bg-white rounded-2xl w-full max-w-lg p-8 shadow-xl transform scale-95 transition-transform duration-300">
         
-        <div class="flex justify-between items-center mb-8">
-            <h3 class="font-extrabold text-[#2A3435] text-2xl tracking-tight">Ubah Password</h3>
-            <button onclick="closeChangePasswordModal()" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#F7F5F4] text-[#576162] hover:bg-red-50 hover:text-red-500 transition-colors">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800">Ubah Password</h3>
+            <button onclick="closeChangePasswordModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
         </div>
@@ -183,13 +183,13 @@
             @csrf
             @method('PUT')
 
-            <div class="space-y-5 mb-10">
+            <div class="space-y-4 mb-6">
                 <div>
-                    <label class="block text-[11px] font-bold text-[#797B78] uppercase tracking-widest mb-2 px-2">Password Saat Ini</label>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Password Saat Ini</label>
                     <div class="relative">
                         <input type="password" id="current_password" name="current_password" required
-                            class="w-full bg-[#F7F5F4] border border-transparent text-[#2A3435] font-semibold rounded-2xl pl-5 pr-12 py-4 outline-none focus:bg-white focus:border-[#7B5556]/30 focus:ring-4 focus:ring-[#7B5556]/10 transition-all">
-                        <button type="button" onclick="toggleCurrentPassword()" class="absolute inset-y-0 right-0 px-4 flex items-center text-[#A9B4B5] hover:text-[#7B5556] transition-colors">
+                            class="w-full bg-gray-50 border border-gray-200 text-gray-800 font-semibold rounded-xl pl-4 pr-12 py-3 outline-none focus:bg-white focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all">
+                        <button type="button" onclick="toggleCurrentPassword()" class="absolute inset-y-0 right-0 px-4 flex items-center text-gray-400 hover:text-pink-500 transition-colors">
                             <svg id="currentEyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -200,11 +200,11 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-bold text-[#797B78] uppercase tracking-widest mb-2 px-2">Password Baru</label>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Password Baru</label>
                     <div class="relative">
-                        <input type="password" id="new_password" name="new_password" required minlength="8"
-                            class="w-full bg-[#F7F5F4] border border-transparent text-[#2A3435] font-semibold rounded-2xl pl-5 pr-12 py-4 outline-none focus:bg-white focus:border-[#7B5556]/30 focus:ring-4 focus:ring-[#7B5556]/10 transition-all">
-                        <button type="button" onclick="toggleNewPassword()" class="absolute inset-y-0 right-0 px-4 flex items-center text-[#A9B4B5] hover:text-[#7B5556] transition-colors">
+                        <input type="password" id="new_password" name="new_password" required minlength="6"
+                            class="w-full bg-gray-50 border border-gray-200 text-gray-800 font-semibold rounded-xl pl-4 pr-12 py-3 outline-none focus:bg-white focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all">
+                        <button type="button" onclick="toggleNewPassword()" class="absolute inset-y-0 right-0 px-4 flex items-center text-gray-400 hover:text-pink-500 transition-colors">
                             <svg id="newEyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -216,11 +216,11 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-bold text-[#797B78] uppercase tracking-widest mb-2 px-2">Konfirmasi Password Baru</label>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Konfirmasi Password Baru</label>
                     <div class="relative">
                         <input type="password" id="confirm_password" name="confirm_password" required
-                            class="w-full bg-[#F7F5F4] border border-transparent text-[#2A3435] font-semibold rounded-2xl pl-5 pr-12 py-4 outline-none focus:bg-white focus:border-[#7B5556]/30 focus:ring-4 focus:ring-[#7B5556]/10 transition-all">
-                        <button type="button" onclick="toggleConfirmPassword()" class="absolute inset-y-0 right-0 px-4 flex items-center text-[#A9B4B5] hover:text-[#7B5556] transition-colors">
+                            class="w-full bg-gray-50 border border-gray-200 text-gray-800 font-semibold rounded-xl pl-4 pr-12 py-3 outline-none focus:bg-white focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all">
+                        <button type="button" onclick="toggleConfirmPassword()" class="absolute inset-y-0 right-0 px-4 flex items-center text-gray-400 hover:text-pink-500 transition-colors">
                             <svg id="confirmEyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -231,11 +231,11 @@
                 </div>
             </div>
 
-            <div class="flex gap-4">
-                <button type="button" onclick="closeChangePasswordModal()" class="w-1/3 py-4 px-6 rounded-2xl border-2 border-[#E1E3DE] text-[#797B78] font-bold text-sm hover:bg-[#F7F5F4] hover:text-[#2A3435] transition-colors">
+            <div class="flex gap-3">
+                <button type="button" onclick="closeChangePasswordModal()" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-100 transition-colors">
                     BATAL
                 </button>
-                <button type="submit" class="w-2/3 py-4 px-6 rounded-2xl bg-gradient-to-r from-[#7B5556] to-[#9B6B6C] text-white font-bold text-sm shadow-[0_8px_20px_rgba(123,85,86,0.25)] hover:shadow-[0_10px_25px_rgba(123,85,86,0.35)] transition-all transform hover:-translate-y-1">
+                <button type="submit" class="flex-1 py-3 rounded-xl bg-pink-500 text-white font-semibold text-sm shadow-md hover:bg-pink-600 transition-all transform hover:-translate-y-0.5">
                     UPDATE PASSWORD
                 </button>
             </div>
@@ -286,7 +286,7 @@
     
     // Modal Edit Data Diri
     const editModal = document.getElementById('editProfileModal');
-    const editModalBox = editModal ? editModal.querySelector('div') : null;
+    const editModalBox = editModal ? editModal.querySelector('.bg-white') : null;
 
     function openEditProfileModal() {
         if (!editModal) return;
@@ -314,7 +314,7 @@
     
     // Modal Ubah Password
     const pwdModal = document.getElementById('changePasswordModal');
-    const pwdModalBox = pwdModal ? pwdModal.querySelector('div') : null;
+    const pwdModalBox = pwdModal ? pwdModal.querySelector('.bg-white') : null;
 
     function openChangePasswordModal() {
         if (!pwdModal) return;
