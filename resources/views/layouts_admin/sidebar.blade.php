@@ -8,7 +8,7 @@
             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <!-- Icon garis 3 (hamburger) - tampil saat sidebar terbuka -->
             <path id="iconHamburger" stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            <!-- Icon panah kiri - tampil saat sidebar tertutup -->
+            <!-- Icon panah kanan - tampil saat sidebar tertutup -->
             <path id="iconArrow" stroke-linecap="round" stroke-linejoin="round" class="hidden" d="M9 5l7 7-7 7" />
         </svg>
     </button>
@@ -55,7 +55,7 @@
             <span class="ml-3 whitespace-nowrap sidebar-text">Dashboard</span>
         </a>
 
-        {{-- Basis Pengetahuan Pakar (Knowledge Base) --}}
+        <!-- Basis Pengetahuan Pakar (Knowledge Base) -->
         <a href="{{ route('admin.knowledge-base.index') }}"
             class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('admin.knowledge-base*') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}"
             title="Basis Pengetahuan Pakar">
@@ -69,7 +69,7 @@
 
         <!-- Data Produk -->
         <a href="{{ route('admin.dataproduk.index') }}"
-            class="flex items-center px-3 py-3 rounded-xl transition-colors group text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium"
+            class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('admin.dataproduk*') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}"
             title="Data Produk">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" stroke-width="2">
@@ -81,7 +81,7 @@
 
         <!-- Data Masalah Kulit -->
         <a href="{{ route('admin.skin-problems.index') }}"
-            class="flex items-center px-3 py-3 rounded-xl transition-colors group text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium"
+            class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('admin.skin-problems*') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}"
             title="Data Masalah Kulit">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" stroke-width="2">
@@ -93,7 +93,7 @@
 
         <!-- Data Treatment -->
         <a href="{{ route('admin.treatment.index') }}"
-            class="flex items-center px-3 py-3 rounded-xl transition-colors group text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium"
+            class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('admin.treatment*') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}"
             title="Data Treatment">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" stroke-width="2">
@@ -127,7 +127,7 @@
             <span class="ml-3 whitespace-nowrap sidebar-text">Riwayat Analisis</span>
         </a>
         
-         <!-- Manajemen Berita -->
+        <!-- Manajemen Berita -->
         <a href="{{ route('admin.news.index') }}"
             class="flex items-center px-3 py-3 rounded-xl transition-colors group {{ request()->routeIs('admin.news*') ? 'bg-[#FFEFF3] text-[#7B5556] font-semibold' : 'text-[#797B78] hover:bg-[#F5F5F5] hover:text-[#5D605C] font-medium' }}"
             title="Manajemen Berita">

@@ -189,10 +189,10 @@
                     @php
                         $cf = $analysis->confidence_score;
                         $cfColor = $cf >= 75
-                            ? ['bg' => 'bg-emerald-50', 'text' => 'text-emerald-700', 'bar' => 'bg-emerald-500', 'badge' => 'Tinggi']
+                            ? ['bg' => 'bg-emerald-50', 'text' => 'text-red-700', 'bar' => 'bg-emerald-500', 'badge' => 'Tinggi']
                             : ($cf >= 50
                                 ? ['bg' => 'bg-yellow-50', 'text' => 'text-yellow-700', 'bar' => 'bg-yellow-400', 'badge' => 'Sedang']
-                                : ['bg' => 'bg-red-50',    'text' => 'text-red-600',    'bar' => 'bg-red-400',    'badge' => 'Rendah']);
+                                : ['bg' => 'bg-red-50',    'text' => 'text-emerald-600',    'bar' => 'bg-red-400',    'badge' => 'Rendah']);
                     @endphp
                     <tr class="hover:bg-pink-50/30 transition-colors duration-150 group">
                         <td class="px-4 py-4">
