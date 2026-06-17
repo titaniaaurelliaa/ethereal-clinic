@@ -140,9 +140,7 @@ $keparahanColor = [
                                 <div class="flex items-center gap-3 text-xs text-[#797B78]">
                                     <span>{{ $item['jumlah'] }} terdeteksi</span>
                                     <span class="text-[#E1E3DE]">|</span>
-                                    <span>Keyakinan {{ $pct }}%</span>
                                     <span class="text-[#E1E3DE]">|</span>
-                                    <span class="{{ $c['text'] }} font-semibold">CF {{ $cfPct }}%</span>
                                 </div>
                                 <div class="mt-2 h-1 w-full bg-white/60 rounded-full overflow-hidden">
                                     <div class="h-full {{ $c['dot'] }} rounded-full opacity-70" style="width: {{ $pct }}%"></div>

@@ -179,10 +179,6 @@
                             </div>
                             <div class="flex items-center gap-4 text-xs text-[#797B78]">
                                 <span>{{ $item['jumlah'] }} terdeteksi</span>
-                                <span>·</span>
-                                <span>Keyakinan {{ round($item['avg_confidence'] * 100) }}%</span>
-                                <span>·</span>
-                                <span class="{{ $c['text'] }} font-semibold">CF {{ round($item['cf_final'] * 100) }}%</span>
                             </div>
                             <div class="mt-2 h-1.5 bg-white/60 rounded-full overflow-hidden">
                                 <div class="{{ $c['bar'] }} h-full rounded-full opacity-70"
@@ -313,9 +309,6 @@
                 <div class="h-full rounded-full bg-gradient-to-r from-[#8B3A3A] to-[#EBDBDD] transition-all duration-1000"
                      style="width: {{ min(100, $cfFinalPct) }}%"></div>
             </div>
-            <p class="text-[10px] text-[#A8ABA7] mt-2 text-right">
-                Rumus: CF<sub>combine</sub> = CF<sub>lama</sub> + CF<sub>baru</sub> × (1 − CF<sub>lama</sub>)
-            </p>
         </div>
     </div>
 </div>
@@ -397,8 +390,7 @@
                 </svg>
             </div>
             <div>
-                <h2 class="text-base font-bold text-gray-800">Rekomendasi Tindakan Klinik</h2>
-                <p class="text-xs text-[#797B78] mt-0.5">Prosedur perawatan yang dapat dilakukan di klinik.</p>
+                <h2 class="text-base font-bold text-gray-800">Rekomendasi Basic Treatment</h2>
             </div>
             <span class="ml-auto text-[10px] font-bold text-[#8B3A3A] bg-[#EBDBDD] border border-[#D5C5C5] px-2 py-0.5 rounded-full">
                 {{ count($recTreatments) }} Tindakan
@@ -471,31 +463,6 @@
             Unduh Resume Medis (PDF)
         </a>
         @endif
-
-        {{-- WhatsApp Konsultasi --}}
-        @php
-            $waText = urlencode(
-                "Halo, saya baru saja melakukan skrining kulit AI di The Ethereal Clinic.\n\n" .
-                "Hasil saya:\n" .
-                "• Tingkat Risiko Kulit: {$cfPct}% ({$label})\n" .
-                "• Total objek terdeteksi: " . ($hasil['total_objek_terdeteksi'] ?? 0) . "\n\n" .
-                "Saya ingin berkonsultasi lebih lanjut dengan dokter. Terima kasih."
-            );
-        @endphp
-        <a href="https://wa.me/6282331512952?text={{ $waText }}"
-           target="_blank" rel="noopener"
-           class="flex items-center justify-center gap-2.5
-                  bg-[#25D366] text-white
-                  px-6 py-3 rounded-full text-sm font-semibold
-                  shadow-lg shadow-green-500/25
-                  hover:bg-[#20ba59] hover:shadow-xl hover:-translate-y-0.5
-                  transition-all duration-200 active:scale-95">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.121 1.533 5.855L.057 23.43a.5.5 0 00.513.57l5.736-1.505A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.726 9.726 0 01-4.952-1.35l-.355-.21-3.673.964.983-3.594-.232-.37A9.726 9.726 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
-            </svg>
-            Konsultasi dengan Dokter
-        </a>
 
         {{-- Analisis Ulang --}}
         <a href="{{ route('analisis.index') }}"

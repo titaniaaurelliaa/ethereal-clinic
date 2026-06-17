@@ -3,8 +3,7 @@
 namespace App\Services;
 
 use App\Models\KnowledgeBase;
-use App\Models\LifestyleRule;
-use App\Models\SymptomRule;             // NEW CODE: untuk kalkulasi CF gejala dinamis
+use App\Models\SymptomRule;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ConnectException;
@@ -16,11 +15,15 @@ use Illuminate\Support\Facades\Log;
  *
  * Implementasi mesin Certainty Factor (CF) Hybrid untuk analisis kulit wajah.
  *
- * Alur kerja:
- *   1. analyzeVisual()    → Kirim gambar ke Roboflow → hitung CF visual per objek
- *   2. analyzeLifestyle() → Baca pilihan gaya hidup → ambil CF dari lifestyle_rules
- *   3. calculateFinalCF() → Gabungkan semua CF dengan rumus kombinasi CF klasik
- *   4. buildResult()      → Bangun output terstruktur untuk view
+ * Alur kerja (modular, dipanggil dari Controller per step):
+ *   Step 2 — analyzeVisual()           → Kirim gambar ke Roboflow → hitung CF visual per objek
+ *   Step 3 — calculateMultiHybridCF()  → Fusi multi-diagnosis: Visual + Anamnesis Gejala
+ *
+ * Metode pendukung:
+ *   - calculateFinalCF()    → Kombinasi CF klasik (paralel)
+ *   - calculateSymptomCF()  → CF gabungan dari jawaban anamnesis dinamis
+ *   - combineParallel()     → Fusi dua nilai CF antar-pilar
+ *   - processPredictions()  → Parsing & klasterisasi prediksi Roboflow
  *
  * Rumus CF Kombinasi:
  *   CF_combine = CF_old + CF_new × (1 − CF_old)
@@ -81,39 +84,6 @@ class SkinAnalysisService
     // ═══════════════════════════════════════════════════════════════
     // PUBLIC API
     // ═══════════════════════════════════════════════════════════════
-
-    /**
-     * Analisis lengkap: visual + gaya hidup → hasil hybrid CF.
-     *
-     * @param  UploadedFile  $image      File foto dari request
-     * @param  array         $lifestyle  Array ['kategori' => 'pilihan', ...]
-     * @return array
-     */
-   public function analyze(UploadedFile $image, array $lifestyle): array
-    {
-        // 1. Analisis visual via Roboflow (Ambil nilai CF visual murni)
-        $visualResult = $this->analyzeVisual($image);
-        $cfVisualList = array_column($visualResult['temuan'], 'cf_final');
-        $cfVisual     = $this->calculateFinalCF($cfVisualList);
-
-        // 2. Hitung CF gaya hidup dan konversi ke Indeks Rata-rata Risiko
-        $lifestyleResult = $this->analyzeLifestyle($lifestyle);
-        $cfLifestyleList = array_column($lifestyleResult, 'cf_pakar');
-        
-        $indexRisk = !empty($cfLifestyleList) 
-            ? array_sum($cfLifestyleList) / count($cfLifestyleList) 
-            : 0.0;
-
-        // 3. Modulasi Akhir dengan Konstanta Alpha (Standar Jurnal: Maksimal Pengaruh Risiko 10%)
-        $alpha = 0.10;
-        $cfFinal = $cfVisual + (($alpha * $indexRisk) * (1.0 - $cfVisual));
-        
-        // Pastikan nilai akhir tidak keluar dari rentang 0.0 - 1.0 dan dibulatkan 4 desimal
-        $cfFinal = min(1.0, max(0.0, round($cfFinal, 4)));
-
-        // 4. Bangun output terstruktur
-        return $this->buildResult($visualResult, $lifestyleResult, $cfFinal);
-    }
 
     /**
      * Kirim gambar ke Roboflow dan hitung CF visual per jenis objek.
@@ -189,35 +159,6 @@ class SkinAnalysisService
         }
     }
 
-    /**
-     * Hitung CF gaya hidup berdasarkan input form pengguna.
-     *
-     * @param  array $lifestyle  Contoh: ['Tidur' => 'Low', 'Stres' => 'High', ...]
-     * @return array             Array of ['kategori', 'pilihan', 'label', 'cf_pakar']
-     */
-    public function analyzeLifestyle(array $lifestyle): array
-    {
-        $result = [];
-
-        foreach ($lifestyle as $kategori => $pilihan) {
-            if (blank($pilihan)) {
-                continue;
-            }
-
-            $rule = LifestyleRule::findRule($kategori, $pilihan);
-
-            if ($rule) {
-                $result[] = [
-                    'kategori' => $rule->kategori,
-                    'pilihan'  => $rule->pilihan,
-                    'label'    => $rule->label,
-                    'cf_pakar' => $rule->cf_pakar,
-                ];
-            }
-        }
-
-        return $result;
-    }
 
     /**
      * Gabungkan daftar nilai CF menggunakan rumus kombinasi CF klasik:
@@ -265,7 +206,6 @@ class SkinAnalysisService
      *         Nilai null / 0 diabaikan (pertanyaan tidak dijawab).
      * @return float  CF gabungan gejala (0.0 – 1.0)
      */
-    // NEW CODE:
     public function calculateSymptomCF(array $symptomAnswers): float
     {
         if (empty($symptomAnswers)) {
@@ -317,13 +257,12 @@ class SkinAnalysisService
      * Kombinasikan dua nilai CF menggunakan rumus paralel:
      *   CF_result = CF_a + CF_b × (1 − CF_a)
      *
-     * Digunakan untuk menggabungkan antar-tahap (Visual → Gejala → Lifestyle).
+     * Digunakan untuk menggabungkan antar-tahap (Visual → Gejala).
      *
      * @param  float $cfA  CF kiri (Tahap N)
      * @param  float $cfB  CF kanan (Tahap N+1)
      * @return float
      */
-    // NEW CODE:
     public function combineParallel(float $cfA, float $cfB): float
     {
         if ($cfA <= 0.0 && $cfB <= 0.0) {
@@ -563,50 +502,5 @@ class SkinAnalysisService
         usort($temuan, fn($a, $b) => $b['cf_final'] <=> $a['cf_final']);
 
         return $temuan;
-    }
-
-    /**
-     * Susun array output lengkap yang akan dikirim ke view / disimpan ke history.
-     */
-    private function buildResult(array $visualResult, array $lifestyleResult, float $cfFinal): array
-    {
-        // Skor Kesehatan Wajah: semakin tinggi CF → semakin bermasalah
-        // Rentang skor: 0 (wajah sangat bermasalah) – 100 (wajah sehat)
-        $skorKesehatan = max(0, round(100 - ($cfFinal * 100)));
-
-        // Tentukan label kondisi berdasarkan skor
-        $kondisiLabel = match (true) {
-            $skorKesehatan >= 80 => 'Kulit Sehat',
-            $skorKesehatan >= 60 => 'Kondisi Ringan',
-            $skorKesehatan >= 40 => 'Kondisi Sedang',
-            $skorKesehatan >= 20 => 'Kondisi Parah',
-            default              => 'Kondisi Sangat Parah',
-        };
-
-        // Ringkasan gaya hidup: filter hanya yang berkontribusi (cf > 0)
-        $lifestyleBerisiko = array_filter(
-            $lifestyleResult,
-            fn($l) => $l['cf_pakar'] > 0.0
-        );
-
-        return [
-            // ── Hasil utama ──────────────────────────────
-            'cf_final'           => $cfFinal,
-            'skor_kesehatan'     => $skorKesehatan,
-            'kondisi_label'      => $kondisiLabel,
-
-            // ── Detail visual ────────────────────────────
-            'temuan_klinis'      => $visualResult['temuan'],
-            'roboflow_success'   => $visualResult['roboflow_success'],
-            'error_message'      => $visualResult['error_message'],
-
-            // ── Detail gaya hidup ────────────────────────
-            'lifestyle_detail'   => $lifestyleResult,
-            'lifestyle_berisiko' => array_values($lifestyleBerisiko),
-
-            // ── Statistik tambahan ───────────────────────
-            'total_objek_terdeteksi' => array_sum(array_column($visualResult['temuan'], 'jumlah')),
-            'jenis_objek_unik'       => count($visualResult['temuan']),
-        ];
     }
 }
