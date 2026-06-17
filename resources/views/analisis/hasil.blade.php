@@ -3,27 +3,59 @@
 
 @section('content')
 
-{{-- STEPPER --}}
-<div class="flex items-center justify-center gap-0 mb-10">
-    <div class="flex items-center gap-2">
-        <div class="flex items-center justify-center w-9 h-9 rounded-full bg-[#8B3A3A]/20 text-[#8B3A3A] text-sm font-bold">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+{{-- NAVIGASI KONTEKSTUAL & PAGE HEADER --}}
+@if(isset($history))
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 w-full">
+            <a href="{{ route('pasien.history') }}"
+            class="inline-flex items-center gap-3 py-2 pl-2 pr-5 rounded-full bg-white border border-[#E1E3DE]/60 text-sm font-bold text-[#5D605C] hover:text-[#7B5556] hover:bg-[#EBDBDD]/15 hover:border-[#7B5556]/20 shadow-sm hover:shadow transition-all duration-300 group">
+                <div class="w-8 h-8 rounded-full bg-[#EBDBDD]/50 group-hover:bg-[#7B5556] flex items-center justify-center transition-colors duration-300">
+                    <svg class="w-4 h-4 text-[#7B5556] group-hover:text-white transform group-hover:-translate-x-0.5 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                </div>
+                <span class="tracking-tight">Kembali ke Semua Rekam Medis</span>
+            </a>
+        
+        <div class="shrink-0">
+            <span class="inline-block py-1.5 px-3.5 rounded-full bg-[#5D605C]/10 text-[#5D605C] text-xs font-bold tracking-wider uppercase">
+                Dokumen Arsip Rekam Medis
+            </span>
         </div>
-        <span class="text-sm font-medium text-[#8B3A3A]/50 uppercase tracking-wide">Unggah</span>
     </div>
-    <div class="w-16 h-px bg-[#8B3A3A]/30 mx-3"></div>
-    <div class="flex items-center gap-2">
-        <div class="flex items-center justify-center w-9 h-9 rounded-full bg-[#8B3A3A]/20 text-[#8B3A3A] text-sm font-bold">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+@else
+    {{-- Konteks: Baru selesai melakukan scan analisis baru --}}
+    <div class="mb-6">
+        <a href="{{ route('pasien.dashboard') }}"
+           class="inline-flex items-center gap-2 text-sm font-medium text-[#797B78] hover:text-[#7B5556] transition-colors group">
+            <svg class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Kembali ke Beranda
+        </a>
+    </div>
+
+    {{-- STEPPER --}}
+    <div class="flex items-center justify-center gap-0 mb-10">
+        <div class="flex items-center gap-2">
+            <div class="flex items-center justify-center w-9 h-9 rounded-full bg-[#8B3A3A]/20 text-[#8B3A3A] text-sm font-bold">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <span class="text-sm font-medium text-[#8B3A3A]/50 uppercase tracking-wide">Unggah</span>
         </div>
-        <span class="text-sm font-medium text-[#8B3A3A]/50 uppercase tracking-wide">Analisis</span>
+        <div class="w-16 h-px bg-[#8B3A3A]/30 mx-3"></div>
+        <div class="flex items-center gap-2">
+            <div class="flex items-center justify-center w-9 h-9 rounded-full bg-[#8B3A3A]/20 text-[#8B3A3A] text-sm font-bold">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <span class="text-sm font-medium text-[#8B3A3A]/50 uppercase tracking-wide">Analisis</span>
+        </div>
+        <div class="w-16 h-px bg-[#8B3A3A]/30 mx-3"></div>
+        <div class="flex items-center gap-2">
+            <div class="flex items-center justify-center w-9 h-9 rounded-full bg-[#8B3A3A] text-white text-sm font-bold shadow-md shadow-[#8B3A3A]/30 ring-4 ring-[#8B3A3A]/10">3</div>
+            <span class="text-sm font-semibold text-[#8B3A3A] uppercase tracking-wide">Hasil</span>
+        </div>
     </div>
-    <div class="w-16 h-px bg-[#8B3A3A]/30 mx-3"></div>
-    <div class="flex items-center gap-2">
-        <div class="flex items-center justify-center w-9 h-9 rounded-full bg-[#8B3A3A] text-white text-sm font-bold shadow-md shadow-[#8B3A3A]/30 ring-4 ring-[#8B3A3A]/10">3</div>
-        <span class="text-sm font-semibold text-[#8B3A3A] uppercase tracking-wide">Hasil</span>
-    </div>
-</div>
+@endif
 
 {{-- ═══ TINGKAT RISIKO CARD ════════════════════════════════════════════ --}}
 @php
