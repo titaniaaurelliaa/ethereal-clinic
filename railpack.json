@@ -1,8 +1,8 @@
 {
-    "php": {
-        "version": "8.3"
-    },
-    "buildAptPackages": [
-        "bison"
-    ]
+  "packages": {
+    "php": "8.3"
+  },
+  "buildAptPackages": [
+    "bison"
+  ]
 }
