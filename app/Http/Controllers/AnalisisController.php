@@ -100,6 +100,19 @@ class AnalisisController extends Controller
             // ── Panggil analyzeVisual ────────────────────────────────
             $visualResult = $this->analysisService->analyzeVisual($imageFile);
 
+            // ── Guard: Roboflow sukses tapi tidak ada objek terdeteksi ──
+            // Edge case: foto blur, bukan wajah, atau pencahayaan buruk
+            // menyebabkan predictions kosong → CF Visual = 0.0 (invalid)
+            if ($visualResult['roboflow_success'] && empty($visualResult['temuan'])) {
+                return back()
+                    ->withInput()
+                    ->withErrors([
+                        'foto_wajah' => 'AI tidak mendeteksi adanya komponen jerawat atau komedo pada foto Anda. '
+                                      . 'Pastikan foto wajah diambil secara tegak lurus, pencahayaan cukup, '
+                                      . 'wajah terlihat jelas, dan gambar tidak blur.',
+                    ]);
+            }
+
             // ── Buat thumbnail base64 untuk preview di Step 2 ───────
             // Resize ke lebar maks 480px agar tidak bloat session
             $previewBase64 = $this->makePreviewBase64($imageFile->getRealPath());
