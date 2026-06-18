@@ -342,15 +342,21 @@ class AnalisisController extends Controller
      * Generate dan download PDF rekam medis dari hasil analisis.
      * View template: resources/views/analisis/pdf.blade.php (inline CSS only, no Tailwind)
  */
-    public function exportPdf(int $id)
+   public function exportPdf(int $id)
     {
+        // FIX BUG-02: Menggunakan firstOrFail() agar tidak crash 500 jika ID tidak valid
         $history = AnalysisHistoryModel::with(['skinProblem', 'user'])
             ->where('id', $id)
             ->where('user_id', Auth::id())
             ->latest()
-            ->first();
+            ->firstOrFail();
 
         $skor  = (int) round(100 - $history->confidence_score);
+        
+        // Memastikan format data array jika seandainya belum di-cast otomatis oleh model
+        $recProducts   = is_string($history->recommended_products) ? json_decode($history->recommended_products, true) : ($history->recommended_products ?? []);
+        $recTreatments = is_string($history->recommended_treatments) ? json_decode($history->recommended_treatments, true) : ($history->recommended_treatments ?? []);
+
         $data  = [
             'user'                   => $history->user,
             'history'                => $history,
@@ -360,6 +366,11 @@ class AnalisisController extends Controller
             'kondisi_label'          => $this->labelFromScore($skor),
             'temuan_klinis'          => $history->analysis_data['temuan_klinis']          ?? [],
             'total_objek_terdeteksi' => $history->analysis_data['total_objek_terdeteksi'] ?? 0,
+            
+            // DATA BARU: Passing data rekomendasi untuk tabel di PDF
+            'recProducts'            => $recProducts,
+            'recTreatments'          => $recTreatments,
+            
             'generated_at'           => now()->locale('id')->isoFormat('D MMMM YYYY, HH:mm') . ' WIB',
         ];
 
@@ -372,7 +383,6 @@ class AnalisisController extends Controller
                 'dpi'                  => 96,
             ]);
 
-            
         $filename = 'Rekam_Medis_AI_' . str_replace(' ', '_', $history->user->name) . '_' . $history->created_at->format('Ymd') . '_' . $history->id . '.pdf';
 
         return $pdf->download($filename);

@@ -82,7 +82,7 @@
         </tr>
         <tr>
             <td class="bg-gray">Jenis Skrining</td>
-            <td class="value-cell">CDSS - Hybrid AI Acne Vulgaris</td>
+            <td class="value-cell">CDSS - Custom YOLOv8 Object Detection via Roboflow API</td>
             <td class="bg-gray">Metode Inferensi</td>
             <td class="value-cell">Certainty Factor (CF)</td>
         </tr>
@@ -123,22 +123,62 @@
         </tbody>
     </table>
 
-    <div class="section-title">III. Plan (Rekomendasi Penatalaksanaan Klinis)</div>
-    <table class="data-table" style="margin-bottom: 5px;">
-        <tr>
-            <td style="background-color: #F0F0F0; font-weight: bold; width: 25%;">Bahan Aktif Disarankan</td>
-            <td>Asam Salisilat (Salicylic Acid), Niacinamide, Retinoid Topikal (opsional berdasarkan resep).</td>
-        </tr>
-        <tr>
-            <td style="background-color: #F0F0F0; font-weight: bold;">Tindakan Klinik</td>
-            <td>Dianjurkan untuk melakukan konsultasi fisik. Tindakan potensial: Chemical Peeling / Ekstraksi Komedo.</td>
-        </tr>
+<div class="section-title">III. Plan (Rekomendasi Penatalaksanaan Klinis)</div>
+    
+    <div style="font-size: 10px; font-weight: bold; color: #5D605C; margin-bottom: 5px; text-transform: uppercase;">A. Rekomendasi Skincare & Obat</div>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th width="5%">No</th>
+                <th width="35%">Nama Produk</th>
+                <th width="60%">Kandungan / Indikasi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(isset($recProducts) && count($recProducts) > 0)
+                @foreach($recProducts as $idx => $product)
+                <tr>
+                    <td style="text-align: center;">{{ $idx + 1 }}</td>
+                    <td><strong>{{ $product['nama_produk'] ?? '-' }}</strong></td>
+                    <td style="text-align: justify;">{{ $product['kandungan'] ?? '-' }}</td>
+                </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="3" style="text-align: center; font-style: italic; color: #888;">Tidak ada rekomendasi produk spesifik untuk kondisi ini.</td>
+                </tr>
+            @endif
+        </tbody>
     </table>
-    <div style="font-size: 9px; color: #8B3A3A; font-style: italic; margin-bottom: 20px;">*Rekomendasi di atas dihasilkan oleh basis pengetahuan pakar (Knowledge Base) sistem dan wajib divalidasi ulang oleh dokter jaga.</div>
 
-    <div class="footer">
-        <strong>MEDICAL DISCLAIMER:</strong> Dokumen ini merupakan ringkasan awal yang dihasilkan oleh Clinical Decision Support System (CDSS) The Ethereal Clinic berbasis algoritma AI dan Certainty Factor. Dokumen ini bukan merupakan resep obat mutlak dan tidak menggantikan keputusan medis klinis secara langsung. Harap bawa dokumen ini ke meja registrasi untuk verifikasi oleh Dokter Spesialis Kulit dan Kelamin (Sp.KK) kami. 
-        <br><em>System Generated at: {{ $generated_at }} WIB</em>
+    <div style="font-size: 10px; font-weight: bold; color: #5D605C; margin-bottom: 5px; margin-top: 15px; text-transform: uppercase;">B. Rekomendasi Tindakan Klinik</div>
+    <table class="data-table" style="margin-bottom: 5px;">
+        <thead>
+            <tr>
+                <th width="5%">No</th>
+                <th width="35%">Nama Treatment</th>
+                <th width="60%">Deskripsi Prosedur</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(isset($recTreatments) && count($recTreatments) > 0)
+                @foreach($recTreatments as $idx => $treatment)
+                <tr>
+                    <td style="text-align: center;">{{ $idx + 1 }}</td>
+                    <td><strong>{{ $treatment['nama_treatment'] ?? '-' }}</strong></td>
+                    <td style="text-align: justify;">{{ $treatment['deskripsi'] ?? '-' }}</td>
+                </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="3" style="text-align: center; font-style: italic; color: #888;">Tidak ada rekomendasi tindakan klinik spesifik untuk kondisi ini.</td>
+                </tr>
+            @endif
+        </tbody>
+    </table>
+
+    <div style="font-size: 9px; color: #8B3A3A; font-style: italic; margin-bottom: 20px; margin-top: 5px;">
+        *Rekomendasi di atas dihasilkan secara otomatis oleh basis pengetahuan pakar (Knowledge Base) sistem berdasarkan hasil kalkulasi diagnosis dominan.
     </div>
 
 </body>
