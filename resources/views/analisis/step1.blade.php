@@ -260,6 +260,44 @@
 
 </form>
 
+{{-- ═══════════════════════════════════════════════════════════
+     LOADING OVERLAY (AI FACE SCANNING)
+═══════════════════════════════════════════════════════════ --}}
+<div id="loading-overlay" class="fixed inset-0 z-50 bg-[#5D605C]/80 backdrop-blur-md hidden flex-col items-center justify-center">
+    <div class="relative w-64 h-80 md:w-72 md:h-96 rounded-[32px] border-4 border-[#EBDBDD] overflow-hidden shadow-2xl bg-black/20">
+        {{-- Bumper dekorasi sudut viewfinder --}}
+        <div class="absolute top-4 left-4 w-6 h-6 border-t-4 border-l-4 border-white rounded-tl-xl opacity-70"></div>
+        <div class="absolute top-4 right-4 w-6 h-6 border-t-4 border-r-4 border-white rounded-tr-xl opacity-70"></div>
+        <div class="absolute bottom-4 left-4 w-6 h-6 border-b-4 border-l-4 border-white rounded-bl-xl opacity-70"></div>
+        <div class="absolute bottom-4 right-4 w-6 h-6 border-b-4 border-r-4 border-white rounded-br-xl opacity-70"></div>
+        
+        {{-- Garis laser pemindaian (z-10 agar di atas foto) --}}
+        <div id="scanner-line" class="absolute left-0 right-0 h-1.5 bg-gradient-to-r from-transparent via-[#7B5556] to-transparent shadow-[0_0_15px_#7B5556] z-10"></div>
+        
+        {{-- Foto Asli User --}}
+        <img id="scan-preview" src="" class="w-full h-full object-cover hidden" alt="Scan Preview">
+    </div>
+    
+    <div class="mt-8 flex flex-col items-center gap-3 text-center">
+        <h3 class="text-white text-2xl font-bold tracking-tight">Memproses Foto...</h3>
+        <p class="text-[#EBDBDD] text-sm font-medium animate-pulse">AI sedang mendeteksi kondisi kulit dan tingkat risiko</p>
+    </div>
+</div>
+
+<style>
+    /* Keyframes untuk pergerakan garis laser */
+    @keyframes scan {
+        0% { top: 0%; opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { top: 100%; opacity: 0; }
+    }
+    
+    #scanner-line {
+        animation: scan 2s linear infinite;
+    }
+</style>
+
 @endsection
 
 @push('scripts')
@@ -489,6 +527,21 @@
         submitSpinner.classList.remove('hidden');
         submitArrow.classList.add('hidden');
         submitText.textContent = 'Memindai...';
+        
+        // Munculkan overlay AI Face Scanning
+        const overlay = document.getElementById('loading-overlay');
+        const scanPreview = document.getElementById('scan-preview');
+        
+        if (overlay) {
+            // Tampilkan foto asli user di viewfinder overlay
+            if (inputFile.files && inputFile.files[0] && scanPreview) {
+                scanPreview.src = URL.createObjectURL(inputFile.files[0]);
+                scanPreview.classList.remove('hidden');
+            }
+            
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+        }
     });
 
     /* ── Render preview dari File object ─────────────────────── */
