@@ -66,19 +66,6 @@
                         </div>
                     </div>
 
-                    {{-- Tipe Kulit --}}
-                    <div class="flex items-center gap-3 px-5 py-3.5">
-                        <div class="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                            </svg>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-[10px] text-[#B0B3AE] uppercase tracking-wider font-semibold">Tipe Kulit</p>
-                            <p class="text-sm font-semibold text-[#5D605C] capitalize">{{ $patient->skin_type ?? '—' }}</p>
-                        </div>
-                    </div>
-
                     {{-- Total Scan --}}
                     <div class="flex items-center gap-3 px-5 py-3.5">
                         <div class="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center shrink-0">
@@ -183,7 +170,7 @@
                                         {{-- Chevron --}}
                                         <svg id="chevron-{{ $history->id }}"
                                              xmlns="http://www.w3.org/2000/svg"
-                                             class="h-4 w-4 text-[#B0B3AE] transition-transform duration-300 {{ $loop->first ? 'rotate-180' : '' }}"
+                                             class="h-4 w-4 text-[#B0B3AE] transition-transform duration-300"
                                              fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                                         </svg>
@@ -193,7 +180,7 @@
                                 {{-- ── Card Content (Collapsible) ──────── --}}
                                 <div id="content-{{ $history->id }}"
                                      class="overflow-hidden transition-all duration-300 ease-in-out"
-                                     style="max-height: {{ $loop->first ? '2000px' : '0px' }};">
+                                     style="max-height: 0px;">
                                     <div class="border-t border-[#E1E3DE]/60 px-5 py-5">
 
                                         {{-- 3-Column Micro Grid --}}
@@ -368,21 +355,59 @@
 
 </div>
 
-{{-- ── JavaScript: Toggle Collapsible Cards ────────────────────────── --}}
+{{-- ── JavaScript: Toggle Collapsible Cards (Auto Close Others) ── --}}
 <script>
+    // Track currently open card ID
+    let activeCardId = null;
+
     function toggleScanCard(id) {
         const content = document.getElementById('content-' + id);
         const chevron = document.getElementById('chevron-' + id);
 
         if (!content) return;
 
-        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+        // Jika card yang diklik sama dengan yang sedang aktif, tutup saja
+        if (activeCardId === id) {
+            // Tutup card yang sedang aktif
             content.style.maxHeight = '0px';
             if (chevron) chevron.classList.remove('rotate-180');
-        } else {
-            content.style.maxHeight = content.scrollHeight + 'px';
-            if (chevron) chevron.classList.add('rotate-180');
+            activeCardId = null;
+            return;
         }
+
+        // Tutup semua card yang sedang terbuka
+        if (activeCardId !== null) {
+            const prevContent = document.getElementById('content-' + activeCardId);
+            const prevChevron = document.getElementById('chevron-' + activeCardId);
+            if (prevContent) {
+                prevContent.style.maxHeight = '0px';
+                if (prevChevron) prevChevron.classList.remove('rotate-180');
+            }
+        }
+
+        // Buka card yang diklik
+        content.style.maxHeight = content.scrollHeight + 'px';
+        if (chevron) chevron.classList.add('rotate-180');
+        
+        // Set active card ID
+        activeCardId = id;
     }
+
+    // Auto open first card by default
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstCard = document.querySelector('[id^="content-"]');
+        if (firstCard) {
+            const firstId = firstCard.id.replace('content-', '');
+            toggleScanCard(firstId);
+        }
+    });
 </script>
+
+<style>
+    /* Smooth transition untuk content expand */
+    #content-{{ $histories->first()->id ?? 0 }} {
+        max-height: 0px;
+    }
+</style>
+
 @endsection

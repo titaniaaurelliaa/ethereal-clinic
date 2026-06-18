@@ -1,4 +1,5 @@
 @extends('layouts_admin.app')
+
 @section('title', 'Manajemen Berita')
 
 @section('content')
@@ -20,15 +21,12 @@
     {{-- ─── HEADER ───────────────────────────────────────────────────────────── --}}
     <div class="flex flex-wrap justify-between items-center mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-[#5D605C]">Manajemen Berita</h1>
+            <h1 class="text-3xl font-bold text-gray-800">Manajemen Berita</h1>
             <p class="text-sm text-gray-400 mt-0.5">Kelola artikel dan berita kesehatan kulit untuk pasien</p>
         </div>
         <button onclick="openCreateModal()"
-                class="bg-pink-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow hover:bg-pink-600 transition-colors inline-flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-            </svg>
-            Tulis Berita Baru
+                class="bg-pink-500 text-white px-4 py-2 rounded-lg shadow hover:bg-pink-600 transition inline-flex items-center gap-2">
+            <i class="fas fa-plus"></i> Tambah Berita
         </button>
     </div>
 
@@ -37,14 +35,14 @@
         <form method="GET" action="{{ route('admin.news.index') }}" class="flex flex-wrap gap-3">
             <input type="text" name="search" placeholder="Cari judul berita..."
                 value="{{ request('search') }}"
-                class="flex-1 min-w-[180px] px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                class="flex-1 min-w-[200px] px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400">
             <button type="submit"
-                class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
+                class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition flex items-center gap-2">
                 <i class="fas fa-search"></i> Cari
             </button>
             @if(request('search'))
                 <a href="{{ route('admin.news.index') }}"
-                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition flex items-center gap-2">
                     <i class="fas fa-times"></i> Reset
                 </a>
             @endif
@@ -54,7 +52,7 @@
     {{-- ─── TABLE ─────────────────────────────────────────────────────────────── --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-            <h3 class="font-semibold text-gray-700">Daftar Artikel Berita</h3>
+            <h3 class="font-semibold text-gray-700">Daftar Berita</h3>
             <span class="text-xs text-gray-400">Total: {{ $newsList->total() }}</span>
         </div>
 
@@ -62,7 +60,7 @@
             <table class="w-full text-sm">
                 <thead class="bg-pink-50 text-gray-600 uppercase text-xs tracking-wider">
                     <tr>
-                        <th class="p-4 text-left">No</th>
+                        <th class="p-4 text-left">ID</th>
                         <th class="p-4 text-left">Gambar</th>
                         <th class="p-4 text-left">Judul Berita</th>
                         <th class="p-4 text-left">Penulis</th>
@@ -71,7 +69,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    @forelse ($newsList as $index => $item)
+                    @forelse ($newsList as $item)
                         <tr class="hover:bg-pink-50 transition-colors">
                             <td class="p-4">
                                 <span class="bg-pink-100 text-pink-600 px-2 py-1 rounded-md text-xs font-semibold">
@@ -91,7 +89,7 @@
                                     </div>
                                 @endif
                             </td>
-                            <td class="p-4 font-semibold text-gray-800 max-w-xs">
+                            <td class="p-4 font-medium text-gray-800 max-w-xs">
                                 <p class="line-clamp-2 leading-snug">{{ $item->title }}</p>
                                 <p class="text-[10px] text-gray-400 font-normal mt-0.5">{{ $item->slug }}</p>
                             </td>
@@ -128,7 +126,7 @@
                         <tr>
                             <td colspan="6" class="p-10 text-center text-gray-400">
                                 <i class="fas fa-inbox text-2xl mb-2 block"></i>
-                                Belum ada artikel berita. Mulai menulis sekarang.
+                                Belum ada berita
                             </td>
                         </tr>
                     @endforelse
@@ -148,9 +146,9 @@
 {{-- MODAL CREATE BERITA --}}
 {{-- ════════════════════════════════════════════════════════════════ --}}
 <div id="createModal" class="fixed inset-0 hidden justify-center items-center z-50" style="background-color: rgba(0, 0, 0, 0.35);">
-    <div class="bg-white rounded-2xl w-[700px] shadow-xl border border-gray-100 max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-2xl w-[600px] shadow-xl border border-gray-100 max-h-[90vh] overflow-y-auto">
         <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
-            <h2 class="text-base font-bold text-gray-800">Tulis Berita Baru</h2>
+            <h2 class="text-base font-bold text-gray-800">Tambah Berita</h2>
             <button onclick="closeModal('createModal')" class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
         </div>
 
@@ -200,7 +198,7 @@
                     Batal
                 </button>
                 <button type="submit" class="px-5 py-2 rounded-xl bg-pink-500 text-white text-sm font-semibold hover:bg-pink-600 transition-colors">
-                    <i class="fas fa-save"></i> Publikasikan
+                    Simpan
                 </button>
             </div>
         </form>
@@ -211,7 +209,7 @@
 {{-- MODAL EDIT BERITA --}}
 {{-- ════════════════════════════════════════════════════════════════ --}}
 <div id="editModal" class="fixed inset-0 hidden justify-center items-center z-50" style="background-color: rgba(0, 0, 0, 0.35);">
-    <div class="bg-white rounded-2xl w-[700px] shadow-xl border border-pink-100 max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-2xl w-[600px] shadow-xl border border-pink-100 max-h-[90vh] overflow-y-auto">
         <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
             <h2 class="text-base font-bold text-gray-800">Edit Berita</h2>
             <button onclick="closeModal('editModal')" class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
@@ -275,7 +273,7 @@
                     Batal
                 </button>
                 <button type="submit" class="px-5 py-2 rounded-xl bg-pink-500 text-white text-sm font-semibold hover:bg-pink-600 transition-colors">
-                    <i class="fas fa-save"></i> Simpan Perubahan
+                    Update
                 </button>
             </div>
         </form>
@@ -306,7 +304,7 @@
                     <i class="fas fa-times"></i> Batal
                 </button>
                 <button type="submit" class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 shadow transition-colors font-medium">
-                    <i class="fas fa-trash"></i> Ya, Hapus
+                    <i class="fas fa-trash"></i> Hapus
                 </button>
             </div>
         </form>
@@ -384,7 +382,6 @@
                 preview.src = e.target.result;
                 preview.classList.remove('hidden');
                 placeholder.classList.add('hidden');
-                // Sembunyikan gambar lama saat upload gambar baru
                 document.getElementById('currentImageContainer').classList.add('hidden');
             };
             reader.readAsDataURL(input.files[0]);
