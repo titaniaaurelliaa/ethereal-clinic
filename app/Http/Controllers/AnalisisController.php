@@ -100,7 +100,15 @@ class AnalisisController extends Controller
             // ── Panggil analyzeVisual ────────────────────────────────
             $visualResult = $this->analysisService->analyzeVisual($imageFile);
 
-            // ── Guard: Roboflow sukses tapi tidak ada objek terdeteksi ──
+            // ── Guard 1: Roboflow Gagal / Timeout ────────────────────
+            if (!$visualResult['roboflow_success']) {
+                Log::error("[SkinAnalysis] Koneksi ke Roboflow gagal: " . $visualResult['error_message']);
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Koneksi ke server AI gagal atau waktu tunggu habis (Timeout). Silakan pastikan koneksi internet Anda stabil dan coba unggah kembali foto Anda.');
+            }
+
+            // ── Guard 2: Roboflow sukses tapi tidak ada objek terdeteksi ──
             // Edge case: foto blur, bukan wajah, atau pencahayaan buruk
             // menyebabkan predictions kosong → CF Visual = 0.0 (invalid)
             if ($visualResult['roboflow_success'] && empty($visualResult['temuan'])) {
@@ -527,7 +535,8 @@ class AnalisisController extends Controller
                         return [
                             'id' => $item->id,
                             'nama_produk' => $item->name,
-                            'kandungan' => $item->description // Sesuaikan dengan kolom tabel products jika beda
+                            'kandungan' => $item->description, // Sesuaikan dengan kolom tabel products jika beda
+                            'image_path'  => $item->image_path ?? null, // Pastikan kolom image_path ada di tabel products
                         ];
                     })->toArray();
 

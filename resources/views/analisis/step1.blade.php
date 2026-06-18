@@ -56,21 +56,71 @@
     </p>
 </header>
 
-{{-- ═══════════════════════════════════════════════════════════
-     ERROR ALERT
-═══════════════════════════════════════════════════════════ --}}
-@if ($errors->any())
-    <div class="mb-6 bg-red-50 border border-red-200 text-red-700 rounded-2xl px-5 py-4 flex items-start gap-3">
-        <svg class="w-5 h-5 mt-0.5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-        </svg>
-        <ul class="text-sm space-y-1 list-none">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+                    {{-- ═══════════════════════════════════════════════════════════
+                ERROR & GUARD ALERT SYSTEM (WITH TIMER)
+            ═══════════════════════════════════════════════════════════ --}}
+
+            {{-- GUARD 1: Menangkap Eror Jaringan / Timeout API Roboflow --}}
+            @if(session('error'))
+                <div class="flash-alert mb-6 bg-red-50 border border-red-200 text-red-700 rounded-2xl px-5 py-4 flex items-start gap-3 shadow-sm transition-all duration-500 ease-in-out">
+                    <svg class="w-5 h-5 mt-0.5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <div class="text-sm leading-relaxed">
+                        <span class="font-bold block mb-0.5">Koneksi Layanan AI Terputus</span>
+                        {{ session('error') }}
+                    </div>
+                </div>
+            @endif
+
+            {{-- GUARD 2: Menangkap Validasi Foto Blur / Tidak Ada Objek Jerawat --}}
+            @error('foto_wajah')
+                <div class="flash-alert mb-6 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl px-5 py-4 flex items-start gap-3 shadow-sm transition-all duration-500 ease-in-out">
+                    <svg class="w-5 h-5 mt-0.5 shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    <div class="text-sm leading-relaxed">
+                        <span class="font-bold block mb-0.5">Kualitas Foto Kurang Optimal</span>
+                        {{ $message }}
+                    </div>
+                </div>
+            @enderror
+
+            {{-- FALLBACK: Menangkap Eror Validasi Umum Lainnya --}}
+            @if ($errors->any() && !$errors->has('foto_wajah'))
+                <div class="flash-alert mb-6 bg-red-50 border border-red-200 text-red-700 rounded-2xl px-5 py-4 flex items-start gap-3 shadow-sm transition-all duration-500 ease-in-out">
+                    <svg class="w-5 h-5 mt-0.5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <ul class="text-sm space-y-1 list-none font-medium">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- SCRIPT TIMER AUTOMATIC DISMISS --}}
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Eksekusi timer setelah 5000 milidetik (5 detik)
+                    setTimeout(function () {
+                        const activeAlerts = document.querySelectorAll('.flash-alert');
+                        
+                        activeAlerts.forEach(function (alert) {
+                            // Berikan efek transisi menghilang yang halus (fade-out + scale down)
+                            alert.style.opacity = '0';
+                            alert.style.transform = 'scale(0.95)';
+                            
+                            // Hapus elemen sepenuhnya dari struktur DOM setelah animasi selesai (500ms)
+                            setTimeout(function () {
+                                alert.remove();
+                            }, 500);
+                        });
+                    }, 5000);
+                });
+            </script>
 
 {{-- ═══════════════════════════════════════════════════════════
      MAIN FORM

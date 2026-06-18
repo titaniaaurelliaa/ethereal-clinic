@@ -386,27 +386,48 @@
         </div>
         <div class="p-6">
             <div class="space-y-3">
-                @foreach($recProducts as $idx => $product)
-                <div class="group relative bg-[#FAF9F6] hover:bg-emerald-50/50 border border-[#E1E3DE]/70 hover:border-emerald-200 rounded-2xl p-4 transition-all duration-200">
-                    <div class="flex items-start gap-3.5">
-                        {{-- Nomor urut --}}
-                        <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0 group-hover:bg-emerald-200 transition-colors">
-                            {{ $idx + 1 }}
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h3 class="text-sm font-bold text-gray-800 mb-1">{{ $product['nama_produk'] ?? '-' }}</h3>
-                            @if(!empty($product['kandungan']))
-                            <div class="flex items-start gap-1.5">
-                                <svg class="w-3.5 h-3.5 text-[#A8ABA7] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                                </svg>
-                                <p class="text-xs text-[#797B78] leading-relaxed">{{ $product['kandungan'] }}</p>
-                            </div>
-                            @endif
-                        </div>
+                        @foreach($recProducts as $idx => $product)
+            <div class="group relative bg-[#FAF9F6] hover:bg-emerald-50/50 border border-[#E1E3DE]/70 hover:border-emerald-200 rounded-2xl p-4 transition-all duration-200">
+                <div class="flex items-center gap-4">
+                    
+                    {{-- 1. Nomor Urut --}}
+                    <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0 group-hover:bg-emerald-200 transition-colors">
+                        {{ $idx + 1 }}
                     </div>
+
+                    {{-- 2. Miniatur Gambar Produk (Dinamis + Fallback) --}}
+                    <div class="w-12 h-12 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-white flex items-center justify-center shadow-sm">
+                        @if(!empty($product['image_path']) && file_exists(public_path($product['image_path'])))
+                            <img src="{{ asset($product['image_path']) }}" alt="{{ $product['nama_produk'] ?? 'Produk' }}" class="w-full h-full object-cover">
+                        @else
+                            {{-- Placeholder SVG jika gambar kosong, warna diselaraskan ke tema Emerald --}}
+                            <div class="w-full h-full bg-emerald-50/60 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- 3. Detail Teks Produk --}}
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-sm font-bold text-gray-800 mb-1 tracking-tight">{{ $product['nama_produk'] ?? '-' }}</h3>
+                        
+                        @if(!empty($product['kandungan']))
+                        <div class="flex items-start gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-[#A8ABA7] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            <p class="text-xs text-[#797B78] leading-relaxed text-justify line-clamp-1 group-hover:line-clamp-none transition-all duration-300">
+                                {{ $product['kandungan'] }}
+                            </p>
+                        </div>
+                        @endif
+                    </div>
+
                 </div>
-                @endforeach
+            </div>
+            @endforeach
             </div>
         </div>
     </div>
