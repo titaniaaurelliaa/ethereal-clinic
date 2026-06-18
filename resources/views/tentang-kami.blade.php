@@ -67,100 +67,69 @@
                 <p class="text-[#72544E] max-w-2xl mx-auto text-lg">Kolaborasi solid mahasiswa Sistem Informasi dalam merancang arsitektur kecerdasan buatan dan sistem pakar medis.</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-                
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
 
-                {{-- Developer 2: Titania --}}
-                <div class="relative bg-white rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-[#FFEFF3] hover:shadow-[0_8px_30px_rgba(138,48,51,0.08)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden z-10 flex flex-col h-full">
-                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-[#FFEFF3] rounded-full opacity-0 group-hover:opacity-100 group-hover:scale-150 transition-all duration-700 -z-10"></div>
-                    <div class="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-[3px] border-white shadow-lg ring-4 ring-[#FFEFF3] group-hover:ring-[#8A3033]/20 transition-all duration-300 bg-gray-50 shrink-0">
-                        <img src="{{ asset('assets/img/titan.jpeg') }}" 
-                             onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Titania+A&background=FFEFF3&color=8A3033&size=150';" 
-                             alt="Titania Aurellia" class="w-full h-full object-cover">
-                    </div>
-                    <h3 class="text-[17px] font-bold text-[#68575E] leading-tight text-center">Titania Aurellia</h3>
-                    <p class="text-[#8A3033] font-semibold text-[11px] mt-1.5 mb-3 uppercase tracking-wider text-center">Project Manager & Git Master</p>
-                    <p class="text-[#72544E]/80 text-xs text-center leading-relaxed flex-grow">Mengawal timeline proyek, resolusi konflik repositori, dan merapikan dokumentasi sistem.</p>
-                    <div class="mt-5 pt-4 border-t border-gray-100 flex justify-center gap-3 shrink-0">
-                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#8A3033] hover:bg-[#FFEFF3] transition-colors cursor-pointer">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg>
-                        </div>
-                    </div>
-                </div>
+    {{-- Developer 2: Titania --}}
+    <div class="relative bg-white rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-[#FFEFF3] hover:shadow-[0_8px_30px_rgba(138,48,51,0.08)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden z-10 flex flex-col h-full">
+        <div class="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-[3px] border-white shadow-lg ring-4 ring-[#FFEFF3] group-hover:ring-[#8A3033]/20 transition-all duration-300 bg-gray-50 shrink-0">
+            <img src="{{ asset('assets/img/titan.jpeg') }}" 
+                 onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Titania+A&background=FFEFF3&color=8A3033&size=150';" 
+                 alt="Titania Aurellia" class="w-full h-full object-cover">
+        </div>
+        <h3 class="text-[17px] font-bold text-[#68575E] leading-tight text-center">Titania Aurellia</h3>
+        <p class="text-[#8A3033] font-semibold text-[11px] mt-1.5 mb-3 uppercase tracking-wider text-center">Project Manager</p>
+        <p class="text-[#72544E]/80 text-xs text-center leading-relaxed flex-grow">Mengawal timeline proyek, resolusi konflik repositori, dan merapikan dokumentasi sistem.</p>
+    </div>
 
-                {{-- Developer 3: Haura --}}
-                <div class="relative bg-white rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-[#FFEFF3] hover:shadow-[0_8px_30px_rgba(138,48,51,0.08)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden z-10 flex flex-col h-full">
-                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-[#FFEFF3] rounded-full opacity-0 group-hover:opacity-100 group-hover:scale-150 transition-all duration-700 -z-10"></div>
-                    <div class="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-[3px] border-white shadow-lg ring-4 ring-[#FFEFF3] group-hover:ring-[#8A3033]/20 transition-all duration-300 bg-gray-50 shrink-0">
-                        <img src="{{ asset('assets/img/haura.jpeg') }}" 
-                             onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Haura+M&background=FFEFF3&color=8A3033&size=150';" 
-                             alt="Haura" class="w-full h-full object-cover">
-                    </div>
-                    <h3 class="text-[17px] font-bold text-[#68575E] leading-tight text-center">Haura</h3>
-                    <p class="text-[#8A3033] font-semibold text-[11px] mt-1.5 mb-3 uppercase tracking-wider text-center">UI/UX Researcher</p>
-                    <p class="text-[#72544E]/80 text-xs text-center leading-relaxed flex-grow">Merancang arsitektur interaksi, alur pengalaman pengguna, dan riset desain visual.</p>
-                    <div class="mt-5 pt-4 border-t border-gray-100 flex justify-center gap-3 shrink-0">
-                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#8A3033] hover:bg-[#FFEFF3] transition-colors cursor-pointer">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg>
-                        </div>
-                    </div>
-                </div>
+    {{-- Developer 3: Haura --}}
+    <div class="relative bg-white rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-[#FFEFF3] hover:shadow-[0_8px_30px_rgba(138,48,51,0.08)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden z-10 flex flex-col h-full">
+        <div class="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-[3px] border-white shadow-lg ring-4 ring-[#FFEFF3] group-hover:ring-[#8A3033]/20 transition-all duration-300 bg-gray-50 shrink-0">
+            <img src="{{ asset('assets/img/haura.jpeg') }}" 
+                 onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Haura+M&background=FFEFF3&color=8A3033&size=150';" 
+                 alt="Haura" class="w-full h-full object-cover">
+        </div>
+        <h3 class="text-[17px] font-bold text-[#68575E] leading-tight text-center">Haura</h3>
+        <p class="text-[#8A3033] font-semibold text-[11px] mt-1.5 mb-3 uppercase tracking-wider text-center">UI/UX</p>
+        <p class="text-[#72544E]/80 text-xs text-center leading-relaxed flex-grow">Merancang arsitektur interaksi, alur pengalaman pengguna, dan riset desain visual.</p>
+    </div>
 
-                                {{-- Developer 1: Ivan --}}
-                <div class="relative bg-white rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-[#FFEFF3] hover:shadow-[0_8px_30px_rgba(138,48,51,0.08)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden z-10 flex flex-col h-full">
-                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-[#FFEFF3] rounded-full opacity-0 group-hover:opacity-100 group-hover:scale-150 transition-all duration-700 -z-10"></div>
-                    <div class="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-[3px] border-white shadow-lg ring-4 ring-[#FFEFF3] group-hover:ring-[#8A3033]/20 transition-all duration-300 bg-gray-50 shrink-0">
-                        <img src="{{ asset('assets/img/ivan.jpeg') }}" 
-                             onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Ivan+R&background=FFEFF3&color=8A3033&size=150';" 
-                             alt="Ivan Rizal Ahmadi" class="w-full h-full object-cover">
-                    </div>
-                    <h3 class="text-[17px] font-bold text-[#68575E] leading-tight text-center">Ivan Rizal Ahmadi</h3>
-                    <p class="text-[#8A3033] font-semibold text-[11px] mt-1.5 mb-3 uppercase tracking-wider text-center">Lead Backend & AI Engineer</p>
-                    <p class="text-[#72544E]/80 text-xs text-center leading-relaxed flex-grow">Arsitek logika hybrid Certainty Factor, relasi database, dan integrasi mulus API Roboflow.</p>
-                    <div class="mt-5 pt-4 border-t border-gray-100 flex justify-center gap-3 shrink-0">
-                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#8A3033] hover:bg-[#FFEFF3] transition-colors cursor-pointer">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg>
-                        </div>
-                    </div>
-                </div>
+    {{-- Developer 1: Ivan --}}
+    <div class="relative bg-white rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-[#FFEFF3] hover:shadow-[0_8px_30px_rgba(138,48,51,0.08)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden z-10 flex flex-col h-full">
+        <div class="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-[3px] border-white shadow-lg ring-4 ring-[#FFEFF3] group-hover:ring-[#8A3033]/20 transition-all duration-300 bg-gray-50 shrink-0">
+            <img src="{{ asset('assets/img/ivan.jpeg') }}" 
+                 onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Ivan+R&background=FFEFF3&color=8A3033&size=150';" 
+                 alt="Ivan Rizal Ahmadi" class="w-full h-full object-cover">
+        </div>
+        <h3 class="text-[17px] font-bold text-[#68575E] leading-tight text-center">Ivan Rizal Ahmadi</h3>
+        <p class="text-[#8A3033] font-semibold text-[11px] mt-1.5 mb-3 uppercase tracking-wider text-center">Backend & AI Engineer</p>
+        <p class="text-[#72544E]/80 text-xs text-center leading-relaxed flex-grow">Arsitek logika hybrid Certainty Factor, relasi database, dan integrasi mulus API Roboflow.</p>
+    </div>
 
-                {{-- Developer 4: Luthfi --}}
-                <div class="relative bg-white rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-[#FFEFF3] hover:shadow-[0_8px_30px_rgba(138,48,51,0.08)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden z-10 flex flex-col h-full">
-                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-[#FFEFF3] rounded-full opacity-0 group-hover:opacity-100 group-hover:scale-150 transition-all duration-700 -z-10"></div>
-                    <div class="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-[3px] border-white shadow-lg ring-4 ring-[#FFEFF3] group-hover:ring-[#8A3033]/20 transition-all duration-300 bg-gray-50 shrink-0">
-                        <img src="{{ asset('assets/img/luthfi.jpeg') }}" 
-                             onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Luthfi+M&background=FFEFF3&color=8A3033&size=150';" 
-                             alt="Luthfi Mahardika" class="w-full h-full object-cover">
-                    </div>
-                    <h3 class="text-[17px] font-bold text-[#68575E] leading-tight text-center">Luthfi Mahardika</h3>
-                    <p class="text-[#8A3033] font-semibold text-[11px] mt-1.5 mb-3 uppercase tracking-wider text-center">Front-End Developer</p>
-                    <p class="text-[#72544E]/80 text-xs text-center leading-relaxed flex-grow">Menerjemahkan desain figma menjadi komponen antarmuka web responsif dengan Tailwind CSS.</p>
-                    <div class="mt-5 pt-4 border-t border-gray-100 flex justify-center gap-3 shrink-0">
-                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#8A3033] hover:bg-[#FFEFF3] transition-colors cursor-pointer">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg>
-                        </div>
-                    </div>
-                </div>
+    {{-- Developer 4: Luthfi --}}
+    <div class="relative bg-white rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-[#FFEFF3] hover:shadow-[0_8px_30px_rgba(138,48,51,0.08)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden z-10 flex flex-col h-full">
+        <div class="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-[3px] border-white shadow-lg ring-4 ring-[#FFEFF3] group-hover:ring-[#8A3033]/20 transition-all duration-300 bg-gray-50 shrink-0">
+            <img src="{{ asset('assets/img/luthfi.jpeg') }}" 
+                 onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Luthfi+M&background=FFEFF3&color=8A3033&size=150';" 
+                 alt="Luthfi Mahardika" class="w-full h-full object-cover">
+        </div>
+        <h3 class="text-[17px] font-bold text-[#68575E] leading-tight text-center">Luthfi Mahardika</h3>
+        <p class="text-[#8A3033] font-semibold text-[11px] mt-1.5 mb-3 uppercase tracking-wider text-center">Quality Assurance</p>
+        <p class="text-[#72544E]/80 text-xs text-center leading-relaxed flex-grow">Memastikan keandalan interaksi antarmuka web, serta melakukan usability testing di berbagai perangkat.</p>
+    </div>
 
-                {{-- Developer 5: Malik --}}
-                <div class="relative bg-white rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-[#FFEFF3] hover:shadow-[0_8px_30px_rgba(138,48,51,0.08)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden z-10 flex flex-col h-full">
-                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-[#FFEFF3] rounded-full opacity-0 group-hover:opacity-100 group-hover:scale-150 transition-all duration-700 -z-10"></div>
-                    <div class="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-[3px] border-white shadow-lg ring-4 ring-[#FFEFF3] group-hover:ring-[#8A3033]/20 transition-all duration-300 bg-gray-50 shrink-0">
-                        <img src="{{ asset('assets/img/malik.jpeg') }}" 
-                             onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Malik&background=FFEFF3&color=8A3033&size=150';" 
-                             alt="Malik" class="w-full h-full object-cover">
-                    </div>
-                    <h3 class="text-[17px] font-bold text-[#68575E] leading-tight text-center">Malik</h3>
-                    <p class="text-[#8A3033] font-semibold text-[11px] mt-1.5 mb-3 uppercase tracking-wider text-center">Database & QA Specialist</p>
-                    <p class="text-[#72544E]/80 text-xs text-center leading-relaxed flex-grow">Menguji validitas input-output metode Certainty Factor dan optimalisasi struktur kueri.</p>
-                    <div class="mt-5 pt-4 border-t border-gray-100 flex justify-center gap-3 shrink-0">
-                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#8A3033] hover:bg-[#FFEFF3] transition-colors cursor-pointer">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg>
-                        </div>
-                    </div>
-                </div>
+    {{-- Developer 5: Malik --}}
+    <div class="relative bg-white rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-[#FFEFF3] hover:shadow-[0_8px_30px_rgba(138,48,51,0.08)] hover:-translate-y-2 transition-all duration-500 group overflow-hidden z-10 flex flex-col h-full">
+        <div class="w-28 h-28 mx-auto rounded-full overflow-hidden mb-5 border-[3px] border-white shadow-lg ring-4 ring-[#FFEFF3] group-hover:ring-[#8A3033]/20 transition-all duration-300 bg-gray-50 shrink-0">
+            <img src="{{ asset('assets/img/malik.jpeg') }}" 
+                 onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Malik&background=FFEFF3&color=8A3033&size=150';" 
+                 alt="Malik" class="w-full h-full object-cover">
+        </div>
+        <h3 class="text-[17px] font-bold text-[#68575E] leading-tight text-center">Malik</h3>
+        <p class="text-[#8A3033] font-semibold text-[11px] mt-1.5 mb-3 uppercase tracking-wider text-center">Quality Assurance</p>
+        <p class="text-[#72544E]/80 text-xs text-center leading-relaxed flex-grow">Menguji validitas input-output logika Certainty Factor.</p>
+    </div>
 
-            </div>
+</div>
         </div>
     </section>
 @endsection

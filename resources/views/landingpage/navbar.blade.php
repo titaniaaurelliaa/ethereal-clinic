@@ -37,8 +37,8 @@
     </div>
 
     <div class="flex flex-1 justify-end items-center">
-        <a href="/register" class="px-6 py-2.5 bg-gradient-to-r from-[#7B5556] to-[#EFBDBD] text-white font-bold text-sm rounded-full shadow-md shadow-[#7B5556]/20 hover:scale-105 transition-all duration-300">
-            Coba Gratis
+        <a href="/login" class="px-6 py-2.5 bg-gradient-to-r from-[#7B5556] to-[#EFBDBD] text-white font-bold text-sm rounded-full shadow-md shadow-[#7B5556]/20 hover:scale-105 transition-all duration-300">
+            Masuk
         </a>
     </div>
 </nav>

@@ -29,22 +29,10 @@
                     <div class="relative w-[90%] md:w-[85%] lg:w-[480px]">
                         
                         <img 
-                            src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                            src="{{ asset('assets/img/banner.jpeg') }}" 
                             alt="Skincare Products" 
                             class="w-full h-auto object-cover rounded-[40px] shadow-2xl"
                         >
-
-                        <div class="absolute -bottom-8 -left-8 md:-left-12 bg-white/95 backdrop-blur-sm px-6 py-4 rounded-3xl shadow-[0_20px_50px_rgba(114,84,78,0.15)] flex items-center gap-4 border border-white">
-                            <div class="w-10 h-10 rounded-full bg-[#e8eed2] flex items-center justify-center text-[#5B5D4A]">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-[#333333] font-bold text-lg leading-tight">Akurasi 98%</p>
-                                <p class="text-gray-500 text-xs font-medium">Hasil Validasi Pakar</p>
-                            </div>
-                        </div>
 
                     </div>
                 </div>
@@ -114,12 +102,12 @@
                 
                 <div class="relative w-full max-w-md mx-auto lg:mx-0 h-[380px] sm:h-[450px]">
                     <img 
-                        src="https://images.unsplash.com/photo-1570194065650-d99fb4b8f7fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                        src="{{ asset('assets/img/land1.jpg') }}" 
                         alt="Skincare Cream" 
                         class="absolute top-0 right-0 w-[65%] h-[75%] object-cover rounded-[40px] shadow-lg"
                     >
                     <img 
-                        src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                        src="{{ asset('assets/img/land2.avif') }}" 
                         alt="Skincare Serum" 
                         class="absolute bottom-0 left-0 w-[65%] h-[75%] object-cover rounded-[40px] shadow-2xl border-8 border-[#FFEFF3]"
                     >
