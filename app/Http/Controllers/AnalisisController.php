@@ -526,6 +526,7 @@ class AnalisisController extends Controller
                         return [
                             'id' => $item->id,
                             'nama_treatment' => $item->name,
+                            'deskripsi' => $item->description ?? null,
                             'estimasi_harga' => $item->price ?? null // Sesuaikan dengan kolom harga jika ada
                         ];
                     })->toArray();

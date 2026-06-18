@@ -412,58 +412,55 @@
     </div>
     @endif
 
-    {{-- KANAN: Rekomendasi Tindakan Klinik --}}
+    {{-- KANAN: Rekomendasi Basic Treatment --}}
     @if(count($recTreatments) > 0)
     <div class="bg-white rounded-[24px] border border-[#E1E3DE]/70 shadow-sm overflow-hidden">
+        {{-- HEADER: Mengikuti Pola Produk (Menggunakan Warna Pink) --}}
         <div class="px-6 pt-6 pb-4 border-b border-[#E1E3DE]/50 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-xl bg-[#EBDBDD] flex items-center justify-center shrink-0">
-                <svg class="w-4 h-4 text-[#8B3A3A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <div class="w-8 h-8 rounded-xl bg-pink-50 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
             </div>
             <div>
                 <h2 class="text-base font-bold text-gray-800">Rekomendasi Basic Treatment</h2>
+                <p class="text-xs text-[#797B78] mt-0.5">Prosedur klinis yang disarankan berdasarkan diagnosa AI.</p>
             </div>
-            <span class="ml-auto text-[10px] font-bold text-[#8B3A3A] bg-[#EBDBDD] border border-[#D5C5C5] px-2 py-0.5 rounded-full">
+            <span class="ml-auto text-[10px] font-bold text-pink-600 bg-pink-50 border border-pink-200 px-2 py-0.5 rounded-full">
                 {{ count($recTreatments) }} Tindakan
             </span>
         </div>
+
+        {{-- BODY CONTAINER --}}
         <div class="p-6">
             <div class="space-y-3">
                 @foreach($recTreatments as $idx => $treatment)
-                <div class="group relative bg-[#FAF9F6] hover:bg-[#EBDBDD]/30 border border-[#E1E3DE]/70 hover:border-[#D5C5C5] rounded-2xl p-4 transition-all duration-200">
-                    <div class="flex items-center gap-3.5">
-                        {{-- Nomor urut --}}
-                        <div class="w-8 h-8 rounded-xl bg-[#EBDBDD] text-[#8B3A3A] flex items-center justify-center text-xs font-bold shrink-0 group-hover:bg-[#D5C5C5] transition-colors">
+                <div class="group relative bg-[#FAF9F6] hover:bg-pink-50/50 border border-[#E1E3DE]/70 hover:border-pink-200 rounded-2xl p-4 transition-all duration-200">
+                    <div class="flex items-start gap-3.5">
+                        
+                        {{-- Nomor Urut (Pink Palette) --}}
+                        <div class="w-8 h-8 rounded-xl bg-pink-100 text-pink-700 flex items-center justify-center text-xs font-bold shrink-0 group-hover:bg-pink-200 transition-colors">
                             {{ $idx + 1 }}
                         </div>
+
+                        {{-- Konten Teks --}}
                         <div class="flex-1 min-w-0">
-                            <h3 class="text-sm font-bold text-gray-800">{{ $treatment['nama_treatment'] ?? '-' }}</h3>
-                        </div>
-                        {{-- Estimasi harga --}}
-                        <div class="shrink-0 text-right">
-                            @if(!empty($treatment['estimasi_harga']) && is_numeric($treatment['estimasi_harga']))
-                                <span class="text-sm font-bold text-[#8B3A3A]">Rp {{ number_format($treatment['estimasi_harga'], 0, ',', '.') }}</span>
-                                <p class="text-[10px] text-[#A8ABA7]">estimasi</p>
-                            @else
-                                <span class="text-xs font-medium text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
-                                    Konsultasikan dengan dokter
-                                </span>
+                            <h3 class="text-sm font-bold text-gray-800 mb-1">{{ $treatment['nama_treatment'] ?? '-' }}</h3>
+                            
+                            @if(!empty($treatment['deskripsi']))
+                            <div class="flex items-start gap-1.5">
+                                {{-- Ikon Clipboard Dokumen Medis --}}
+                                <svg class="w-3.5 h-3.5 text-[#A8ABA7] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                </svg>
+                                <p class="text-xs text-[#797B78] leading-relaxed text-justify">{{ $treatment['deskripsi'] }}</p>
+                            </div>
                             @endif
                         </div>
+
                     </div>
                 </div>
                 @endforeach
-            </div>
-
-            {{-- Catatan --}}
-            <div class="mt-4 pt-3 border-t border-[#E1E3DE]/50 flex items-start gap-2">
-                <svg class="w-3.5 h-3.5 text-[#A8ABA7] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <p class="text-[10px] text-[#A8ABA7] leading-relaxed">
-                    Harga bersifat estimasi dan dapat berbeda tergantung kondisi serta kebijakan klinik.
-                </p>
             </div>
         </div>
     </div>

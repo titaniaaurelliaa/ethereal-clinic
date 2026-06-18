@@ -19,7 +19,8 @@ class DataTreatment_ADMController extends Controller
                 return $query->where('name', 'LIKE', '%' . $search . '%');
             })
             ->orderBy('id', 'asc')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         $skinProblems = SkinProblemModel::orderBy('name')->get();
 
@@ -31,7 +32,7 @@ class DataTreatment_ADMController extends Controller
         $request->validate([
             'name'            => 'required|string|max:255',
             'description'     => 'required|string',
-            'skin_problems'   => 'nullable|array',
+            'skin_problems'   => 'required|array|min:1',
             'skin_problems.*' => 'integer|exists:skin_problems,id',
         ]);
 
@@ -53,7 +54,7 @@ class DataTreatment_ADMController extends Controller
         $request->validate([
             'name'            => 'required|string|max:255',
             'description'     => 'required|string',
-            'skin_problems'   => 'nullable|array',
+            'skin_problems'   => 'required|array|min:1',
             'skin_problems.*' => 'integer|exists:skin_problems,id',
         ]);
 
